@@ -1,0 +1,7 @@
+.loginScreen{
+    display: flex;
+    width: 30vw;
+    justify-content: center;
+    justify-self: center;
+    padding-top: 40px;
+}

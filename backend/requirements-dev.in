@@ -1,0 +1,7 @@
+-r requirements.in
+
+django-stubs==5.2.9
+django-stubs-ext==5.2.9
+mypy==1.19.1
+mypy_extensions==1.1.0
+djangorestframework-stubs==3.16.7
