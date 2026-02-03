@@ -15,6 +15,7 @@ import boxStyles from "../css/Login.module.css";
 import { useNavigate } from "react-router-dom";
 
 export function Login(props: PaperProps) {
+    const inputColor = 'light-dark(var(--mantine-color-beige-0), var(--mantine-color-gray-9))';
     const navigate = useNavigate();
     const PASSWORD_LENGTH = 6;
     const form = useForm({
@@ -55,6 +56,11 @@ export function Login(props: PaperProps) {
                             }
                             error={form.errors.email && "Invalid email"}
                             radius="md"
+                            styles={{
+                                input: {
+                                    backgroundColor: inputColor
+                                }
+                            }}
                         />
 
                         <PasswordInput
