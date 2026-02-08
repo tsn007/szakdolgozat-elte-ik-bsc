@@ -25,9 +25,7 @@ class UserAdmin(BaseUserAdmin):
     readonly_fields = ['refresh_token', 'last_login']
 
     def save_model(self, request, obj, form, change):
-        # If 'change' is False, it means we are creating a new user
         if not change:
             obj.last_login = None
         
-        # Now save the object securely
         super().save_model(request, obj, form, change)
