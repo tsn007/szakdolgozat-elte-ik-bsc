@@ -1,6 +1,5 @@
 from tokenize import TokenError
 from typing import cast
-from weakref import ref
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
@@ -11,7 +10,7 @@ from django.utils.timezone import now
 from rest_framework_simplejwt.tokens import RefreshToken, Token
 
 from users.models import User
-from users.serializers import LoginSerializer, UserResponseSerializer
+from users.serializers import LoginSerializer, RegisterSerializer, UserResponseSerializer
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -128,3 +127,11 @@ def logout(request: Request) -> Response:
         user.save(update_fields=['refresh_token'])
 
     return response
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register(request: Request) -> Response:
+    serializer = RegisterSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response({'message': 'Registration successful!'}, status=status.HTTP_201_CREATED)
