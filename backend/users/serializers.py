@@ -34,3 +34,5 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
     
+class SuccessResponseSerializer(serializers.Serializer):
+    message = serializers.CharField()

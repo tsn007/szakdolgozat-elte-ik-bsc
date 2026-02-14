@@ -8,10 +8,12 @@ from rest_framework import status
 from django.contrib.auth import authenticate
 from django.utils.timezone import now
 from rest_framework_simplejwt.tokens import RefreshToken, Token
+from drf_spectacular.utils import extend_schema
 
 from users.models import User
-from users.serializers import LoginSerializer, RegisterSerializer, UserResponseSerializer
+from users.serializers import LoginSerializer, RegisterSerializer, SuccessResponseSerializer, UserResponseSerializer
 
+@extend_schema(request=LoginSerializer, responses=UserResponseSerializer)
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login(request: Request) -> Response:
@@ -60,12 +62,14 @@ def login(request: Request) -> Response:
 
     return response
 
+@extend_schema(request=None, responses=UserResponseSerializer)
 @api_view(['GET'])
 def me(request: Request) -> Response:
     user = cast(User, request.user)
     serializer = UserResponseSerializer(instance={'user': user})
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@extend_schema(request=None, responses=UserResponseSerializer)
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def refresh(request: Request) -> Response:
@@ -113,7 +117,8 @@ def refresh(request: Request) -> Response:
     
     except TokenError:
         return Response('Invalid or expired refresh token', status=status.HTTP_401_UNAUTHORIZED)
-    
+
+@extend_schema(request=None, responses=SuccessResponseSerializer)
 @api_view(['POST'])
 def logout(request: Request) -> Response:
     response = Response({'message': 'Logged out succesfully!'}, status=status.HTTP_200_OK)
@@ -128,6 +133,7 @@ def logout(request: Request) -> Response:
 
     return response
 
+@extend_schema(request=RegisterSerializer, responses=SuccessResponseSerializer)
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request: Request) -> Response:
