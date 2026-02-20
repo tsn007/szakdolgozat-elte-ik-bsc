@@ -13,12 +13,22 @@ import {
 import { useForm } from "@mantine/form";
 import boxStyles from "../css/Login.module.css";
 import { useNavigate } from "react-router-dom";
+import { useLoginMutation } from "../redux/authApi";
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/authSlice";
+
+interface LoginFormValues {
+  email: string;
+  password: string;
+  terms: boolean;
+}
 
 export function Login(props: PaperProps) {
+    const [login, { isLoading }] = useLoginMutation();
     const inputColor = 'light-dark(var(--mantine-color-beige-0), var(--mantine-color-gray-9))';
     const navigate = useNavigate();
-    const PASSWORD_LENGTH = 6;
-    const form = useForm({
+    const dispatch = useDispatch();
+    const form = useForm<LoginFormValues>({
         initialValues: {
             email: "",
             password: "",
@@ -27,12 +37,19 @@ export function Login(props: PaperProps) {
 
         validate: {
             email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
-            password: (val) =>
-                val.length <= PASSWORD_LENGTH
-                    ? "Password should include at least 6 characters"
-                    : null,
         },
     });
+
+    const handleLogin = async (values: LoginFormValues) => {
+        try{
+            const result = await login(values).unwrap();
+            dispatch(setUser(result.user));
+            navigate('/home');
+        } catch (error) {
+            const message = (error as { data?: { error?: string } })?.data?.error || "Something went wrong!";
+            form.setErrors({email: true, password: message});
+        }
+    };
 
     return (
         <Box className={boxStyles.loginScreen}>
@@ -41,20 +58,13 @@ export function Login(props: PaperProps) {
                     Welcome back!
                 </Text>
 
-                <form noValidate onSubmit={form.onSubmit(() => {})}>
+                <form noValidate onSubmit={form.onSubmit(handleLogin)}>
                     <Stack>
                         <TextInput
                             required
                             label="Email"
                             placeholder="test@example.com"
-                            value={form.values.email}
-                            onChange={(event) =>
-                                form.setFieldValue(
-                                    "email",
-                                    event.currentTarget.value,
-                                )
-                            }
-                            error={form.errors.email && "Invalid email"}
+                            {...form.getInputProps('email')}
                             radius="md"
                             styles={{
                                 input: {
@@ -67,17 +77,7 @@ export function Login(props: PaperProps) {
                             required
                             label="Password"
                             placeholder="Your password"
-                            value={form.values.password}
-                            onChange={(event) =>
-                                form.setFieldValue(
-                                    "password",
-                                    event.currentTarget.value,
-                                )
-                            }
-                            error={
-                                form.errors.password &&
-                                "Password should include at least 6 characters"
-                            }
+                            {...form.getInputProps('password')}
                             radius="md"
                         />
                     </Stack>
@@ -93,7 +93,7 @@ export function Login(props: PaperProps) {
                         >
                             Don't have an account? Register
                         </Anchor>
-                        <Button type="submit" radius="xl">
+                        <Button type="submit" radius="xl" loading={isLoading}>
                             Login
                         </Button>
                     </Group>

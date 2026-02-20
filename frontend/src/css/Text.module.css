@@ -1,0 +1,11 @@
+.navbarLinks {
+    padding: 10px;
+    text-decoration: none;
+    transition: color 0.2s;
+    border-radius: 10px;
+    color: rgb(171, 171, 171);
+}
+
+.navbarLinks:hover {
+    color: #8fc2ff;
+}

@@ -15,6 +15,7 @@
     "@mantine/form": "^8.3.13",
     "@mantine/hooks": "^8.3.13",
     "@reduxjs/toolkit": "^2.11.2",
+    "@tabler/icons-react": "^3.36.1",
     "http-status-codes": "^2.3.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
