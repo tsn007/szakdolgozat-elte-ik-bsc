@@ -6,3 +6,5 @@ python-dotenv
 drf-spectacular
 drf-spectacular-sidecar
 djangorestframework-simplejwt
+Faker
+pillow

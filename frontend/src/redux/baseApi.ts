@@ -7,7 +7,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { StatusCodes } from "http-status-codes";
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: "http://localhost:8000/",
+    baseUrl: "/",
     credentials: "include",
 });
 

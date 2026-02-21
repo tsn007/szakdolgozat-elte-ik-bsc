@@ -4,16 +4,19 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
+from rest_framework.pagination import PageNumberPagination
 
 from items.models import Item
-from items.serializers import AllItemResponseSerializer
+from items.serializers import AllItemResponseSerializer, PaginatedResponse
 
-@extend_schema(request=None, responses=AllItemResponseSerializer(many=True))
+@extend_schema(request=None, responses=PaginatedResponse)
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_all_items(request: Request) -> Response:
     items = Item.objects.all()
-    serializer = AllItemResponseSerializer(items, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    paginator = PageNumberPagination()
+    page = paginator.paginate_queryset(items, request)
+    serializer = AllItemResponseSerializer(page, many=True, context={'request': request})
+    return paginator.get_paginated_response(serializer.data)
 
 

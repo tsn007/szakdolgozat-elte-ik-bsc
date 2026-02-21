@@ -54,19 +54,19 @@ export function LandingPage() {
                     <Box visibleFrom="md">
                         <Grid maw="40vw">
                             <Grid.Col span={6}>
-                                <Image radius="lg" src="../public/drill.webp" />
+                                <Image radius="lg" src="../drill.webp" />
                             </Grid.Col>
                             <Grid.Col span={6}>
-                                <Image radius="lg" src="../public/drill.webp" />
+                                <Image radius="lg" src="../drill.webp" />
                             </Grid.Col>
                             <Grid.Col span={4}>
-                                <Image radius="lg" src="../public/drill.webp" />
+                                <Image radius="lg" src="../drill.webp" />
                             </Grid.Col>
                             <Grid.Col span={4}>
-                                <Image radius="lg" src="../public/drill.webp" />
+                                <Image radius="lg" src="../drill.webp" />
                             </Grid.Col>
                             <Grid.Col span={4}>
-                                <Image radius="lg" src="../public/drill.webp" />
+                                <Image radius="lg" src="../drill.webp" />
                             </Grid.Col>
                         </Grid>
                     </Box>

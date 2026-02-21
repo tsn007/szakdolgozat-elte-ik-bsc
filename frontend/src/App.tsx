@@ -4,7 +4,7 @@ import { Login } from "./components/Login";
 import { Register } from "./components/Register";
 import { LoginRoute } from "./components/LoginRoute";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { Dashboard } from "./components/Dashboard";
+import { Home } from "./components/Home";
 import { useUserQuery } from "./redux/meApi";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -17,7 +17,11 @@ function App() {
     const router = createBrowserRouter([
         {
             path: "/",
-            element: <LandingPage />,
+            element: (
+                <LoginRoute>
+                    <LandingPage />
+                </LoginRoute>
+            ),
             errorElement: <NotFoundPage />,
         },
         {
@@ -42,7 +46,7 @@ function App() {
             children: [
                 {
                     path: "/home",
-                    element: <Dashboard />,
+                    element: <Home />,
                 },
             ],
         },
