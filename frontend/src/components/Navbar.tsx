@@ -8,26 +8,32 @@ import {
     Stack,
     Text,
     ThemeIcon,
+    //Autocomplete,
+    Avatar,
+    TextInput,
+    Modal,
+    UnstyledButton,
 } from "@mantine/core";
 import { useDisclosure, useWindowScroll } from "@mantine/hooks";
-import { IconShare } from "@tabler/icons-react";
+import { IconSearch, IconShare } from "@tabler/icons-react";
 import boxStyles from "../css/Box.module.css";
 import textStyles from "../css/Text.module.css";
 import { useNavigate } from "react-router-dom";
-//import { useSelector } from 'react-redux';
-//import type { RootState } from '../redux/store';
+//import { useSelector } from "react-redux";
+//import type { RootState } from "../redux/store";
 
 export const Navbar = ({ isGuest }: { isGuest: boolean }) => {
     //const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
     const SCROLL_THRESHOLD = 20;
-    const [opened, { toggle, close }] = useDisclosure(false);
+    const [mobileNavOpen, { toggle: mobileNavToggle, close: mobileNavClose }] =
+        useDisclosure(false);
     const [scroll] = useWindowScroll();
     const isScrolled = scroll.y > SCROLL_THRESHOLD;
     const navigate = useNavigate();
+    const [modalOpened, { open: modalOpen, close: modalClose }] =
+        useDisclosure(false);
 
-    const links = isGuest
-        ? ["Features", "How it Works"]
-        : ["Home", "Reservations"];
+    const links = isGuest ? ["Features", "How it Works"] : ["Home"];
 
     return (
         <Box
@@ -43,9 +49,13 @@ export const Navbar = ({ isGuest }: { isGuest: boolean }) => {
                     : "none",
             }}
         >
-            <Container size="lg">
-                <Group justify="space-between" align="center">
-                    <Group gap="xs" style={{ cursor: "pointer" }}>
+            <Container fluid>
+                <Group justify="space-between" align="center" pl={10} pr={10}>
+                    <Group
+                        gap="xs"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => navigate("/home")}
+                    >
                         <ThemeIcon
                             size="lg"
                             variant="filled"
@@ -100,9 +110,23 @@ export const Navbar = ({ isGuest }: { isGuest: boolean }) => {
                         )}
                     </Group>
 
+                    {!isGuest && (
+                        <Group>
+                            <TextInput
+                                placeholder="Search"
+                                radius="lg"
+                                readOnly
+                                onClick={modalOpen}
+                                leftSection={<IconSearch size={20} />}
+                            />
+                            <Avatar radius="xl" />
+                            <Avatar radius="xl" />
+                        </Group>
+                    )}
+
                     <Burger
-                        opened={opened}
-                        onClick={toggle}
+                        opened={mobileNavOpen}
+                        onClick={mobileNavToggle}
                         hiddenFrom="md"
                         color="white"
                     />
@@ -110,8 +134,8 @@ export const Navbar = ({ isGuest }: { isGuest: boolean }) => {
             </Container>
 
             <Drawer //mobile navbar!!!
-                opened={opened}
-                onClose={close}
+                opened={mobileNavOpen}
+                onClose={mobileNavClose}
                 size="100%"
                 padding="md"
                 title="Menu"
@@ -131,7 +155,7 @@ export const Navbar = ({ isGuest }: { isGuest: boolean }) => {
                             href="#"
                             size="lg"
                             fw={500}
-                            onClick={close}
+                            onClick={mobileNavClose}
                         >
                             {link}
                         </Text>
@@ -141,12 +165,86 @@ export const Navbar = ({ isGuest }: { isGuest: boolean }) => {
                         size="lg"
                         radius="md"
                         color="blue"
-                        onClick={close}
+                        onClick={mobileNavClose}
                     >
                         Get Started
                     </Button>
                 </Stack>
             </Drawer>
+            <Modal
+                opened={modalOpened}
+                onClose={modalClose}
+                size="100%"
+                xOffset={0}
+                yOffset={0}
+                zIndex={1000}
+                transitionProps={{ transition: "slide-down", duration: 250 }}
+                withCloseButton={false}
+                styles={{
+                    content: {
+                        height: "33vh",
+                        display: "flex",
+                        flexDirection: "column",
+                    },
+                }}
+            >
+                <Container fluid>
+                    <Box
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns: "1fr auto 1fr",
+                            gap: "10px",
+                            alignItems: "center",
+                        }}
+                    >
+                        <Group
+                            gap="xs"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => navigate("/home")}
+                        >
+                            <ThemeIcon
+                                size="lg"
+                                variant="filled"
+                                color="blue"
+                                radius="md"
+                            >
+                                <IconShare size={25} />
+                            </ThemeIcon>
+                            <Text
+                                fw={700}
+                                size="xl"
+                                c="white"
+                                style={{ letterSpacing: "-0.5px" }}
+                            >
+                                ShareHood
+                            </Text>
+                        </Group>
+                        <TextInput
+                            w="50vw"
+                            radius="lg"
+                            placeholder="Search"
+                            leftSection={<IconSearch size={20} />}
+                        />
+                        <Box
+                            style={{
+                                display: "flex",
+                                justifyContent: "flex-end",
+                            }}
+                        >
+                            <UnstyledButton onClick={modalClose} p="xs">
+                                <Text
+                                    size="md"
+                                    fw={500}
+                                    c="dimmed"
+                                    className={textStyles.searchCancel}
+                                >
+                                    Cancel
+                                </Text>
+                            </UnstyledButton>
+                        </Box>
+                    </Box>
+                </Container>
+            </Modal>
         </Box>
     );
 };

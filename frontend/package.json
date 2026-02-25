@@ -8,14 +8,17 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "generate-ts": "npx openapi-typescript http://localhost:8000/api/schema/ -o ./src/types/schema.ts"
+    "generate-ts": "npx openapi-typescript http://localhost:8080/api/schema/ -o ./src/types/schema.ts"
   },
   "dependencies": {
+    "@mantine/carousel": "^8.3.15",
     "@mantine/core": "^8.3.13",
     "@mantine/form": "^8.3.13",
     "@mantine/hooks": "^8.3.13",
     "@reduxjs/toolkit": "^2.11.2",
     "@tabler/icons-react": "^3.36.1",
+    "embla-carousel": "^8.6.0",
+    "embla-carousel-react": "^8.6.0",
     "http-status-codes": "^2.3.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

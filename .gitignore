@@ -144,3 +144,6 @@ pgdata/
 postgres_data/
 venv/
 .venv/
+
+media/
+static/
