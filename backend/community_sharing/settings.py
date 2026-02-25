@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'categories',
     'items',
     'reservations',
+    'reviews',
     'drf_spectacular',
 ]
 

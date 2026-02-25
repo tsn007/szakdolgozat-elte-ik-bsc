@@ -13,8 +13,10 @@ import {
 } from "@mantine/core";
 import { features, steps } from "../consts";
 import Layout from "./Layout";
+import { useNavigate } from "react-router-dom";
 
 export function LandingPage() {
+    const navigate = useNavigate();
     return (
         <>
             <Layout isGuest={true}>
@@ -49,7 +51,21 @@ export function LandingPage() {
                             and appliances from trusted neighbors. Save money
                             and help the planet.
                         </Text>
-                        <Button>Check out the catalog</Button>
+                        <Button
+                            radius="xl"
+                            size="md"
+                            color="blue"
+                            variant="filled"
+                            styles={{
+                                root: {
+                                    boxShadow:
+                                        "0 10px 15px -3px rgba(30, 64, 175, 0.3)",
+                                },
+                            }}
+                            onClick={() => navigate("/home")}
+                        >
+                            Check out the catalog
+                        </Button>
                     </Box>
                     <Box visibleFrom="md">
                         <Grid maw="40vw">

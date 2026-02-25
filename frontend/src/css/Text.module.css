@@ -9,3 +9,8 @@
 .navbarLinks:hover {
     color: #8fc2ff;
 }
+
+.searchCancel:hover {
+    transform: scale(1.05);
+    transition: 0.1s;
+}

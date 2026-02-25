@@ -126,18 +126,38 @@ export interface components {
             name: string;
             slug: string;
         };
+        AllItemImages: {
+            /** Format: uuid */
+            readonly id: string;
+            /** Format: uri */
+            image: string;
+        };
         AllItemResponse: {
             /** Format: uuid */
             readonly id: string;
-            /** Format: uuid */
-            category: string;
+            category: components["schemas"]["ItemCategory"];
             name: string;
             /** Format: decimal */
             price: string;
-            /** Format: uuid */
-            owner: string;
+            owner: components["schemas"]["UserData"];
             /** Format: uri */
-            image?: string | null;
+            cover: string;
+            location: components["schemas"]["LimitedLocation"];
+            images: components["schemas"]["AllItemImages"][];
+        };
+        ItemCategory: {
+            /** Format: uuid */
+            readonly id: string;
+            name: string;
+        };
+        LimitedLocation: {
+            /** Format: uuid */
+            readonly id: string;
+            address: string;
+            /** Format: decimal */
+            lat: string;
+            /** Format: decimal */
+            lng: string;
         };
         Login: {
             /** Format: email */

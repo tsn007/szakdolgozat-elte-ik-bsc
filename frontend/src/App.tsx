@@ -40,15 +40,14 @@ function App() {
                 </LoginRoute>
             ),
         },
+        {
+            path: "/home",
+            element: <Home />,
+        },
 
         {
             element: <ProtectedRoute />,
-            children: [
-                {
-                    path: "/home",
-                    element: <Home />,
-                },
-            ],
+            children: [],
         },
     ]);
 

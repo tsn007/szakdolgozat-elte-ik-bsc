@@ -10,7 +10,9 @@ export default function Layout({
     return (
         <>
             <Navbar isGuest={isGuest} />
-            <main style={{ paddingTop: "100px" }}>{children}</main>
+            <main style={{ paddingTop: "100px", paddingBottom: "100px" }}>
+                {children}
+            </main>
         </>
     );
 }
