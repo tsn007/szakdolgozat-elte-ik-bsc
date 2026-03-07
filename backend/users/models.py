@@ -29,6 +29,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     refresh_token = models.CharField(max_length=64, unique=True, blank=True, null=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    profile_pic = models.ImageField(null=True, upload_to='items/profiles')
 
     objects = UserManager()
 

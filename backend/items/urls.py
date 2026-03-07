@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import get_all_items
+
+from items.views import ItemListView
 
 urlpatterns = [
-    path('all/', get_all_items, name='get_all_items'),
+    path('all/', ItemListView.as_view(), name='get_all_items'),
 ]

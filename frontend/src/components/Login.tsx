@@ -18,14 +18,15 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../redux/authSlice";
 
 interface LoginFormValues {
-  email: string;
-  password: string;
-  terms: boolean;
+    email: string;
+    password: string;
+    terms: boolean;
 }
 
 export function Login(props: PaperProps) {
     const [login, { isLoading }] = useLoginMutation();
-    const inputColor = 'light-dark(var(--mantine-color-beige-0), var(--mantine-color-gray-9))';
+    const inputColor =
+        "light-dark(var(--mantine-color-beige-0), var(--mantine-color-gray-9))";
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const form = useForm<LoginFormValues>({
@@ -41,13 +42,15 @@ export function Login(props: PaperProps) {
     });
 
     const handleLogin = async (values: LoginFormValues) => {
-        try{
+        try {
             const result = await login(values).unwrap();
             dispatch(setUser(result.user));
-            navigate('/home');
+            navigate("/browse/list");
         } catch (error) {
-            const message = (error as { data?: { error?: string } })?.data?.error || "Something went wrong!";
-            form.setErrors({email: true, password: message});
+            const message =
+                (error as { data?: { error?: string } })?.data?.error ||
+                "Something went wrong!";
+            form.setErrors({ email: true, password: message });
         }
     };
 
@@ -64,12 +67,12 @@ export function Login(props: PaperProps) {
                             required
                             label="Email"
                             placeholder="test@example.com"
-                            {...form.getInputProps('email')}
+                            {...form.getInputProps("email")}
                             radius="md"
                             styles={{
                                 input: {
-                                    backgroundColor: inputColor
-                                }
+                                    backgroundColor: inputColor,
+                                },
                             }}
                         />
 
@@ -77,7 +80,7 @@ export function Login(props: PaperProps) {
                             required
                             label="Password"
                             placeholder="Your password"
-                            {...form.getInputProps('password')}
+                            {...form.getInputProps("password")}
                             radius="md"
                         />
                     </Stack>

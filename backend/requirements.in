@@ -8,3 +8,4 @@ drf-spectacular-sidecar
 djangorestframework-simplejwt
 Faker
 pillow
+django-filter

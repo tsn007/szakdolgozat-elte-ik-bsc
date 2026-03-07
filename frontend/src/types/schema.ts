@@ -27,7 +27,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["items_all_retrieve"];
+        get: operations["items_all_list"];
         put?: never;
         post?: never;
         delete?: never;
@@ -164,10 +164,19 @@ export interface components {
             email: string;
             password: string;
         };
-        PaginatedResponse: {
+        PaginatedAllItemResponseList: {
+            /** @example 123 */
             count: number;
-            next: string;
-            previous: string;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?page=4
+             */
+            next?: string | null;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?page=2
+             */
+            previous?: string | null;
             results: components["schemas"]["AllItemResponse"][];
         };
         Register: {
@@ -186,6 +195,8 @@ export interface components {
             email: string;
             first_name: string;
             last_name: string;
+            /** Format: uri */
+            profile_pic: string;
         };
         UserResponse: {
             user: components["schemas"]["UserData"];
@@ -218,9 +229,24 @@ export interface operations {
             };
         };
     };
-    items_all_retrieve: {
+    items_all_list: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Multiple values may be separated by commas. */
+                category?: string[];
+                /** @description User latitude */
+                lat?: number;
+                /** @description User longitude */
+                lng?: number;
+                max_price?: number;
+                min_price?: number;
+                /** @description A page number within the paginated result set. */
+                page?: number;
+                /** @description Number of results to return per page. */
+                page_size?: number;
+                /** @description A search term. */
+                search?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -232,7 +258,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PaginatedResponse"];
+                    "application/json": components["schemas"]["PaginatedAllItemResponseList"];
                 };
             };
         };

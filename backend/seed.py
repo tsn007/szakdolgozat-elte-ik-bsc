@@ -34,14 +34,14 @@ def run_seed():
     
     users = list(User.objects.all())
     locations_to_create = []
-    for i in users:
+    for i in range(200):
         location = Location(
             id=fake.uuid4(),
-            user=i,
+            user=random.choice(users),
             label=fake.word(),
             address=fake.address(),
-            lat=fake.latitude(),
-            lng=fake.longitude()
+            lat=random.uniform(45.71, 48.68),
+            lng=random.uniform(16.19, 22.99)
         )
         locations_to_create.append(location)
 
@@ -57,7 +57,7 @@ def run_seed():
     print("Generating 50 new Items...")
     items_to_create = []
 
-    for _ in range(50):
+    for _ in range(300):
         item = Item(
             id=fake.uuid4(),
             category=random.choice(categories),

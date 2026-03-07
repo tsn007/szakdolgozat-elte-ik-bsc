@@ -1,9 +1,9 @@
 .viewPicker {
     border-bottom: 5px solid var(--mantine-color-blue-8);
     padding-bottom: 6px;
-    border-radius: 5px;
+    border-radius: 8px;
 }
 
 .viewPicker:hover {
-    background-color: gray;
+    background-color: var(--mantine-color-dark-7);
 }

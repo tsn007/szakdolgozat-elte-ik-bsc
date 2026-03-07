@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import get_all_categories
+
+from categories.views import CategoriesListView
 
 urlpatterns = [
-    path('all/', get_all_categories, name="get_all_categories")
+    path('all/', CategoriesListView.as_view(), name="get_all_categories")
 ]

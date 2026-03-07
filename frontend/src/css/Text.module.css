@@ -1,9 +1,9 @@
 .navbarLinks {
-    padding: 10px;
+    padding-right: 5px;
     text-decoration: none;
     transition: color 0.2s;
-    border-radius: 10px;
     color: rgb(171, 171, 171);
+    font-weight: 500;
 }
 
 .navbarLinks:hover {

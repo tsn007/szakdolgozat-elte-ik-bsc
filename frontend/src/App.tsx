@@ -4,7 +4,6 @@ import { Login } from "./components/Login";
 import { Register } from "./components/Register";
 import { LoginRoute } from "./components/LoginRoute";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { Home } from "./components/Home";
 import { useUserQuery } from "./redux/meApi";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -12,18 +11,15 @@ import { setUser } from "./redux/authSlice";
 import { LoadingOverlay } from "@mantine/core";
 import { LandingPage } from "./components/LandingPage";
 import "./css/main.css";
+import { SearchLayout } from "./components/SearchLayout";
+import { CardView } from "./components/CardView";
+import { MapView } from "./components/MapView";
+import "react-leaflet-cluster/dist/assets/MarkerCluster.css";
+import "react-leaflet-cluster/dist/assets/MarkerCluster.Default.css";
+import Layout from "./components/Layout";
 
 function App() {
     const router = createBrowserRouter([
-        {
-            path: "/",
-            element: (
-                <LoginRoute>
-                    <LandingPage />
-                </LoginRoute>
-            ),
-            errorElement: <NotFoundPage />,
-        },
         {
             path: "/login",
             element: (
@@ -41,8 +37,31 @@ function App() {
             ),
         },
         {
-            path: "/home",
-            element: <Home />,
+            element: <Layout />,
+            children: [
+                {
+                    path: "/",
+                    element: (
+                        <LoginRoute>
+                            <LandingPage />
+                        </LoginRoute>
+                    ),
+                    errorElement: <NotFoundPage />,
+                },
+                {
+                    element: <SearchLayout />,
+                    children: [
+                        {
+                            path: "/browse/list",
+                            element: <CardView />,
+                        },
+                        {
+                            path: "/browse/map",
+                            element: <MapView />,
+                        },
+                    ],
+                },
+            ],
         },
 
         {
