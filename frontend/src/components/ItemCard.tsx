@@ -1,11 +1,12 @@
-import { Card, Group, Text, Button, Image, Box } from "@mantine/core";
+/* eslint-disable no-magic-numbers */
+import { Card, Group, Text, Button, Image, Box, AspectRatio } from "@mantine/core";
 import type { Item } from "../redux/itemsApi";
 import cardStyles from "../css/Card.module.css";
 import { IconMapPinFilled, IconUserFilled } from "@tabler/icons-react";
 import { useHover } from "@mantine/hooks";
 import { Carousel } from "@mantine/carousel";
 
-export function ItemCard({ item }: { item: Item }) {
+export function ItemCard({ item, isMapPopup }: { item: Item; isMapPopup: boolean }) {
     const { hovered, ref } = useHover();
     return (
         <>
@@ -14,28 +15,29 @@ export function ItemCard({ item }: { item: Item }) {
                 padding="lg"
                 radius="lg"
                 withBorder
-                h="100%"
                 display="flex"
                 style={{ flexDirection: "column" }}
-                className={cardStyles.item}
+                className={isMapPopup ? cardStyles.popup : cardStyles.item}
                 ref={ref}
             >
-                <Card.Section>
-                    {(!hovered || item.images.length === 0) && (
-                        <Image src={item.cover} h={200} fit="cover" />
-                    )}
-                    {hovered && item.images.length !== 0 && (
-                        <Carousel withIndicators height={200}>
-                            <Carousel.Slide>
-                                <Image src={item.cover} />
-                            </Carousel.Slide>
-                            {item.images.map((img) => (
-                                <Carousel.Slide key={img.id}>
-                                    <Image src={img.image} />
+                <Card.Section style={{ overflow: "hidden" }}>
+                    <AspectRatio ratio={4 / 3}>
+                        {(!hovered || item.images.length === 0) && (
+                            <Image src={item.cover} w="100%" h="100%" fit="cover" />
+                        )}
+                        {hovered && item.images.length !== 0 && (
+                            <Carousel withIndicators style={{ width: "100%", height: "100%" }}>
+                                <Carousel.Slide>
+                                    <Image src={item.cover} w="100%" h="100%" fit="cover" />
                                 </Carousel.Slide>
-                            ))}
-                        </Carousel>
-                    )}
+                                {item.images.map((img) => (
+                                    <Carousel.Slide key={img.id}>
+                                        <Image src={img.image} w="100%" h="100%" fit="cover" />
+                                    </Carousel.Slide>
+                                ))}
+                            </Carousel>
+                        )}
+                    </AspectRatio>
                 </Card.Section>
                 <Group justify="space-between" mt="md" mb="auto" pb="md">
                     <Text fw={500} size="lg">
@@ -52,7 +54,13 @@ export function ItemCard({ item }: { item: Item }) {
                         paddingLeft: "5px",
                     }}
                 >
-                    <Box style={{ display: "flex", gap: "5px" }}>
+                    <Box
+                        style={{
+                            display: "flex",
+                            gap: "5px",
+                            alignItems: "center",
+                        }}
+                    >
                         <IconUserFilled size={20} />
                         <Text size="sm" c="dimmed">
                             {item.owner.first_name + " " + item.owner.last_name}
@@ -65,7 +73,7 @@ export function ItemCard({ item }: { item: Item }) {
                             alignItems: "center",
                         }}
                     >
-                        <IconMapPinFilled color="#c22626" />
+                        <IconMapPinFilled size={20} color="#c22626" style={{ flexShrink: 0 }} />
                         <Text size="sm" c="dimmed">
                             {item.location.address}
                         </Text>

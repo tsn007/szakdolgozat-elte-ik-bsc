@@ -1,23 +1,22 @@
-import {
-    IconCategoryFilled,
-    IconCurrencyEuro,
-    IconCloudCheck,
-} from "@tabler/icons-react";
+import { IconCategoryFilled, IconCurrencyEuro, IconCloudCheck } from "@tabler/icons-react";
+import { CategoryFilter } from "../components/CategoryFilter";
+import { PriceFilter } from "../components/PriceFilter";
+import { AvailabilityFilter } from "../components/AvailabilityFilter";
 
-export const data = [
+export const filterItems = [
     {
         icon: IconCategoryFilled,
         value: "Category",
-        description: "fdsafdsaffda",
+        description: CategoryFilter,
     },
     {
         icon: IconCurrencyEuro,
         value: "Price",
-        description: "fdafdsafdsa",
+        description: PriceFilter,
     },
     {
         icon: IconCloudCheck,
         value: "Availability",
-        description: "fkldasfdsaf",
+        description: AvailabilityFilter,
     },
 ];

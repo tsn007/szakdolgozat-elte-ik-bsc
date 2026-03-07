@@ -3,6 +3,7 @@
     transform: scale(1);
     z-index: 1;
     position: relative;
+    height: 100%;
 }
 
 .item:hover {
@@ -10,4 +11,18 @@
     z-index: 10;
     border: none;
     box-shadow: 0 0 20px 10px rgba(0,0,0,0.5);   
+}
+
+.popup {
+    height: auto;
+    width: clamp(220px, 25vw, 700px);
+}
+
+.searchRes {
+    transition: 100ms;
+}
+
+.searchRes:hover {
+    outline: 3px solid var(--mantine-color-dark-3);
+    outline-offset: 3px;
 }

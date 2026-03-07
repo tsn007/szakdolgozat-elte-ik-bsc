@@ -13,28 +13,50 @@ import {
 import { useForm } from "@mantine/form";
 import boxStyles from "../css/Login.module.css";
 import { useNavigate } from "react-router-dom";
+import { useRegisterMutation } from "../redux/authApi";
+
+interface RegisterFormValues {
+    email: string;
+    first_name: string;
+    last_name: string;
+    password: string;
+    password_confirmation: string;
+    terms: boolean;
+}
 
 export function Register(props: PaperProps) {
+    const [register, { isLoading }] = useRegisterMutation();
     const navigate = useNavigate();
     const MIN_PASSWORD_LENGTH = 6;
     const MIN_NAME_LENGTH = 2;
-    const form = useForm({
+    const form = useForm<RegisterFormValues>({
         initialValues: {
             email: "",
-            name: "",
+            first_name: "",
+            last_name: "",
             password: "",
-            passwordagain: "",
+            password_confirmation: "",
             terms: true,
         },
 
         validate: {
-            name: (val) => {
+            first_name: (val) => {
                 if (/\d/.test(val)) {
-                    return "Your name should not contain numbers";
+                    return "The name should not contain numbers";
                 }
 
                 if (val.length < MIN_NAME_LENGTH) {
-                    return "Your name should be at least 2 characters long";
+                    return "The name should be at least 2 characters long";
+                }
+                return null;
+            },
+            last_name: (val) => {
+                if (/\d/.test(val)) {
+                    return "The name should not contain numbers";
+                }
+
+                if (val.length < MIN_NAME_LENGTH) {
+                    return "The name should be at least 2 characters long";
                 }
                 return null;
             },
@@ -43,10 +65,22 @@ export function Register(props: PaperProps) {
                 val.length <= MIN_PASSWORD_LENGTH
                     ? "Password should include at least 6 characters"
                     : null,
-            passwordagain: (val, values) =>
+            password_confirmation: (val, values) =>
                 val !== values.password ? "The passwords must match" : null,
         },
     });
+
+    const handleRegister = async (values: RegisterFormValues) => {
+        try {
+            await register(values).unwrap();
+            navigate("/login");
+        } catch (error) {
+            const message =
+                (error as { data?: { error?: string } })?.data?.error ||
+                "Something went wrong!";
+            form.setErrors({ email: true, password: message });
+        }
+    };
 
     return (
         <Box className={boxStyles.loginScreen}>
@@ -55,20 +89,34 @@ export function Register(props: PaperProps) {
                     Welcome back!
                 </Text>
 
-                <form noValidate onSubmit={form.onSubmit(() => {})}>
+                <form noValidate onSubmit={form.onSubmit(handleRegister)}>
                     <Stack>
                         <TextInput
                             required
-                            label="Name"
-                            placeholder="Your name"
-                            value={form.values.name}
+                            label="First Name"
+                            placeholder="First name"
+                            value={form.values.first_name}
                             onChange={(event) =>
                                 form.setFieldValue(
-                                    "name",
+                                    "first_name",
                                     event.currentTarget.value,
                                 )
                             }
-                            error={form.errors.name}
+                            error={form.errors.first_name}
+                            radius="md"
+                        />
+                        <TextInput
+                            required
+                            label="Last Name"
+                            placeholder="Last name"
+                            value={form.values.last_name}
+                            onChange={(event) =>
+                                form.setFieldValue(
+                                    "last_name",
+                                    event.currentTarget.value,
+                                )
+                            }
+                            error={form.errors.last_name}
                             radius="md"
                         />
                         <TextInput
@@ -107,16 +155,16 @@ export function Register(props: PaperProps) {
                             required
                             label="Password again"
                             placeholder="Confirm your password"
-                            value={form.values.passwordagain}
+                            value={form.values.password_confirmation}
                             onChange={(event) =>
                                 form.setFieldValue(
-                                    "passwordagain",
+                                    "password_confirmation",
                                     event.currentTarget.value,
                                 )
                             }
                             error={
-                                form.errors.passwordagain &&
-                                "Password must match"
+                                form.errors.password_confirmation &&
+                                "Passwords must match"
                             }
                             radius="md"
                         />
@@ -133,7 +181,7 @@ export function Register(props: PaperProps) {
                         >
                             Already have an account? Login
                         </Anchor>
-                        <Button type="submit" radius="xl">
+                        <Button type="submit" radius="xl" loading={isLoading}>
                             Register
                         </Button>
                     </Group>

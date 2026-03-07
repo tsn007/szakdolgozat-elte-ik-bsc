@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { components } from "../types/schema";
 
-type User = components['schemas']['UserData'];
+type User = components["schemas"]["UserData"];
 
 interface AuthState {
     user: User | null;
@@ -14,7 +14,7 @@ const initialState: AuthState = {
 };
 
 const authSlice = createSlice({
-    name: 'auth',
+    name: "auth",
     initialState,
     reducers: {
         setUser(state, action: PayloadAction<User>) {
@@ -24,8 +24,8 @@ const authSlice = createSlice({
         logout(state) {
             state.user = null;
             state.isAuthenticated = false;
-        }
-    }
+        },
+    },
 });
 
 export const { setUser, logout } = authSlice.actions;

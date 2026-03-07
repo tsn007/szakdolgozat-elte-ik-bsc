@@ -12,6 +12,7 @@ class UserDataSerializer(serializers.Serializer):
     email = serializers.EmailField()
     first_name = serializers.CharField()
     last_name = serializers.CharField()
+    profile_pic = serializers.ImageField()
 
 class UserResponseSerializer(serializers.Serializer):
     user = UserDataSerializer()
