@@ -4,6 +4,8 @@ import App from "./App.tsx";
 import "@mantine/core/styles.css";
 import "@mantine/carousel/styles.css";
 import "@mantine/nprogress/styles.css";
+import "@mantine/dates/styles.css";
+import "@mantine/dropzone/styles.css";
 import "leaflet/dist/leaflet.css";
 import { MantineProvider } from "@mantine/core";
 import { Provider } from "react-redux";

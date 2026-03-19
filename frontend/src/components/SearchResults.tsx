@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { useDebouncedValue, useWindowEvent } from "@mantine/hooks";
 import { useGetPreviewItemsQuery } from "../redux/itemsApi";
 import { useState } from "react";
-import { useUserLocation } from "../hooks/userLocation";
+import { useUserData } from "../hooks/userLocation";
 
 type SearchResultProps = {
     opened: boolean;
@@ -33,7 +33,7 @@ export function SearchResults({ opened, close, searchTerm, setSearchTerm }: Sear
     const MIN_QUERY_LENGTH = 3;
     const PAGE = 1;
     const PAGE_SIZE = 5;
-    const { userCoords } = useUserLocation();
+    const { userCoords } = useUserData();
     const payload = {
         page: PAGE,
         page_size: PAGE_SIZE,
@@ -55,11 +55,17 @@ export function SearchResults({ opened, close, searchTerm, setSearchTerm }: Sear
         if (event.key === "Escape" && opened) {
             handleClose();
         }
-        if (event.key === "Enter") {
+        if (event.key === "Enter" && opened) {
             setSearchTerm(localSearch);
             handleClose();
+            navigate("/browse/list");
         }
     });
+
+    const handleClick = (itemId: string) => {
+        handleClose();
+        navigate(`/items/${itemId}`);
+    };
 
     return (
         <RemoveScroll enabled={opened}>
@@ -127,7 +133,11 @@ export function SearchResults({ opened, close, searchTerm, setSearchTerm }: Sear
                                 {localSearch.length > 0 && (
                                     <Box style={{ display: "flex", flexDirection: "row", gap: "10px" }} p={30}>
                                         {data?.results.map((item) => (
-                                            <SearchResultItemCard key={item.id} item={item} />
+                                            <SearchResultItemCard
+                                                key={item.id}
+                                                item={item}
+                                                onClick={() => handleClick(item.id)}
+                                            />
                                         ))}
                                     </Box>
                                 )}

@@ -20,6 +20,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/items/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["items_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/items/all/": {
         parameters: {
             query?: never;
@@ -28,6 +44,70 @@ export interface paths {
             cookie?: never;
         };
         get: operations["items_all_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/items/create/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["items_create_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/users/add_location/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["users_add_location_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/users/items/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["users_items_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/users/locations/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["users_locations_list"];
         put?: never;
         post?: never;
         delete?: never;
@@ -116,23 +196,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/users/update_profile/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["users_update_profile_update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["users_update_profile_partial_update"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        AddLocation: {
+            label?: string | null;
+            /** Format: decimal */
+            lat: string;
+            /** Format: decimal */
+            lng: string;
+            address: string;
+        };
         AllCategoriesResponse: {
             /** Format: uuid */
             readonly id: string;
             name: string;
             slug: string;
         };
-        AllItemImages: {
+        CreateItem: {
+            /** Format: uuid */
+            readonly id: string;
+            /** Format: uuid */
+            category: string;
+            name: string;
+            /** Format: decimal */
+            price: string;
+            /** Format: uri */
+            cover: string;
+            readonly images: components["schemas"]["ItemImages"][];
+            /** Format: uuid */
+            location: string;
+        };
+        ItemCategory: {
+            /** Format: uuid */
+            readonly id: string;
+            name: string;
+        };
+        ItemImages: {
             /** Format: uuid */
             readonly id: string;
             /** Format: uri */
             image: string;
         };
-        AllItemResponse: {
+        ItemResponse: {
             /** Format: uuid */
             readonly id: string;
             category: components["schemas"]["ItemCategory"];
@@ -143,12 +266,7 @@ export interface components {
             /** Format: uri */
             cover: string;
             location: components["schemas"]["LimitedLocation"];
-            images: components["schemas"]["AllItemImages"][];
-        };
-        ItemCategory: {
-            /** Format: uuid */
-            readonly id: string;
-            name: string;
+            images: components["schemas"]["ItemImages"][];
         };
         LimitedLocation: {
             /** Format: uuid */
@@ -164,7 +282,28 @@ export interface components {
             email: string;
             password: string;
         };
-        PaginatedAllItemResponseList: {
+        OwnItem: {
+            /** Format: uuid */
+            readonly id: string;
+            name: string;
+            /** Format: decimal */
+            price: string;
+            /** Format: date-time */
+            readonly created_at: string;
+            /** Format: uri */
+            cover: string;
+        };
+        OwnLocation: {
+            /** Format: uuid */
+            readonly id: string;
+            label?: string | null;
+            address: string;
+            /** Format: decimal */
+            lat: string;
+            /** Format: decimal */
+            lng: string;
+        };
+        PaginatedItemResponseList: {
             /** @example 123 */
             count: number;
             /**
@@ -177,7 +316,13 @@ export interface components {
              * @example http://api.example.org/accounts/?page=2
              */
             previous?: string | null;
-            results: components["schemas"]["AllItemResponse"][];
+            results: components["schemas"]["ItemResponse"][];
+        };
+        PatchedUserDataEdit: {
+            first_name?: string;
+            last_name?: string;
+            /** Format: email */
+            email?: string;
         };
         Register: {
             /** Format: email */
@@ -197,6 +342,12 @@ export interface components {
             last_name: string;
             /** Format: uri */
             profile_pic: string;
+        };
+        UserDataEdit: {
+            first_name: string;
+            last_name: string;
+            /** Format: email */
+            email: string;
         };
         UserResponse: {
             user: components["schemas"]["UserData"];
@@ -225,6 +376,27 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AllCategoriesResponse"][];
+                };
+            };
+        };
+    };
+    items_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ItemResponse"];
                 };
             };
         };
@@ -258,7 +430,94 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PaginatedAllItemResponseList"];
+                    "application/json": components["schemas"]["PaginatedItemResponseList"];
+                };
+            };
+        };
+    };
+    items_create_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["CreateItem"];
+                "application/x-www-form-urlencoded": components["schemas"]["CreateItem"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateItem"];
+                };
+            };
+        };
+    };
+    users_add_location_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddLocation"];
+                "application/x-www-form-urlencoded": components["schemas"]["AddLocation"];
+                "multipart/form-data": components["schemas"]["AddLocation"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AddLocation"];
+                };
+            };
+        };
+    };
+    users_items_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OwnItem"][];
+                };
+            };
+        };
+    };
+    users_locations_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OwnLocation"][];
                 };
             };
         };
@@ -366,6 +625,56 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SuccessResponse"];
+                };
+            };
+        };
+    };
+    users_update_profile_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserDataEdit"];
+                "application/x-www-form-urlencoded": components["schemas"]["UserDataEdit"];
+                "multipart/form-data": components["schemas"]["UserDataEdit"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserDataEdit"];
+                };
+            };
+        };
+    };
+    users_update_profile_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedUserDataEdit"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchedUserDataEdit"];
+                "multipart/form-data": components["schemas"]["PatchedUserDataEdit"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserDataEdit"];
                 };
             };
         };

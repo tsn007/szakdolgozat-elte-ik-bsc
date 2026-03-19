@@ -25,6 +25,7 @@ import { logout } from "../redux/authSlice";
 import { SearchResults } from "./SearchResults";
 import type { Dispatch, SetStateAction } from "react";
 import iconStyles from "../css/Icon.module.css";
+import { useUserData } from "../hooks/userLocation";
 
 type NavbarProps = {
     isGuest: boolean;
@@ -39,7 +40,7 @@ export const Navbar = ({ isGuest, searchOpened, searchClose, searchOpen, searchT
     const [apiLogout] = useLogoutMutation();
     const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
     const dispatch = useDispatch();
-    const user = useSelector((state: RootState) => state.auth.user);
+    const { user } = useUserData();
     const SCROLL_THRESHOLD = 20;
     const [mobileNavOpen, { toggle: mobileNavToggle, close: mobileNavClose }] = useDisclosure(false);
     const [scroll] = useWindowScroll();
@@ -150,7 +151,11 @@ export const Navbar = ({ isGuest, searchOpened, searchClose, searchOpen, searchT
                                             {profileMenuData.map((item) => {
                                                 const Icon = item.icon;
                                                 return (
-                                                    <Menu.Item key={item.title} leftSection={<Icon />}>
+                                                    <Menu.Item
+                                                        key={item.title}
+                                                        leftSection={<Icon />}
+                                                        onClick={() => navigate(item.to)}
+                                                    >
                                                         {item.title}
                                                     </Menu.Item>
                                                 );

@@ -2,7 +2,7 @@ import { Card, Image, Group, Box, Text } from "@mantine/core";
 import type { Item } from "../redux/itemsApi";
 import cardStyles from "../css/Card.module.css";
 
-export function SearchResultItemCard({ item }: { item: Item }) {
+export function SearchResultItemCard({ item, onClick }: { item: Item; onClick: () => void }) {
     return (
         <>
             <Card
@@ -15,6 +15,7 @@ export function SearchResultItemCard({ item }: { item: Item }) {
                 style={{ flexDirection: "column" }}
                 className={cardStyles.searchRes}
                 bg="transparent"
+                onClick={onClick}
             >
                 <Card.Section>
                     <Image src={item.cover} fit="cover" />

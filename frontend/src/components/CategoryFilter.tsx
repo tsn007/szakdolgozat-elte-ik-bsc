@@ -23,6 +23,9 @@ export function CategoryFilter({
                     label={cat.name}
                     checked={categories.includes(cat.name)}
                     onChange={() => setCategoryURL(cat.name)}
+                    styles={{
+                        input: { cursor: "pointer" },
+                    }}
                 />
             ))}
 
@@ -34,6 +37,9 @@ export function CategoryFilter({
                             label={cat.name}
                             checked={categories.includes(cat.name)}
                             onChange={() => setCategoryURL(cat.name)}
+                            styles={{
+                                input: { cursor: "pointer" },
+                            }}
                         />
                     ))}
                 </Box>

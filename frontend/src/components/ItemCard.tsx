@@ -5,9 +5,11 @@ import cardStyles from "../css/Card.module.css";
 import { IconMapPinFilled, IconUserFilled } from "@tabler/icons-react";
 import { useHover } from "@mantine/hooks";
 import { Carousel } from "@mantine/carousel";
+import { useNavigate } from "react-router-dom";
 
 export function ItemCard({ item, isMapPopup }: { item: Item; isMapPopup: boolean }) {
     const { hovered, ref } = useHover();
+    const navigate = useNavigate();
     return (
         <>
             <Card
@@ -92,7 +94,7 @@ export function ItemCard({ item, isMapPopup }: { item: Item; isMapPopup: boolean
                         </Text>
                         <Text c="dimmed">/day</Text>
                     </Box>
-                    <Button color="blue" w={100} radius="md">
+                    <Button color="blue" w={100} radius="md" onClick={() => navigate(`/items/${item.id}`)}>
                         Details
                     </Button>
                 </Box>

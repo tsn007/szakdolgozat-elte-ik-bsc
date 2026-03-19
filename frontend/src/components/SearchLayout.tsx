@@ -3,7 +3,7 @@ import buttonStyles from "../css/Button.module.css";
 import { Outlet, useNavigate, useSearchParams } from "react-router-dom";
 import { useGetAllItemsQuery, type ItemsResponse } from "../redux/itemsApi";
 import { filterItems } from "../consts/filterItems";
-import { useUserLocation } from "../hooks/userLocation";
+import { useUserData } from "../hooks/userLocation";
 import { useEffect, useState } from "react";
 import { useLayoutContext } from "../hooks/layoutContextHook";
 
@@ -90,8 +90,8 @@ export function SearchLayout() {
         );
     });
     const { searchTerm, searchOpened } = useLayoutContext();
-    const { userCoords, fetchLocation } = useUserLocation();
-    const { data: items, isLoading } = useGetAllItemsQuery({
+    const { userCoords, fetchLocation } = useUserData();
+    const { data: items } = useGetAllItemsQuery({
         page: page,
         search: searchTerm,
         lat: userCoords?.lat,
@@ -151,19 +151,7 @@ export function SearchLayout() {
                         {itemFilters}
                     </Accordion>
                 </Box>
-                {isLoading || !items ? (
-                    <Box
-                        style={{
-                            flex: 1,
-                            display: "flex",
-                            justifyContent: "center",
-                        }}
-                    >
-                        <Text>Loading results...</Text>
-                    </Box>
-                ) : (
-                    <Outlet context={{ items, userCoords, setPage, page } satisfies SearchContextType} />
-                )}
+                {!items || <Outlet context={{ items, userCoords, setPage, page } satisfies SearchContextType} />}
             </Container>
             {searchOpened && <Overlay color="#000" backgroundOpacity={0.35} blur={15} />}
         </>

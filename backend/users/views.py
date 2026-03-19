@@ -9,9 +9,12 @@ from django.contrib.auth import authenticate
 from django.utils.timezone import now
 from rest_framework_simplejwt.tokens import RefreshToken, Token
 from drf_spectacular.utils import extend_schema
+from rest_framework import generics
 
+from items.models import Item, Location
+from items.serializers import OwnItemSerializer, OwnLocationSerializer
 from users.models import User
-from users.serializers import LoginSerializer, RegisterSerializer, SuccessResponseSerializer, UserResponseSerializer
+from users.serializers import AddLocationSerializer, LoginSerializer, RegisterSerializer, SuccessResponseSerializer, UserDataEditSerializer, UserResponseSerializer
 
 @extend_schema(request=LoginSerializer, responses=UserResponseSerializer)
 @api_view(['POST'])
@@ -141,3 +144,30 @@ def register(request: Request) -> Response:
     serializer.is_valid(raise_exception=True)
     serializer.save()
     return Response({'message': 'Registration successful!'}, status=status.HTTP_201_CREATED)
+
+class UserItemList(generics.ListAPIView):
+    serializer_class = OwnItemSerializer
+
+    def get_queryset(self):   
+        queryset = Item.objects.filter(owner=self.request.user.id)
+        return queryset
+
+class UserLocationList(generics.ListAPIView):
+    serializer_class = OwnLocationSerializer
+
+    def get_queryset(self):   
+        queryset = Location.objects.filter(user=self.request.user.id)
+        return queryset
+
+class UserDataEdit(generics.UpdateAPIView):
+    serializer_class = UserDataEditSerializer
+
+    def get_object(self):
+        return self.request.user
+
+class AddLocation(generics.CreateAPIView):
+    queryset = Location.objects.all()
+    serializer_class = AddLocationSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

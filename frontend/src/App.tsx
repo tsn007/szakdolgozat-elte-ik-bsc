@@ -17,6 +17,10 @@ import { MapView } from "./components/MapView";
 import "react-leaflet-cluster/dist/assets/MarkerCluster.css";
 import "react-leaflet-cluster/dist/assets/MarkerCluster.Default.css";
 import Layout from "./components/Layout";
+import { ItemDetailsPage } from "./components/ItemDetailsPage";
+import { ProfilePage } from "./components/ProfilePage";
+import { ProfileData } from "./components/ProfileData";
+import { UserItems } from "./components/UserItems";
 
 function App() {
     const router = createBrowserRouter([
@@ -47,6 +51,29 @@ function App() {
                         </LoginRoute>
                     ),
                     errorElement: <NotFoundPage />,
+                },
+                {
+                    path: "/items/:itemId",
+                    element: <ItemDetailsPage />,
+                },
+                {
+                    element: <ProtectedRoute />,
+                    children: [
+                        {
+                            path: "/profile",
+                            element: <ProfilePage />,
+                            children: [
+                                {
+                                    index: true,
+                                    element: <ProfileData />,
+                                },
+                                {
+                                    path: "my-items",
+                                    element: <UserItems />,
+                                },
+                            ],
+                        },
+                    ],
                 },
                 {
                     element: <SearchLayout />,

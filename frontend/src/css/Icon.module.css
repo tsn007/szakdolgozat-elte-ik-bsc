@@ -2,3 +2,17 @@
     border-radius: 10px;
     background-color: black;
 }
+
+.stepper {
+    background-color: gray;
+    border-radius: 20px;
+    padding: 5px;
+}
+
+.stepper:hover {
+    cursor: pointer;
+}
+
+.edit {
+    cursor: pointer;
+}

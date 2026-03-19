@@ -1,7 +1,7 @@
 import { useDisclosure } from "@mantine/hooks";
 import { Navbar } from "./Navbar";
 import { useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, ScrollRestoration, useLocation } from "react-router-dom";
 
 export type LayoutContext = {
     searchTerm: string;
@@ -25,7 +25,8 @@ export default function Layout() {
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
             />
-            <main style={{ paddingTop: "100px", paddingBottom: "100px" }}>
+            <main style={{ paddingTop: "100px" }}>
+                <ScrollRestoration />
                 <Outlet context={{ searchTerm, setSearchTerm, searchOpened } satisfies LayoutContext} />
             </main>
         </>

@@ -2,6 +2,7 @@ from typing import Dict
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 
+from items.models import Location
 from users.models import User
 
 class LoginSerializer(serializers.Serializer):
@@ -37,3 +38,13 @@ class RegisterSerializer(serializers.ModelSerializer):
     
 class SuccessResponseSerializer(serializers.Serializer):
     message = serializers.CharField()
+
+class UserDataEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+class AddLocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Location
+        fields = ['label', 'lat', 'lng', 'address']

@@ -5,10 +5,11 @@ from django.db.models.functions import ACos, Sin, Cos, Radians
 from django.db.models import F, ExpressionWrapper, FloatField
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from items.filters import ItemFilter
 from items.models import Item
-from items.serializers import AllItemResponseSerializer
+from items.serializers import CreateItemSerializer, ItemResponseSerializer
 
 class ItemPagination(PageNumberPagination):
     page_size = 30
@@ -25,7 +26,7 @@ class ItemPagination(PageNumberPagination):
 )
 class ItemListView(generics.ListAPIView):
     permission_classes = [AllowAny]
-    serializer_class = AllItemResponseSerializer
+    serializer_class = ItemResponseSerializer
     
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_class = ItemFilter
@@ -61,3 +62,17 @@ class ItemListView(generics.ListAPIView):
         return queryset
 
     pagination_class = ItemPagination
+
+class ItemById(generics.RetrieveAPIView):
+    permission_classes = [AllowAny]
+    queryset = Item.objects.select_related('owner', 'location', 'category').prefetch_related('images')
+    serializer_class = ItemResponseSerializer
+    lookup_field = 'id'
+
+class CreateItem(generics.CreateAPIView):
+    queryset = Item.objects.all()
+    serializer_class = CreateItemSerializer
+    parser_classes = [MultiPartParser, FormParser]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
