@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import UserLocationList, login, logout, me, refresh, register, UserItemList, UserDataEdit, AddLocation
+from .views import UserLocationList, login, logout, me, refresh, register, UserItemList, UserDataEdit, AddLocation, DeleteLocation, UpdateProfilePicture, EditLocation
 
 urlpatterns = [
     path('login/', login, name='login'),
@@ -11,4 +11,7 @@ urlpatterns = [
     path('locations/', UserLocationList.as_view(), name='get-user-locations'),
     path('update_profile/', UserDataEdit.as_view(), name='update_user_data'),
     path('add_location/', AddLocation.as_view(), name='add_user_location'),
+    path('delete_location/<uuid:id>/', DeleteLocation.as_view(), name='delete_user_location'),
+    path('update_profilepic/', UpdateProfilePicture.as_view(), name='update_user_profile_pic'),
+    path('edit_location/<uuid:id>/', EditLocation.as_view(), name='edit_user_location'),
 ]

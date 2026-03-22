@@ -41,7 +41,11 @@ export function MapSearchBar({ onLocationSelect }: SearchBarProps) {
 
         map.on("geosearch/showlocation", (result: any) => {
             const rawAddress = result.location.raw.address || {};
-            onLocationSelect(result.location.y, result.location.x, rawAddress);
+            onLocationSelect(
+                result.location.y,
+                result.location.x,
+                rawAddress,
+            );
         });
 
         return () => {

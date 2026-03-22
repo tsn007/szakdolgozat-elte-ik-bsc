@@ -1,4 +1,4 @@
-import { Accordion, Box, Container, UnstyledButton, Text, Overlay } from "@mantine/core";
+import { Accordion, Box, Container, UnstyledButton, Text } from "@mantine/core";
 import buttonStyles from "../css/Button.module.css";
 import { Outlet, useNavigate, useSearchParams } from "react-router-dom";
 import { useGetAllItemsQuery, type ItemsResponse } from "../redux/itemsApi";
@@ -89,7 +89,7 @@ export function SearchLayout() {
             </Accordion.Item>
         );
     });
-    const { searchTerm, searchOpened } = useLayoutContext();
+    const { searchTerm } = useLayoutContext();
     const { userCoords, fetchLocation } = useUserData();
     const { data: items } = useGetAllItemsQuery({
         page: page,
@@ -153,7 +153,6 @@ export function SearchLayout() {
                 </Box>
                 {!items || <Outlet context={{ items, userCoords, setPage, page } satisfies SearchContextType} />}
             </Container>
-            {searchOpened && <Overlay color="#000" backgroundOpacity={0.35} blur={15} />}
         </>
     );
 }

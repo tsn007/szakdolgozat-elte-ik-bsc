@@ -44,7 +44,12 @@ class UserDataEditSerializer(serializers.ModelSerializer):
         model = User
         fields = ['first_name', 'last_name', 'email']
 
-class AddLocationSerializer(serializers.ModelSerializer):
+class AddEditLocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = ['label', 'lat', 'lng', 'address']
+
+class ProfilePictureUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['profile_pic']

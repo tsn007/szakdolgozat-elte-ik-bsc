@@ -10,11 +10,13 @@ from django.utils.timezone import now
 from rest_framework_simplejwt.tokens import RefreshToken, Token
 from drf_spectacular.utils import extend_schema
 from rest_framework import generics
+from django.db.models.deletion import ProtectedError
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from items.models import Item, Location
 from items.serializers import OwnItemSerializer, OwnLocationSerializer
 from users.models import User
-from users.serializers import AddLocationSerializer, LoginSerializer, RegisterSerializer, SuccessResponseSerializer, UserDataEditSerializer, UserResponseSerializer
+from users.serializers import AddEditLocationSerializer, LoginSerializer, ProfilePictureUpdateSerializer, RegisterSerializer, SuccessResponseSerializer, UserDataEditSerializer, UserResponseSerializer
 
 @extend_schema(request=LoginSerializer, responses=UserResponseSerializer)
 @api_view(['POST'])
@@ -167,7 +169,40 @@ class UserDataEdit(generics.UpdateAPIView):
 
 class AddLocation(generics.CreateAPIView):
     queryset = Location.objects.all()
-    serializer_class = AddLocationSerializer
+    serializer_class = AddEditLocationSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+class DeleteLocation(generics.DestroyAPIView):
+    queryset = Location.objects.all()
+    lookup_field = 'id'
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        try:
+            self.perform_destroy(instance)
+        except ProtectedError as e:
+            return Response({"detail": str(e)}, status=status.HTTP_423_LOCKED)
+        return Response(status=204)
+    
+class UpdateProfilePicture(generics.UpdateAPIView):
+    serializer_class = ProfilePictureUpdateSerializer
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get_object(self):
+        return self.request.user
+    
+class EditLocation(generics.UpdateAPIView):
+    queryset = Location.objects.all()
+    serializer_class = AddEditLocationSerializer
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Location.objects.none()
+        
+        return Location.objects.filter(user=self.request.user)
+
+    def perform_update(self, serializer):
+        return serializer.save(user=self.request.user)

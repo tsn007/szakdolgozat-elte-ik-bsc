@@ -18,7 +18,6 @@ export const fetchAddressFromCoords = async (lat: number, lng: number) => {
     try {
         const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
         const data = await response.json();
-        console.log(data);
         return data.address || null;
     } catch (error) {
         console.error(error);

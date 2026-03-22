@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'reviews',
     'drf_spectacular',
     'django_filters',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [

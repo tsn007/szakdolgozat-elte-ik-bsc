@@ -1,13 +1,20 @@
 from rest_framework import serializers
+from django.core.files.base import ContentFile
 
 from categories.serializers import ItemCategorySerializer
 from users.serializers import UserDataSerializer
 from items.models import Item, ItemImage, Location
 
+class ItemImagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemImage
+        fields = ['id', 'image']
+
 class OwnItemSerializer(serializers.ModelSerializer):
+    images = ItemImagesSerializer(many=True)
     class Meta:
         model = Item
-        fields = ['id', 'name', 'price', 'created_at', 'cover']
+        fields = ['id', 'name', 'price', 'created_at', 'cover', 'location', 'category', 'images']
 
 class OwnLocationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,12 +24,7 @@ class OwnLocationSerializer(serializers.ModelSerializer):
 class LimitedLocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
-        fields = ['id', 'address', 'lat', 'lng']  
-
-class ItemImagesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ItemImage
-        fields = ['id', 'image']
+        fields = ['id', 'address', 'lat', 'lng']
 
 class ItemResponseSerializer(serializers.ModelSerializer):
     owner = UserDataSerializer()
@@ -56,3 +58,75 @@ class CreateItemSerializer(serializers.ModelSerializer):
                 ItemImage.objects.create(item=item, image=image_data)
 
         return item
+    
+class EditItemSerializer(serializers.ModelSerializer):
+    images = ItemImagesSerializer(many=True, read_only=True)
+    kept_existing_images = serializers.ListField(
+        child=serializers.CharField(), write_only=True, required=False
+    )
+    existing_cover_url = serializers.URLField(write_only=True, required=False)
+    class Meta:
+        model = Item
+        fields = ['category', 'name', 'price', 'cover', 'location', 'images', 'kept_existing_images', 'existing_cover_url']
+
+    def update(self, instance, validated_data):
+        request = self.context.get('request')
+        
+        validated_data.pop('images', None)
+        validated_data.pop('kept_existing_images', None)
+        validated_data.pop('existing_cover_url', None)
+        validated_data.pop('cover', None)
+
+        old_cover_content = None
+        old_cover_name = ""
+        if instance.cover:
+            try:
+                old_cover_content = instance.cover.read()
+                old_cover_name = instance.cover.name.split('/')[-1]
+            except Exception:
+                pass
+
+        instance = super().update(instance, validated_data)
+
+        if request and 'kept_existing_images' in request.data:
+            kept_ids = request.data.getlist('kept_existing_images')
+            instance.images.exclude(id__in=kept_ids).delete()
+
+        new_cover_file = request.FILES.get('cover') #type: ignore
+        existing_cover_url = request.data.get('existing_cover_url') #type: ignore
+
+        cover_changed = False
+
+        if new_cover_file:
+            cover_changed = True
+            instance.cover = new_cover_file
+
+        elif existing_cover_url:
+            matching_img = None
+            for img in instance.images.all():
+                if img.image.url in existing_cover_url:
+                    matching_img = img
+                    break
+            
+            if matching_img and (not instance.cover or matching_img.image.url != instance.cover.url):
+                cover_changed = True
+                file_content = matching_img.image.read()
+                file_name = matching_img.image.name.split('/')[-1]
+                
+                instance.cover.save(file_name, ContentFile(file_content), save=False)
+                matching_img.delete()
+
+        if cover_changed and old_cover_content:
+            new_gallery_img = ItemImage(item=instance)
+            new_gallery_img.image.save(old_cover_name, ContentFile(old_cover_content), save=False)
+            new_gallery_img.save()
+
+        if request and 'images' in request.FILES:
+            for image_file in request.FILES.getlist('images'):
+                ItemImage.objects.create(item=instance, image=image_file)
+
+        instance.save()
+        return instance
+
+
+

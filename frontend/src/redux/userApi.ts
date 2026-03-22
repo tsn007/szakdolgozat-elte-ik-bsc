@@ -1,4 +1,4 @@
-import type { paths } from "../types/schema";
+import type { components, paths } from "../types/schema";
 import { baseApi } from "./baseApi";
 
 export type UserItemsResponse = paths["/api/users/items/"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -15,6 +15,18 @@ export type AddLocationRequest =
 
 export type AddLocationResponse =
     paths["/api/users/add_location/"]["post"]["responses"]["201"]["content"]["application/json"];
+export type UpdateProfilePicResponse =
+    paths["/api/users/update_profilepic/"]["patch"]["responses"]["200"]["content"]["application/json"];
+export type EditLocationResp =
+    paths["/api/users/edit_location/"]["patch"]["responses"]["200"]["content"]["application/json"];
+export type EditLocationReq = NonNullable<
+    paths["/api/users/edit_location/"]["patch"]["requestBody"]
+>["content"]["application/json"];
+export type OwnLocation = components["schemas"]["OwnLocation"];
+type EditLocRequestFull = {
+    locId: string;
+    locData: EditLocationReq;
+};
 
 export const userApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -23,6 +35,7 @@ export const userApi = baseApi.injectEndpoints({
                 url: "api/users/items/",
                 method: "GET",
             }),
+            providesTags: ["Items"],
         }),
         getUserLocations: builder.query<UserLocationsResponse, void>({
             query: () => ({
@@ -47,8 +60,39 @@ export const userApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["Addresses"],
         }),
+        deleteLocation: builder.mutation<void, string>({
+            query: (locId) => ({
+                url: `api/users/delete_location/${locId}/`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Addresses"],
+        }),
+        changeProfilePic: builder.mutation<UpdateProfilePicResponse, FormData>({
+            query: (formData) => ({
+                url: "api/users/update_profilepic/",
+                method: "PATCH",
+                body: formData,
+                formData: true,
+            }),
+            invalidatesTags: ["User"],
+        }),
+        editLocation: builder.mutation<EditLocationResp, EditLocRequestFull>({
+            query: ({ locId, locData }) => ({
+                url: `api/users/edit_location/${locId}/`,
+                method: "PATCH",
+                body: locData,
+            }),
+            invalidatesTags: ["Addresses"],
+        }),
     }),
 });
 
-export const { useGetUserItemsQuery, useGetUserLocationsQuery, useUpdateUserDataMutation, useAddNewLocationMutation } =
-    userApi;
+export const {
+    useGetUserItemsQuery,
+    useGetUserLocationsQuery,
+    useUpdateUserDataMutation,
+    useAddNewLocationMutation,
+    useDeleteLocationMutation,
+    useChangeProfilePicMutation,
+    useEditLocationMutation,
+} = userApi;

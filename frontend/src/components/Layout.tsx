@@ -2,6 +2,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { Navbar } from "./Navbar";
 import { useState } from "react";
 import { Outlet, ScrollRestoration, useLocation } from "react-router-dom";
+import { Overlay } from "@mantine/core";
 
 export type LayoutContext = {
     searchTerm: string;
@@ -29,6 +30,7 @@ export default function Layout() {
                 <ScrollRestoration />
                 <Outlet context={{ searchTerm, setSearchTerm, searchOpened } satisfies LayoutContext} />
             </main>
+            {searchOpened && <Overlay color="#000" backgroundOpacity={0.65} />}
         </>
     );
 }

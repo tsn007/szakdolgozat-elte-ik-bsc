@@ -14,13 +14,13 @@ type MapProps = {
     userCoords?: CoordsType | undefined;
     withSearch?: boolean;
     onLocationSelect?: (lat: number, lng: number, address: AddressType | null) => void;
-    selectedLocation?: { lat: number; lng: number; address: AddressType | null | undefined } | null;
+    selectedLocation?: { lat: number; lng: number; address?: AddressType | null | undefined } | null;
 };
 
 export function Map({ items, item, userCoords, withSearch, onLocationSelect, selectedLocation }: MapProps) {
     const itemLat = parseFloat(item?.location.lat ?? "0");
     const itemLng = parseFloat(item?.location.lng ?? "0");
-    const canLoadMap = userCoords || item;
+    const canLoadMap = userCoords || item || selectedLocation;
     const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${itemLat},${itemLng}`;
     const height = item || !items ? "300px" : "80vh";
 
@@ -28,7 +28,16 @@ export function Map({ items, item, userCoords, withSearch, onLocationSelect, sel
         <Skeleton height={height} radius="lg" />
     ) : (
         <MapContainer
-            center={userCoords ? [userCoords.lat, userCoords.lng] : [itemLat, itemLng]}
+            center={
+                userCoords
+                    ? [userCoords.lat, userCoords.lng]
+                    : item
+                      ? [itemLat, itemLng]
+                      : selectedLocation
+                        ? [selectedLocation.lat, selectedLocation.lng]
+                        : // eslint-disable-next-line no-magic-numbers
+                          [2, 2]
+            }
             zoom={13}
             scrollWheelZoom
             style={{ height: height }}

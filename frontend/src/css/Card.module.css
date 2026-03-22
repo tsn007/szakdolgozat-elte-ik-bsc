@@ -26,3 +26,12 @@
     outline: 3px solid var(--mantine-color-dark-3);
     outline-offset: 3px;
 }
+
+.userItem {
+    transition: 100ms;
+    cursor: pointer;
+}
+
+.userItem:hover {
+    opacity: 80%;
+}

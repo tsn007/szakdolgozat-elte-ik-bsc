@@ -1,15 +1,16 @@
 /* eslint-disable no-magic-numbers */
-import { Container, TextInput, Box, Text, SimpleGrid, Button, Card, Group, ActionIcon, Badge } from "@mantine/core";
+import { Container, TextInput, Box, Text, SimpleGrid, Button } from "@mantine/core";
 import { useProfileContext } from "../hooks/profileContextHook";
-import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconEdit, IconPlus } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
 import type { User } from "../redux/authSlice";
 import { useUpdateUserDataMutation } from "../redux/userApi";
-import { AddNewAddress } from "./AddNewAddress";
+import { AddEditNewAddress } from "./AddEditNewAddress";
 import { useDisclosure } from "@mantine/hooks";
 import { fetchAddressFromCoords } from "../hooks/userLocation";
 import type { AddressType } from "./MapSearchBar";
+import { LocationCard } from "./LocationCard";
 
 function PersonalDetailsForm({ user }: { user: User }) {
     const [updateProfile, { isLoading }] = useUpdateUserDataMutation();
@@ -131,31 +132,16 @@ export function ProfileData() {
                         {locations?.map((loc) => {
                             const splitted = loc.address.split(",");
                             const city = splitted[1];
-                            const additional =
-                                splitted[3] && splitted[4] ? `, ${splitted[3]}. floor, ${splitted[4]}. door` : "";
+                            const additional = splitted[3] && splitted[4] ? `, ${splitted[3]}, ${splitted[4]}` : "";
                             const addr = splitted[0] + ", " + splitted[2] + additional;
                             return (
-                                <Card key={loc.id} withBorder shadow="sm" radius="md" padding="lg">
-                                    <Group justify="space-between" mb="xs">
-                                        <Badge color="blue" variant="light" size="lg">
-                                            {loc.label || "Unnamed"}
-                                        </Badge>
-                                        <Group gap="xs">
-                                            <ActionIcon variant="subtle" color="gray">
-                                                <IconEdit size={20} />
-                                            </ActionIcon>
-                                            <ActionIcon variant="subtle" color="red">
-                                                <IconTrash size={20} />
-                                            </ActionIcon>
-                                        </Group>
-                                    </Group>
-                                    <Text fw={500} size="lg">
-                                        {city}
-                                    </Text>
-                                    <Text size="sm" c="dimmed">
-                                        {addr}
-                                    </Text>
-                                </Card>
+                                <LocationCard
+                                    key={loc.id}
+                                    loc={loc}
+                                    city={city}
+                                    addr={addr}
+                                    userAddress={userAddress}
+                                />
                             );
                         })}
                         <Button
@@ -172,7 +158,7 @@ export function ProfileData() {
                     </SimpleGrid>
                 </Box>
             </SimpleGrid>
-            <AddNewAddress
+            <AddEditNewAddress
                 opened={openedLocationModal}
                 close={closelocationModal}
                 userCoords={userCoords}

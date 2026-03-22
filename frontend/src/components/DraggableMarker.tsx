@@ -11,7 +11,6 @@ type MarkerProps = {
 
 export function DraggableMarker({ lat, lng, onLocationSelect }: MarkerProps) {
     const markerRef = useRef<L.Marker>(null);
-    const MAX_NUMBER_OF_DIGITS = 6;
 
     const eventHandlers = useMemo(
         () => ({
@@ -19,12 +18,9 @@ export function DraggableMarker({ lat, lng, onLocationSelect }: MarkerProps) {
                 const marker = markerRef.current;
                 if (marker != null) {
                     const rawPos = marker.getLatLng();
-                    const trimmedLat = Number(rawPos.lat.toFixed(MAX_NUMBER_OF_DIGITS));
-                    const trimmedLng = Number(rawPos.lng.toFixed(MAX_NUMBER_OF_DIGITS));
+                    const newAddress = await fetchAddressFromCoords(rawPos.lat, rawPos.lng);
 
-                    const newAddress = await fetchAddressFromCoords(trimmedLat, trimmedLng);
-
-                    onLocationSelect(trimmedLat, trimmedLng, newAddress);
+                    onLocationSelect(rawPos.lat, rawPos.lng, newAddress);
                 }
             },
         }),

@@ -9,7 +9,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 
 from items.filters import ItemFilter
 from items.models import Item
-from items.serializers import CreateItemSerializer, ItemResponseSerializer
+from items.serializers import CreateItemSerializer, EditItemSerializer, ItemResponseSerializer
 
 class ItemPagination(PageNumberPagination):
     page_size = 30
@@ -76,3 +76,22 @@ class CreateItem(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+class DeleteItem(generics.DestroyAPIView):
+    queryset = Item.objects.all()
+    lookup_field = 'id'
+
+class EditItem(generics.UpdateAPIView):
+    serializer_class = EditItemSerializer
+    parser_classes = [MultiPartParser, FormParser]
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Item.objects.none()
+        
+        return Item.objects.filter(owner=self.request.user)
+
+    def perform_update(self, serializer):
+        return serializer.save(owner=self.request.user)
+    
