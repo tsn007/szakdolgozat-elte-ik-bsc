@@ -65,7 +65,7 @@ class ItemListView(generics.ListAPIView):
 
 class ItemById(generics.RetrieveAPIView):
     permission_classes = [AllowAny]
-    queryset = Item.objects.select_related('owner', 'location', 'category').prefetch_related('images')
+    queryset = Item.objects.select_related('owner', 'location', 'category').prefetch_related('images', 'reservations')
     serializer_class = ItemResponseSerializer
     lookup_field = 'id'
 

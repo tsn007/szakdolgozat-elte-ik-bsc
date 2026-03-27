@@ -21,6 +21,8 @@ import { ItemDetailsPage } from "./components/ItemDetailsPage";
 import { ProfilePage } from "./components/ProfilePage";
 import { ProfileData } from "./components/ProfileData";
 import { UserItems } from "./components/UserItems";
+import { UserRentals } from "./components/UserRentals";
+import { Requests } from "./components/Requests";
 
 function App() {
     const router = createBrowserRouter([
@@ -70,6 +72,14 @@ function App() {
                                 {
                                     path: "my-items",
                                     element: <UserItems />,
+                                },
+                                {
+                                    path: "rentals/:resStatus",
+                                    element: <UserRentals />,
+                                },
+                                {
+                                    path: "inbox/:resStatus",
+                                    element: <Requests />,
                                 },
                             ],
                         },

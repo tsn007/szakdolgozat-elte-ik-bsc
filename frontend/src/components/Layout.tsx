@@ -30,7 +30,7 @@ export default function Layout() {
                 <ScrollRestoration />
                 <Outlet context={{ searchTerm, setSearchTerm, searchOpened } satisfies LayoutContext} />
             </main>
-            {searchOpened && <Overlay color="#000" backgroundOpacity={0.65} />}
+            {searchOpened && <Overlay color="#000" backgroundOpacity={0.45} blur={15} />}
         </>
     );
 }

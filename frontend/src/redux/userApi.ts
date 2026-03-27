@@ -18,9 +18,9 @@ export type AddLocationResponse =
 export type UpdateProfilePicResponse =
     paths["/api/users/update_profilepic/"]["patch"]["responses"]["200"]["content"]["application/json"];
 export type EditLocationResp =
-    paths["/api/users/edit_location/"]["patch"]["responses"]["200"]["content"]["application/json"];
+    paths["/api/users/edit_location/{id}/"]["patch"]["responses"]["200"]["content"]["application/json"];
 export type EditLocationReq = NonNullable<
-    paths["/api/users/edit_location/"]["patch"]["requestBody"]
+    paths["/api/users/edit_location/{id}/"]["patch"]["requestBody"]
 >["content"]["application/json"];
 export type OwnLocation = components["schemas"]["OwnLocation"];
 type EditLocRequestFull = {

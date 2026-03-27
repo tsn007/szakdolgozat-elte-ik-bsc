@@ -35,7 +35,7 @@ export const itemsApi = baseApi.injectEndpoints({
                 url: `api/items/${itemId}`,
                 method: "GET",
             }),
-            providesTags: ["Items"],
+            providesTags: ["Items", "Item"],
         }),
         createItem: builder.mutation<CreateItemResp, FormData>({
             query: (formData) => ({

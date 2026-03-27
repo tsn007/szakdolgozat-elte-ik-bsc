@@ -7,6 +7,7 @@ urlpatterns = [
     path('api/users/', include('users.urls')),
     path('api/items/', include('items.urls')),
     path('api/categories/', include('categories.urls')),
+    path('api/reservations/', include('reservations.urls')),
 
     # Swagger UI endpoints
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

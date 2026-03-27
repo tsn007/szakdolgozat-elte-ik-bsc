@@ -1,6 +1,11 @@
+import time
+
 from rest_framework import serializers
 from django.core.files.base import ContentFile
+from drf_spectacular.utils import extend_schema_field
+from django.utils import timezone
 
+from reservations.serializers import ItemAvailabiltySerializer
 from categories.serializers import ItemCategorySerializer
 from users.serializers import UserDataSerializer
 from items.models import Item, ItemImage, Location
@@ -31,9 +36,19 @@ class ItemResponseSerializer(serializers.ModelSerializer):
     location = LimitedLocationSerializer()
     images = ItemImagesSerializer(many=True)
     category = ItemCategorySerializer()
+    reservations = serializers.SerializerMethodField()
     class Meta:
         model = Item
-        fields = ['id', 'category', 'name', 'price', 'owner', 'cover', 'location', 'images']
+        fields = ['id', 'category', 'name', 'price', 'owner', 'cover', 'location', 'images', 'reservations']
+
+    @extend_schema_field(ItemAvailabiltySerializer(many=True))
+    def get_reservations(self, obj):
+        active_reservations = []
+        for res in obj.reservations.all():
+            if res.status in ['ACCEPTED', 'IN PROGRESS', 'PENDING'] and res.to_date >= timezone.now():
+                active_reservations.append(res)
+
+        return ItemAvailabiltySerializer(active_reservations, many=True).data
 
 class PaginatedResponse(serializers.Serializer):
     count = serializers.IntegerField()
@@ -127,6 +142,5 @@ class EditItemSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
-
 
 

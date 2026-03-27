@@ -147,6 +147,8 @@ export function AddEditNewAddress({ opened, close, userCoords, userAddress, loca
                         setSelectedLocation({ lat, lng, address });
                         if (address?.house_number) {
                             setHouseNumValue(address.house_number);
+                        } else {
+                            setHouseNumValue("");
                         }
                     }}
                     selectedLocation={activeLocation}

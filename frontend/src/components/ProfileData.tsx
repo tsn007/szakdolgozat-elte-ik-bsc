@@ -87,6 +87,7 @@ function PersonalDetailsForm({ user }: { user: User }) {
                     </Button>
                     <Button
                         radius="md"
+                        mb={50}
                         w="100%"
                         variant="outline"
                         color="red"

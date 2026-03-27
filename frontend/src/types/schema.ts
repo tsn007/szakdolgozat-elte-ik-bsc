@@ -100,6 +100,70 @@ export interface paths {
         patch: operations["items_edit_partial_update"];
         trace?: never;
     };
+    "/api/reservations/create/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["reservations_create_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reservations/get/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["reservations_get_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reservations/get/requests/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["reservations_get_requests_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reservations/update/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["reservations_update_update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["reservations_update_partial_update"];
+        trace?: never;
+    };
     "/api/users/add_location/": {
         parameters: {
             query?: never;
@@ -132,7 +196,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/users/edit_location/": {
+    "/api/users/edit_location/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -324,6 +388,18 @@ export interface components {
             /** Format: uuid */
             location: string;
         };
+        CreateReservation: {
+            /** Format: uuid */
+            readonly id: string;
+            /** Format: uuid */
+            item: string;
+            /** Format: date-time */
+            from_date: string;
+            /** Format: date-time */
+            to_date: string;
+            /** Format: uuid */
+            readonly renter: string;
+        };
         EditItem: {
             /** Format: uuid */
             category: string;
@@ -338,6 +414,20 @@ export interface components {
             kept_existing_images?: string[];
             /** Format: uri */
             existing_cover_url?: string;
+        };
+        InboxItem: {
+            /** Format: uuid */
+            readonly id: string;
+            name: string;
+            /** Format: uri */
+            cover: string;
+            location: components["schemas"]["ReservationLocation"];
+        };
+        ItemAvailabilty: {
+            /** Format: date-time */
+            from_date: string;
+            /** Format: date-time */
+            to_date: string;
         };
         ItemCategory: {
             /** Format: uuid */
@@ -362,6 +452,7 @@ export interface components {
             cover: string;
             location: components["schemas"]["LimitedLocation"];
             images: components["schemas"]["ItemImages"][];
+            readonly reservations: components["schemas"]["ItemAvailabilty"][];
         };
         LimitedLocation: {
             /** Format: uuid */
@@ -445,6 +536,11 @@ export interface components {
             /** Format: uri */
             profile_pic?: string | null;
         };
+        PatchedStatusChange: {
+            /** Format: uuid */
+            readonly id?: string;
+            status?: components["schemas"]["StatusEnum"];
+        };
         PatchedUserDataEdit: {
             first_name?: string;
             last_name?: string;
@@ -463,6 +559,56 @@ export interface components {
             password: string;
             password_confirmation: string;
         };
+        ReservationItem: {
+            /** Format: uuid */
+            readonly id: string;
+            name: string;
+            owner: components["schemas"]["ReservationUser"];
+            /** Format: uri */
+            cover: string;
+            location: components["schemas"]["ReservationLocation"];
+        };
+        ReservationLocation: {
+            /** Format: uuid */
+            readonly id: string;
+            address: string;
+        };
+        ReservationRequest: {
+            /** Format: uuid */
+            readonly id: string;
+            item: components["schemas"]["InboxItem"];
+            /** Format: date-time */
+            from_date: string;
+            /** Format: date-time */
+            to_date: string;
+            renter: components["schemas"]["ReservationUser"];
+            /** Format: date-time */
+            readonly created_at: string;
+            status?: components["schemas"]["StatusEnum"];
+            /** Format: decimal */
+            total_price: string;
+        };
+        ReservationUser: {
+            first_name: string;
+            last_name: string;
+            /** Format: uri */
+            profile_pic?: string | null;
+        };
+        StatusChange: {
+            /** Format: uuid */
+            readonly id: string;
+            status?: components["schemas"]["StatusEnum"];
+        };
+        /**
+         * @description * `PENDING` - Pending
+         *     * `ACCEPTED` - Accepted
+         *     * `REJECTED` - Rejected
+         *     * `IN_PROGRESS` - In Progress
+         *     * `RETURN_PENDING` - Return Pending
+         *     * `COMPLETED` - Completed
+         * @enum {string}
+         */
+        StatusEnum: "PENDING" | "ACCEPTED" | "REJECTED" | "IN_PROGRESS" | "RETURN_PENDING" | "COMPLETED";
         SuccessResponse: {
             message: string;
         };
@@ -479,6 +625,20 @@ export interface components {
             last_name: string;
             /** Format: email */
             email: string;
+        };
+        UserReservation: {
+            /** Format: uuid */
+            readonly id: string;
+            item: components["schemas"]["ReservationItem"];
+            /** Format: date-time */
+            from_date: string;
+            /** Format: date-time */
+            to_date: string;
+            /** Format: date-time */
+            readonly created_at: string;
+            status?: components["schemas"]["StatusEnum"];
+            /** Format: decimal */
+            total_price: string;
         };
         UserResponse: {
             user: components["schemas"]["UserData"];
@@ -662,6 +822,125 @@ export interface operations {
             };
         };
     };
+    reservations_create_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateReservation"];
+                "application/x-www-form-urlencoded": components["schemas"]["CreateReservation"];
+                "multipart/form-data": components["schemas"]["CreateReservation"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateReservation"];
+                };
+            };
+        };
+    };
+    reservations_get_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserReservation"][];
+                };
+            };
+        };
+    };
+    reservations_get_requests_list: {
+        parameters: {
+            query: {
+                tab: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReservationRequest"][];
+                };
+            };
+        };
+    };
+    reservations_update_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["StatusChange"];
+                "application/x-www-form-urlencoded": components["schemas"]["StatusChange"];
+                "multipart/form-data": components["schemas"]["StatusChange"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StatusChange"];
+                };
+            };
+        };
+    };
+    reservations_update_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedStatusChange"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchedStatusChange"];
+                "multipart/form-data": components["schemas"]["PatchedStatusChange"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StatusChange"];
+                };
+            };
+        };
+    };
     users_add_location_create: {
         parameters: {
             query?: never;
@@ -711,7 +990,9 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                id: string;
+            };
             cookie?: never;
         };
         requestBody: {
@@ -736,7 +1017,9 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                id: string;
+            };
             cookie?: never;
         };
         requestBody?: {

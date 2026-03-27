@@ -1,4 +1,16 @@
-import { Container, Avatar, Box, Text, Button, Rating, Tabs, Overlay, FileButton } from "@mantine/core";
+import {
+    Container,
+    Avatar,
+    Box,
+    Text,
+    Button,
+    Rating,
+    Tabs,
+    Overlay,
+    FileButton,
+    Menu,
+    Indicator,
+} from "@mantine/core";
 import { useUserData } from "../hooks/userLocation";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import type { User } from "../redux/authSlice";
@@ -8,6 +20,8 @@ import { useMemo } from "react";
 import { useChangeProfilePicMutation, useGetUserLocationsQuery, type UserLocationsResponse } from "../redux/userApi";
 import type { CoordsType } from "./SearchLayout";
 import { IconCameraPlus } from "@tabler/icons-react";
+import { InboxTab } from "../consts/inboxTabs";
+import { useGetUserRequestsQuery } from "../redux/reservationsApi";
 
 export type ProfileContextType = {
     user: User;
@@ -22,12 +36,40 @@ const profileItems = [
         to: "/profile",
     },
     {
-        title: "My Items",
+        title: "My items",
         to: "/profile/my-items",
     },
     {
-        title: "My reservations",
-        to: "/profile/my-reservations",
+        title: "My rentals",
+        to: "/profile/rentals/in-progress",
+        menuItems: [
+            {
+                title: "In progress",
+                to: "/profile/rentals/in-progress",
+            },
+            {
+                title: "Completed",
+                to: "/profile/rentals/completed",
+            },
+        ],
+    },
+    {
+        title: "Inbox",
+        to: "/profile/inbox/requests",
+        menuItems: [
+            {
+                title: "Requests",
+                to: `/profile/inbox/${InboxTab.REQUESTS}`,
+            },
+            {
+                title: "Active",
+                to: `/profile/inbox/${InboxTab.ACTIVE}`,
+            },
+            {
+                title: "History",
+                to: `/profile/inbox/${InboxTab.HISTORY}`,
+            },
+        ],
     },
     {
         title: "Reviews",
@@ -38,13 +80,26 @@ const profileItems = [
 export function ProfilePage() {
     const { user, userCoords, fetchLocation, fetchAddressFromCoords } = useUserData();
     const { data: locations } = useGetUserLocationsQuery();
+    const { data: rentals } = useGetUserRequestsQuery(InboxTab.REQUESTS);
     const navigate = useNavigate();
     const location = useLocation();
     const [opened, { open, close }] = useDisclosure(false);
     const contextValue = useMemo(
-        () => ({ user, locations, userCoords, fetchLocation, fetchAddressFromCoords}),
+        () => ({ user, locations, userCoords, fetchLocation, fetchAddressFromCoords }),
         [user, locations, userCoords, fetchLocation, fetchAddressFromCoords],
     );
+
+    const activeTab = useMemo(() => {
+        for (const item of profileItems) {
+            if (location.pathname === item.to) {
+                return item.to;
+            }
+            if (item.menuItems?.some((mItem) => location.pathname === mItem.to)) {
+                return item.to;
+            }
+        }
+        return location.pathname;
+    }, [location.pathname]);
 
     const handleOpen = () => {
         open();
@@ -73,12 +128,36 @@ export function ProfilePage() {
                     </Box>
                 </Box>
                 <Box style={{ display: "flex", gap: "30px" }} mt={50}>
-                    <Tabs value={location.pathname} onChange={(value) => navigate(value as string)} w="100%">
+                    <Tabs value={activeTab} onChange={(value) => navigate(value as string)} w="100%">
                         <Tabs.List>
                             {profileItems.map((item) => (
-                                <Tabs.Tab key={item.to} onClick={() => navigate(item.to)} value={item.to}>
-                                    {item.title}
-                                </Tabs.Tab>
+                                <Menu trigger="click-hover" key={item.to}>
+                                    <Indicator
+                                        disabled={
+                                            !item.menuItems ||
+                                            !item.menuItems.some((mItem) => mItem.title === "Requests") ||
+                                            !rentals ||
+                                            rentals.length === 0
+                                        }
+                                        color="red"
+                                        inline
+                                        label={rentals?.length}
+                                        size={20}
+                                    >
+                                        <Menu.Target>
+                                            <Tabs.Tab onClick={() => navigate(item.to)} value={item.to}>
+                                                {item.title}
+                                            </Tabs.Tab>
+                                        </Menu.Target>
+                                    </Indicator>
+                                    {item.menuItems && (
+                                        <Menu.Dropdown>
+                                            {item.menuItems.map((mItem) => (
+                                                <Menu.Item onClick={() => navigate(mItem.to)}>{mItem.title}</Menu.Item>
+                                            ))}
+                                        </Menu.Dropdown>
+                                    )}
+                                </Menu>
                             ))}
                         </Tabs.List>
                     </Tabs>
