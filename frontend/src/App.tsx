@@ -23,6 +23,7 @@ import { ProfileData } from "./components/ProfileData";
 import { UserItems } from "./components/UserItems";
 import { UserRentals } from "./components/UserRentals";
 import { Requests } from "./components/Requests";
+import { Reviews } from "./components/Reviews";
 
 function App() {
     const router = createBrowserRouter([
@@ -80,6 +81,10 @@ function App() {
                                 {
                                     path: "inbox/:resStatus",
                                     element: <Requests />,
+                                },
+                                {
+                                    path: "reviews",
+                                    element: <Reviews />,
                                 },
                             ],
                         },

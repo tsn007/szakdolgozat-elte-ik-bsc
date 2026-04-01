@@ -37,6 +37,7 @@ USE_X_FORWARDED_HOST = True
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,14 +45,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #'corsheaders',
+    'drf_spectacular',
+    'django_filters',
+    'django_cleanup.apps.CleanupConfig',
+    'channels',
     'users',
     'categories',
     'items',
     'reservations',
     'reviews',
-    'drf_spectacular',
-    'django_filters',
-    'django_cleanup.apps.CleanupConfig',
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -83,6 +86,13 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'community_sharing.wsgi.application'
+ASGI_APPLICATION = 'community_sharing.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 
 # Database

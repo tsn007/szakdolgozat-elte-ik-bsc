@@ -27,6 +27,7 @@ type EditLocRequestFull = {
     locId: string;
     locData: EditLocationReq;
 };
+type ReviewsResp = paths["/api/users/reviews/"]["get"]["responses"]["200"]["content"]["application/json"];
 
 export const userApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -84,6 +85,13 @@ export const userApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["Addresses"],
         }),
+        getUserReviews: builder.query<ReviewsResp, void>({
+            query: () => ({
+                url: "api/users/reviews/",
+                method: "GET",
+            }),
+            providesTags: ["Reviews"],
+        }),
     }),
 });
 
@@ -95,4 +103,5 @@ export const {
     useDeleteLocationMutation,
     useChangeProfilePicMutation,
     useEditLocationMutation,
+    useGetUserReviewsQuery,
 } = userApi;

@@ -13,10 +13,11 @@ from rest_framework import generics
 from django.db.models.deletion import ProtectedError
 from rest_framework.parsers import MultiPartParser, FormParser
 
+from reviews.models import Review
 from items.models import Item, Location
 from items.serializers import OwnItemSerializer, OwnLocationSerializer
 from users.models import User
-from users.serializers import AddEditLocationSerializer, LoginSerializer, ProfilePictureUpdateSerializer, RegisterSerializer, SuccessResponseSerializer, UserDataEditSerializer, UserResponseSerializer
+from users.serializers import AddEditLocationSerializer, LoginSerializer, ProfilePictureUpdateSerializer, RegisterSerializer, ReviewSerializer, SuccessResponseSerializer, UserDataEditSerializer, UserResponseSerializer
 
 @extend_schema(request=LoginSerializer, responses=UserResponseSerializer)
 @api_view(['POST'])
@@ -154,6 +155,13 @@ class UserItemList(generics.ListAPIView):
         queryset = Item.objects.filter(owner=self.request.user.id)
         return queryset
 
+class UserReviewsList(generics.ListAPIView):
+    serializer_class = ReviewSerializer
+
+    def get_queryset(self):
+        queryset = Review.objects.filter(receiver=self.request.user.id)
+        return queryset
+
 class UserLocationList(generics.ListAPIView):
     serializer_class = OwnLocationSerializer
 
@@ -168,7 +176,6 @@ class UserDataEdit(generics.UpdateAPIView):
         return self.request.user
 
 class AddLocation(generics.CreateAPIView):
-    queryset = Location.objects.all()
     serializer_class = AddEditLocationSerializer
 
     def perform_create(self, serializer):

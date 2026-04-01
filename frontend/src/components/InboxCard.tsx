@@ -4,8 +4,11 @@ import { decideBadgeColor, formatStatusLabel, type ReservationStatus } from "../
 import { IconCalendarFilled, IconCheck, IconMapPinFilled, IconX } from "@tabler/icons-react";
 import { InboxTab } from "../consts/inboxTabs";
 import { RESERVATION_STATUS } from "../utils/rentalStatus";
+import { AddReviewModal } from "./AddReviewModal";
+import { useDisclosure } from "@mantine/hooks";
 
 export function InboxCard({ rental, tab }: { rental: Inbox; tab: string | undefined }) {
+    const [opened, { open, close }] = useDisclosure(false);
     const [changeStatus] = useChangeStatusMutation();
     const resFrom = new Date(rental.from_date);
     const resTo = new Date(rental.to_date);
@@ -102,6 +105,18 @@ export function InboxCard({ rental, tab }: { rental: Inbox; tab: string | undefi
                             {rental.status === RESERVATION_STATUS.PENDING ? "Accept" : "Returned"}
                         </Button>
                     </Box>
+                </>
+            )}
+
+            {rental.status === RESERVATION_STATUS.COMPLETED && (
+                <>
+                    <Divider my="lg" />
+                    <Box w="100%" style={{ display: "flex", justifyContent: "flex-end" }}>
+                        <Button variant="light" radius="md" w={150} onClick={open}>
+                            Leave a review
+                        </Button>
+                    </Box>
+                    <AddReviewModal opened={opened} close={close} rentalId={rental.id} />
                 </>
             )}
         </Card>

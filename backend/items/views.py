@@ -70,7 +70,6 @@ class ItemById(generics.RetrieveAPIView):
     lookup_field = 'id'
 
 class CreateItem(generics.CreateAPIView):
-    queryset = Item.objects.all()
     serializer_class = CreateItemSerializer
     parser_classes = [MultiPartParser, FormParser]
 

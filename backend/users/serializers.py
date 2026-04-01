@@ -2,6 +2,7 @@ from typing import Dict
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 
+from reviews.models import Review
 from items.models import Location
 from users.models import User
 
@@ -9,11 +10,10 @@ class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
 
-class UserDataSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
-    profile_pic = serializers.ImageField()
+class UserDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'first_name', 'last_name', 'profile_pic', 'rating', 'rating_count']
 
 class UserResponseSerializer(serializers.Serializer):
     user = UserDataSerializer()
@@ -53,3 +53,14 @@ class ProfilePictureUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['profile_pic']
+
+class ReviewUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'profile_pic']
+
+class ReviewSerializer(serializers.ModelSerializer):
+    sender = ReviewUserSerializer()
+    class Meta:
+        model = Review
+        fields = ['id', 'sender', 'content', 'point', 'created_at']

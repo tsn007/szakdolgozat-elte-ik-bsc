@@ -8,7 +8,6 @@ from reservations.serializers import CreateReservationSerializer, ReservationReq
 from reservations.models import Reservation
 
 class CreateReservation(generics.CreateAPIView):
-    queryset = Reservation.objects.all()
     serializer_class = CreateReservationSerializer
 
     def perform_create(self, serializer):

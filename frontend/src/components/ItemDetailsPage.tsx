@@ -314,7 +314,12 @@ export function ItemDetailsPage() {
                                 <Avatar src={item?.owner.profile_pic} />
                                 <Box>
                                     <Text>{item?.owner.first_name + " " + item?.owner.last_name}</Text>
-                                    <Rating fractions={2} readOnly defaultValue={2.5} />
+                                    <Box style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                                        <Rating fractions={10} readOnly value={Number(item?.owner?.rating || 0)} />
+                                        <Text c="dimmed" fs="italic" size="sm">
+                                            {`(${item?.owner.rating_count} reviews)`}
+                                        </Text>
+                                    </Box>
                                 </Box>
                             </Box>
                             <Divider my={20} />

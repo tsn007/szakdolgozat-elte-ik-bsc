@@ -164,6 +164,22 @@ export interface paths {
         patch: operations["reservations_update_partial_update"];
         trace?: never;
     };
+    "/api/reviews/{reservation_id}/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["reviews_create_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/users/add_location/": {
         parameters: {
             query?: never;
@@ -324,6 +340,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/users/reviews/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["users_reviews_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/users/update_profile/": {
         parameters: {
             query?: never;
@@ -399,6 +431,11 @@ export interface components {
             to_date: string;
             /** Format: uuid */
             readonly renter: string;
+        };
+        CreateReview: {
+            content?: string | null;
+            /** Format: double */
+            point: number;
         };
         EditItem: {
             /** Format: uuid */
@@ -594,6 +631,22 @@ export interface components {
             /** Format: uri */
             profile_pic?: string | null;
         };
+        Review: {
+            /** Format: uuid */
+            readonly id: string;
+            sender: components["schemas"]["ReviewUser"];
+            content?: string | null;
+            /** Format: double */
+            point?: number;
+            /** Format: date-time */
+            readonly created_at: string;
+        };
+        ReviewUser: {
+            first_name: string;
+            last_name: string;
+            /** Format: uri */
+            profile_pic?: string | null;
+        };
         StatusChange: {
             /** Format: uuid */
             readonly id: string;
@@ -618,7 +671,10 @@ export interface components {
             first_name: string;
             last_name: string;
             /** Format: uri */
-            profile_pic: string;
+            profile_pic?: string | null;
+            /** Format: double */
+            rating?: number;
+            rating_count?: number;
         };
         UserDataEdit: {
             first_name: string;
@@ -849,7 +905,9 @@ export interface operations {
     };
     reservations_get_list: {
         parameters: {
-            query?: never;
+            query: {
+                tab: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -937,6 +995,33 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StatusChange"];
+                };
+            };
+        };
+    };
+    reviews_create_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reservation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateReview"];
+                "application/x-www-form-urlencoded": components["schemas"]["CreateReview"];
+                "multipart/form-data": components["schemas"]["CreateReview"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateReview"];
                 };
             };
         };
@@ -1181,6 +1266,25 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SuccessResponse"];
+                };
+            };
+        };
+    };
+    users_reviews_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Review"][];
                 };
             };
         };

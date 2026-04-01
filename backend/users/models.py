@@ -30,6 +30,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     profile_pic = models.ImageField(null=True, upload_to='items/profiles')
+    rating = models.DecimalField(default=0.0, max_digits=2, decimal_places=1)
+    rating_count = models.IntegerField(default=0)
 
     objects = UserManager()
 

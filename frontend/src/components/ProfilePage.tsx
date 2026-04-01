@@ -122,8 +122,8 @@ export function ProfilePage() {
                         <Box
                             style={{ display: "flex", gap: "10px", justifyContent: "center", alignItems: "flex-start" }}
                         >
-                            <Rating fractions={2} readOnly defaultValue={2.5} />
-                            <Text>(2.5)</Text>
+                            <Rating fractions={10} readOnly value={Number(user?.rating || 0)} />
+                            <Text>{`(${user?.rating})`}</Text>
                         </Box>
                     </Box>
                 </Box>
@@ -153,7 +153,9 @@ export function ProfilePage() {
                                     {item.menuItems && (
                                         <Menu.Dropdown>
                                             {item.menuItems.map((mItem) => (
-                                                <Menu.Item onClick={() => navigate(mItem.to)}>{mItem.title}</Menu.Item>
+                                                <Menu.Item key={mItem.title} onClick={() => navigate(mItem.to)}>
+                                                    {mItem.title}
+                                                </Menu.Item>
                                             ))}
                                         </Menu.Dropdown>
                                     )}
@@ -169,7 +171,7 @@ export function ProfilePage() {
     );
 }
 
-function ProfilePic({ profilePic }: { profilePic: string | undefined }) {
+function ProfilePic({ profilePic }: { profilePic: string | undefined | null }) {
     const [changeProfilePic] = useChangeProfilePicMutation();
     const { hovered, ref } = useHover();
     // eslint-disable-next-line no-magic-numbers

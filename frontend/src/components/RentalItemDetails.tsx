@@ -15,8 +15,11 @@ import { useChangeStatusMutation, type Rental } from "../redux/reservationsApi";
 import { STEPPERS } from "../consts/stepperStates";
 import { IconCheck, IconMapPinFilled, IconMessageCircle } from "@tabler/icons-react";
 import { RESERVATION_STATUS, type ReservationStatus } from "../utils/rentalStatus";
+import { useDisclosure } from "@mantine/hooks";
+import { AddReviewModal } from "./AddReviewModal";
 
 export function RentalItemDetails({ rental }: { rental: Rental }) {
+    const [opened, { open, close }] = useDisclosure(false);
     const [changeStatus] = useChangeStatusMutation();
     const flow = STEPPERS[rental.status || "PENDING"];
     const res_from = new Date(rental.from_date);
@@ -114,6 +117,14 @@ export function RentalItemDetails({ rental }: { rental: Rental }) {
                                         : "Returned the item"}
                                 </Button>
                             </Box>
+                        )}
+                        {rental.status === RESERVATION_STATUS.COMPLETED && (
+                            <>
+                                <Button variant="light" radius="md" onClick={open}>
+                                    Leave a review
+                                </Button>
+                                <AddReviewModal opened={opened} close={close} rentalId={rental.id} />
+                            </>
                         )}
                     </Box>
                 </SimpleGrid>
