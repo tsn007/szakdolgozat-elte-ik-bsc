@@ -20,6 +20,55 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/chat/conversations/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["chat_conversations_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/chat/conversations/{conversation_id}/messages/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["chat_conversations_messages_list"];
+        put?: never;
+        post: operations["chat_conversations_messages_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/chat/conversations/{conversation_id}/read/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description A beszélgetésben lévő, a másik fél által küldött olvasatlan üzenetek olvasottá tétele. */
+        post: operations["chat_conversations_read_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/items/{id}": {
         parameters: {
             query?: never;
@@ -164,7 +213,7 @@ export interface paths {
         patch: operations["reservations_update_partial_update"];
         trace?: never;
     };
-    "/api/reviews/{reservation_id}/create": {
+    "/api/reviews/{reservation_id}/create/": {
         parameters: {
             query?: never;
             header?: never;
@@ -406,6 +455,15 @@ export interface components {
             name: string;
             slug: string;
         };
+        Conversation: {
+            /** Format: uuid */
+            readonly id: string;
+            /** Format: date-time */
+            readonly updated_at: string;
+            /** Format: date-time */
+            readonly created_at: string;
+            readonly other: components["schemas"]["Participant"];
+        };
         CreateItem: {
             /** Format: uuid */
             readonly id: string;
@@ -419,6 +477,9 @@ export interface components {
             readonly images: components["schemas"]["ItemImages"][];
             /** Format: uuid */
             location: string;
+        };
+        CreateMessage: {
+            content: string;
         };
         CreateReservation: {
             /** Format: uuid */
@@ -505,6 +566,25 @@ export interface components {
             email: string;
             password: string;
         };
+        MarkMessagesReadResponse: {
+            /** @description Number of messages set to read */
+            updated_count: number;
+        };
+        Message: {
+            /** Format: uuid */
+            readonly id: string;
+            /** Format: uuid */
+            conversation: string;
+            sender: components["schemas"]["MessageSender"];
+            content: string;
+            is_read?: boolean;
+            /** Format: date-time */
+            readonly created_at: string;
+        };
+        MessageSender: {
+            /** Format: email */
+            email: string;
+        };
         OwnItem: {
             /** Format: uuid */
             readonly id: string;
@@ -545,6 +625,31 @@ export interface components {
              */
             previous?: string | null;
             results: components["schemas"]["ItemResponse"][];
+        };
+        PaginatedMessageList: {
+            /** @example 123 */
+            count: number;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?page=4
+             */
+            next?: string | null;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?page=2
+             */
+            previous?: string | null;
+            results: components["schemas"]["Message"][];
+        };
+        Participant: {
+            /** Format: uuid */
+            readonly id: string;
+            first_name: string;
+            last_name: string;
+            /** Format: email */
+            email: string;
+            /** Format: uri */
+            profile_pic?: string | null;
         };
         PatchedAddEditLocation: {
             label?: string | null;
@@ -636,8 +741,8 @@ export interface components {
             readonly id: string;
             sender: components["schemas"]["ReviewUser"];
             content?: string | null;
-            /** Format: double */
-            point?: number;
+            /** Format: decimal */
+            point?: string;
             /** Format: date-time */
             readonly created_at: string;
         };
@@ -672,8 +777,8 @@ export interface components {
             last_name: string;
             /** Format: uri */
             profile_pic?: string | null;
-            /** Format: double */
-            rating?: number;
+            /** Format: decimal */
+            rating?: string;
             rating_count?: number;
         };
         UserDataEdit: {
@@ -723,6 +828,97 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AllCategoriesResponse"][];
+                };
+            };
+        };
+    };
+    chat_conversations_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Conversation"][];
+                };
+            };
+        };
+    };
+    chat_conversations_messages_list: {
+        parameters: {
+            query?: {
+                /** @description A page number within the paginated result set. */
+                page?: number;
+            };
+            header?: never;
+            path: {
+                conversation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedMessageList"];
+                };
+            };
+        };
+    };
+    chat_conversations_messages_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                conversation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateMessage"];
+                "application/x-www-form-urlencoded": components["schemas"]["CreateMessage"];
+                "multipart/form-data": components["schemas"]["CreateMessage"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateMessage"];
+                };
+            };
+        };
+    };
+    chat_conversations_read_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                conversation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarkMessagesReadResponse"];
                 };
             };
         };

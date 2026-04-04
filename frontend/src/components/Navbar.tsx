@@ -11,9 +11,10 @@ import {
     Avatar,
     TextInput,
     Menu,
+    Tooltip,
 } from "@mantine/core";
 import { useDisclosure, useWindowScroll } from "@mantine/hooks";
-import { IconHeart, IconLogout, IconSearch, IconShare, IconX } from "@tabler/icons-react";
+import { IconMessageCircle, IconLogout, IconSearch, IconShare, IconX } from "@tabler/icons-react";
 import boxStyles from "../css/Box.module.css";
 import textStyles from "../css/Text.module.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -140,9 +141,11 @@ export const Navbar = ({ isGuest, searchOpened, searchClose, searchOpen, searchT
                             />
                             {isAuthenticated ? (
                                 <Box style={{ display: "flex", gap: "15px" }}>
-                                    <Avatar radius="xl">
-                                        <IconHeart />
-                                    </Avatar>
+                                    <Tooltip label="Messages">
+                                        <Avatar radius="xl" onClick={() => navigate('/message-hub')}>
+                                            <IconMessageCircle />
+                                        </Avatar>
+                                    </Tooltip>
                                     <Menu radius="md" trigger="hover" position="bottom-end" zIndex={1000}>
                                         <Menu.Target>
                                             <Avatar radius="xl" src={user?.profile_pic} />

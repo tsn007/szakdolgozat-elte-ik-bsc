@@ -82,7 +82,7 @@ class ChangeReservationStatus(generics.UpdateAPIView):
         new_status = serializer.validated_data.get('status')
 
         if not new_status:
-            raise DRFValidationError({"status": "Ezt a mezőt kötelező megadni."})
+            raise DRFValidationError({"status": "This field is mandatory!"})
         
         try:
             reservation.change_status(new_status, self.request.user)

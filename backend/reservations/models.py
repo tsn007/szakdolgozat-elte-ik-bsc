@@ -51,5 +51,10 @@ class Reservation(models.Model):
         if new_status in [self.Status.ACCEPTED, self.Status.REJECTED, self.Status.COMPLETED] and user != self.item.owner:
             raise ValidationError("Only the item owner can certify this state!")
         
+        if new_status == self.Status.ACCEPTED:
+            from chat.models import Conversation
+
+            Conversation.objects.get_or_create(reservation=self)
+        
         self.status = new_status
         self.save(update_fields=['status'])

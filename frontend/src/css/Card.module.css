@@ -35,3 +35,17 @@
 .userItem:hover {
     opacity: 80%;
 }
+
+.convo {
+    transition: 100ms;
+    cursor: pointer;
+}
+
+.convo:hover {
+    background-color: var(--mantine-color-dark-8);
+}
+
+.activeConvo {
+    background-color: var(--mantine-color-blue-9) !important;
+    cursor: default;
+}

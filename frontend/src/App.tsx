@@ -24,6 +24,7 @@ import { UserItems } from "./components/UserItems";
 import { UserRentals } from "./components/UserRentals";
 import { Requests } from "./components/Requests";
 import { Reviews } from "./components/Reviews";
+import { Messages } from "./components/Messages";
 
 function App() {
     const router = createBrowserRouter([
@@ -88,6 +89,10 @@ function App() {
                                 },
                             ],
                         },
+                        {
+                            path: "/message-hub",
+                            element: <Messages />,
+                        },
                     ],
                 },
                 {
@@ -104,11 +109,6 @@ function App() {
                     ],
                 },
             ],
-        },
-
-        {
-            element: <ProtectedRoute />,
-            children: [],
         },
     ]);
 

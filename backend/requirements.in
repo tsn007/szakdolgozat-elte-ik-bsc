@@ -10,3 +10,5 @@ Faker
 pillow
 django-filter
 django-cleanup
+channels
+daphne

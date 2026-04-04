@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../redux/authApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/authSlice";
+import { chatApi } from "../redux/chatApi";
 
 interface LoginFormValues {
     email: string;
@@ -25,8 +26,7 @@ interface LoginFormValues {
 
 export function Login(props: PaperProps) {
     const [login, { isLoading }] = useLoginMutation();
-    const inputColor =
-        "light-dark(var(--mantine-color-beige-0), var(--mantine-color-gray-9))";
+    const inputColor = "light-dark(var(--mantine-color-beige-0), var(--mantine-color-gray-9))";
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const form = useForm<LoginFormValues>({
@@ -45,11 +45,10 @@ export function Login(props: PaperProps) {
         try {
             const result = await login(values).unwrap();
             dispatch(setUser(result.user));
+            dispatch(chatApi.util.resetApiState());
             navigate("/browse/list");
         } catch (error) {
-            const message =
-                (error as { data?: { error?: string } })?.data?.error ||
-                "Something went wrong!";
+            const message = (error as { data?: { error?: string } })?.data?.error || "Something went wrong!";
             form.setErrors({ email: true, password: message });
         }
     };
