@@ -41,7 +41,6 @@ class ConversationMessagesView(generics.ListCreateAPIView):
         return qs.order_by('created_at')
 
     def perform_create(self, serializer):
-        print(f"JELENLEGI USER A KÉRÉSBEN: {self.request.user}")
         conv_id = self.kwargs.get('conversation_id')
         user = self.request.user
         
