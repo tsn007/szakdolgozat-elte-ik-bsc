@@ -25,6 +25,8 @@ import { UserRentals } from "./components/UserRentals";
 import { Requests } from "./components/Requests";
 import { Reviews } from "./components/Reviews";
 import { Messages } from "./components/Messages";
+import { StaffUserView } from "./components/StaffUserView";
+import { StaffRoute } from "./components/StaffRoute";
 
 function App() {
     const router = createBrowserRouter([
@@ -92,6 +94,15 @@ function App() {
                         {
                             path: "/message-hub",
                             element: <Messages />,
+                        },
+                        {
+                            element: <StaffRoute />,
+                            children: [
+                                {
+                                    path: "/users",
+                                    element: <StaffUserView />,
+                                },
+                            ],
                         },
                     ],
                 },

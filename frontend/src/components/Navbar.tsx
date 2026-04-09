@@ -12,9 +12,19 @@ import {
     TextInput,
     Menu,
     Tooltip,
+    useMantineColorScheme,
 } from "@mantine/core";
 import { useDisclosure, useWindowScroll } from "@mantine/hooks";
-import { IconMessageCircle, IconLogout, IconSearch, IconShare, IconX } from "@tabler/icons-react";
+import {
+    IconMessageCircle,
+    IconLogout,
+    IconSearch,
+    IconShare,
+    IconX,
+    IconBan,
+    IconSun,
+    IconMoon,
+} from "@tabler/icons-react";
 import boxStyles from "../css/Box.module.css";
 import textStyles from "../css/Text.module.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -47,6 +57,8 @@ export const Navbar = ({ isGuest, searchOpened, searchClose, searchOpen, searchT
     const [scroll] = useWindowScroll();
     const isScrolled = scroll.y > SCROLL_THRESHOLD;
     const navigate = useNavigate();
+    const { colorScheme, setColorScheme } = useMantineColorScheme();
+    const toggleVal = colorScheme === "light" ? "dark" : "light";
 
     const links = isGuest
         ? [
@@ -69,9 +81,13 @@ export const Navbar = ({ isGuest, searchOpened, searchClose, searchOpen, searchT
             component="nav"
             className={boxStyles.navbarMain}
             style={{
-                backgroundColor: isScrolled ? "rgba(15, 23, 42, 0.9)" : "transparent",
-                backdropFilter: isScrolled ? "blur(10px)" : "none",
-                borderBottom: isScrolled ? `1px solid rgba(30, 41, 59, 0.5)` : "none",
+                backgroundColor: isScrolled
+                    ? "light-dark(color-mix(in srgb, var(--mantine-color-beige-1) 60%, transparent), color-mix(in srgb, var(--mantine-color-midnight-8) 60%, transparent))"
+                    : "transparent",
+                backdropFilter: isScrolled ? "blur(20px)" : "none",
+                borderBottom: isScrolled
+                    ? `1px solid light-dark(var(--mantine-color-beige-0), var(--mantine-color-dark-7))`
+                    : "none",
             }}
         >
             <Container fluid>
@@ -81,7 +97,12 @@ export const Navbar = ({ isGuest, searchOpened, searchClose, searchOpen, searchT
                             <ThemeIcon size="lg" variant="filled" color="blue" radius="md">
                                 <IconShare size={25} />
                             </ThemeIcon>
-                            <Text fw={700} size="xl" c="white" style={{ letterSpacing: "-0.5px" }}>
+                            <Text
+                                fw={700}
+                                size="xl"
+                                c={colorScheme === "dark" ? "white" : "var(--mantine-color-dark-6)"}
+                                style={{ letterSpacing: "-0.5px" }}
+                            >
                                 ShareHood
                             </Text>
                         </Group>
@@ -89,7 +110,7 @@ export const Navbar = ({ isGuest, searchOpened, searchClose, searchOpen, searchT
                         <Group gap="md" visibleFrom="md">
                             {links.map((link) =>
                                 isGuest ? (
-                                    <Text component="a" key={link.title} href={link.to} c="rgb(171, 171, 171)" fw={500}>
+                                    <Text component="a" key={link.title} href={link.to} fw={500}>
                                         {link.title}
                                     </Text>
                                 ) : (
@@ -142,7 +163,7 @@ export const Navbar = ({ isGuest, searchOpened, searchClose, searchOpen, searchT
                             {isAuthenticated ? (
                                 <Box style={{ display: "flex", gap: "15px" }}>
                                     <Tooltip label="Messages">
-                                        <Avatar radius="xl" onClick={() => navigate('/message-hub')}>
+                                        <Avatar radius="xl" onClick={() => navigate("/message-hub")}>
                                             <IconMessageCircle />
                                         </Avatar>
                                     </Tooltip>
@@ -151,6 +172,18 @@ export const Navbar = ({ isGuest, searchOpened, searchClose, searchOpen, searchT
                                             <Avatar radius="xl" src={user?.profile_pic} />
                                         </Menu.Target>
                                         <Menu.Dropdown>
+                                            {user?.is_staff && (
+                                                <>
+                                                    <Menu.Label>Staff</Menu.Label>
+                                                    <Menu.Item
+                                                        leftSection={<IconBan />}
+                                                        onClick={() => navigate("/users")}
+                                                    >
+                                                        Ban users
+                                                    </Menu.Item>
+                                                    <Menu.Divider />
+                                                </>
+                                            )}
                                             {profileMenuData.map((item) => {
                                                 const Icon = item.icon;
                                                 return (
@@ -164,6 +197,10 @@ export const Navbar = ({ isGuest, searchOpened, searchClose, searchOpen, searchT
                                                 );
                                             })}
                                             <Menu.Divider />
+                                            <Menu.Item
+                                                leftSection={colorScheme === "dark" ? <IconSun /> : <IconMoon />}
+                                                onClick={() => setColorScheme(toggleVal)}
+                                            >{`${toggleVal.charAt(0).toUpperCase() + toggleVal.slice(1)} mode`}</Menu.Item>
                                             <Menu.Item leftSection={<IconLogout />} color="red" onClick={handleLogout}>
                                                 Logout
                                             </Menu.Item>

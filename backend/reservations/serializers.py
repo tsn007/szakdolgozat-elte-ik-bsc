@@ -45,7 +45,7 @@ class ReservationLocationSerializer(serializers.ModelSerializer):
 class ReservationUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'profile_pic']
+        fields = ['id', 'first_name', 'last_name', 'profile_pic']
 
 class ReservationItemSerializer(serializers.ModelSerializer):
     location = ReservationLocationSerializer()
@@ -59,17 +59,23 @@ class RequestItemSerializer(serializers.ModelSerializer):
         model = Item
         fields = ['id', 'name', 'cover']
 
+class InboxOwnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id']
+
 class InboxItemSerializer(serializers.ModelSerializer):
+    owner = InboxOwnerSerializer()
     location = ReservationLocationSerializer()
     class Meta:
         model = Item
-        fields = ['id', 'name', 'cover', 'location']
+        fields = ['id', 'owner', 'name', 'cover', 'location']
 
 class UserReservationSerializer(serializers.ModelSerializer):
     item = ReservationItemSerializer()
     class Meta:
         model = Reservation
-        fields = ["id", "item", "from_date", "to_date", "created_at", "status", 'total_price']
+        fields = ["id", "item", "renter", "from_date", "to_date", "created_at", "status", 'total_price']
 
 class ReservationRequestSerializer(serializers.ModelSerializer):
     item = InboxItemSerializer()

@@ -10,6 +10,7 @@ import {
     Avatar,
     AspectRatio,
     Button,
+    Tooltip,
 } from "@mantine/core";
 import { useChangeStatusMutation, type Rental } from "../redux/reservationsApi";
 import { STEPPERS } from "../consts/stepperStates";
@@ -17,8 +18,12 @@ import { IconCheck, IconMapPinFilled, IconMessageCircle } from "@tabler/icons-re
 import { RESERVATION_STATUS, type ReservationStatus } from "../utils/rentalStatus";
 import { useDisclosure } from "@mantine/hooks";
 import { AddReviewModal } from "./AddReviewModal";
+import { getApiErrorMessage } from "../utils/errors";
+import { showCustomNotification } from "../utils/notifications";
+import { useNavigate } from "react-router-dom";
 
 export function RentalItemDetails({ rental }: { rental: Rental }) {
+    const navigate = useNavigate();
     const [opened, { open, close }] = useDisclosure(false);
     const [changeStatus] = useChangeStatusMutation();
     const flow = STEPPERS[rental.status || "PENDING"];
@@ -42,7 +47,12 @@ export function RentalItemDetails({ rental }: { rental: Rental }) {
         try {
             await changeStatus(statusObj).unwrap();
         } catch (e) {
-            console.log(e);
+            showCustomNotification({
+                id: "server-error",
+                title: "Error",
+                message: getApiErrorMessage(e),
+                type: "error",
+            });
         }
     };
 
@@ -103,9 +113,20 @@ export function RentalItemDetails({ rental }: { rental: Rental }) {
                         {(rental.status === RESERVATION_STATUS.ACCEPTED ||
                             rental.status === RESERVATION_STATUS.IN_PROGRESS) && (
                             <Box style={{ display: "flex", gap: "10px" }}>
-                                <Button radius="md" color="blue" leftSection={<IconMessageCircle size={16} />}>
-                                    Message Owner
-                                </Button>
+                                <Tooltip
+                                    label="Can not message yourself!"
+                                    disabled={rental.renter !== rental.item.owner.id}
+                                >
+                                    <Button
+                                        onClick={() => navigate(`/message-hub?rental=${rental.id}`)}
+                                        radius="md"
+                                        color="blue"
+                                        leftSection={<IconMessageCircle size={16} />}
+                                        disabled={rental.renter === rental.item.owner.id}
+                                    >
+                                        Message Owner
+                                    </Button>
+                                </Tooltip>
                                 <Button
                                     radius="md"
                                     color="teal"
@@ -120,9 +141,19 @@ export function RentalItemDetails({ rental }: { rental: Rental }) {
                         )}
                         {rental.status === RESERVATION_STATUS.COMPLETED && (
                             <>
-                                <Button variant="light" radius="md" onClick={open}>
-                                    Leave a review
-                                </Button>
+                                <Tooltip
+                                    label="Can not review yourself!"
+                                    disabled={rental.renter !== rental.item.owner.id}
+                                >
+                                    <Button
+                                        variant="light"
+                                        radius="md"
+                                        onClick={open}
+                                        disabled={rental.renter === rental.item.owner.id}
+                                    >
+                                        Leave a review
+                                    </Button>
+                                </Tooltip>
                                 <AddReviewModal opened={opened} close={close} rentalId={rental.id} />
                             </>
                         )}

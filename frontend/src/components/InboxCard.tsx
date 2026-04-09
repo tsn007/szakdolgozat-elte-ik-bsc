@@ -1,13 +1,30 @@
-import { Avatar, Badge, Box, Button, Card, Paper, Text, Image, AspectRatio, Flex, Divider } from "@mantine/core";
+import {
+    Avatar,
+    Badge,
+    Box,
+    Button,
+    Card,
+    Paper,
+    Text,
+    Image,
+    AspectRatio,
+    Flex,
+    Divider,
+    Tooltip,
+} from "@mantine/core";
 import { useChangeStatusMutation, type Inbox } from "../redux/reservationsApi";
 import { decideBadgeColor, formatStatusLabel, type ReservationStatus } from "../utils/rentalStatus";
-import { IconCalendarFilled, IconCheck, IconMapPinFilled, IconX } from "@tabler/icons-react";
+import { IconCalendarFilled, IconCheck, IconMapPinFilled, IconMessageCircle, IconX } from "@tabler/icons-react";
 import { InboxTab } from "../consts/inboxTabs";
 import { RESERVATION_STATUS } from "../utils/rentalStatus";
 import { AddReviewModal } from "./AddReviewModal";
 import { useDisclosure } from "@mantine/hooks";
+import { getApiErrorMessage } from "../utils/errors";
+import { showCustomNotification } from "../utils/notifications";
+import { useNavigate } from "react-router-dom";
 
 export function InboxCard({ rental, tab }: { rental: Inbox; tab: string | undefined }) {
+    const navigate = useNavigate();
     const [opened, { open, close }] = useDisclosure(false);
     const [changeStatus] = useChangeStatusMutation();
     const resFrom = new Date(rental.from_date);
@@ -24,12 +41,23 @@ export function InboxCard({ rental, tab }: { rental: Inbox; tab: string | undefi
         try {
             await changeStatus(statusObj).unwrap();
         } catch (e) {
-            console.log(e);
+            showCustomNotification({
+                id: "server-error",
+                title: "Error",
+                message: getApiErrorMessage(e),
+                type: "error",
+            });
         }
     };
 
     return (
-        <Card radius="lg" p="lg" bg="dark.7" withBorder my={20}>
+        <Card
+            radius="lg"
+            p="lg"
+            bg="light-dark(var(--mantine-color-beige-1), var(--mantine-color-dark-7))"
+            withBorder
+            my={20}
+        >
             <Flex direction={{ base: "column", sm: "row" }} gap="xl" align={{ base: "stretch", sm: "center" }}>
                 <Box w={{ base: "100%", sm: 150 }}>
                     <AspectRatio ratio={1 / 1} w="100%">
@@ -49,12 +77,17 @@ export function InboxCard({ rental, tab }: { rental: Inbox; tab: string | undefi
                     </Box>
 
                     <Text size="sm" c="dimmed" mb="md">
-                        <Text span fw={600} c="white">
+                        <Text span fw={600} c="light-dark(var(--mantine-color-gray-8), var(--mantine-color-gray-2))">
                             {rental.item.name}
                         </Text>
                     </Text>
 
-                    <Paper radius="lg" p={20} bg="black" withBorder>
+                    <Paper
+                        radius="lg"
+                        p={20}
+                        bg="light-dark(var(--mantine-color-beige-2), var(--mantine-color-dark-9))"
+                        withBorder
+                    >
                         <Flex justify="space-between" align="center">
                             <Box>
                                 <Box style={{ display: "flex", gap: "10px" }}>
@@ -108,13 +141,40 @@ export function InboxCard({ rental, tab }: { rental: Inbox; tab: string | undefi
                 </>
             )}
 
+            {tab === InboxTab.ACTIVE && (
+                <>
+                    <Divider my="lg" />
+                    <Box w="100%" style={{ display: "flex", justifyContent: "flex-end" }}>
+                        <Tooltip label="Can not message yourself!" disabled={rental.renter.id !== rental.item.owner.id}>
+                            <Button
+                                variant="light"
+                                radius="md"
+                                onClick={() => navigate(`/message-hub?rental=${rental.id}`)}
+                                disabled={rental.renter.id === rental.item.owner.id}
+                                leftSection={<IconMessageCircle size={16} />}
+                            >
+                                Message Renter
+                            </Button>
+                        </Tooltip>
+                    </Box>
+                </>
+            )}
+
             {rental.status === RESERVATION_STATUS.COMPLETED && (
                 <>
                     <Divider my="lg" />
                     <Box w="100%" style={{ display: "flex", justifyContent: "flex-end" }}>
-                        <Button variant="light" radius="md" w={150} onClick={open}>
-                            Leave a review
-                        </Button>
+                        <Tooltip label="Can not review yourself!" disabled={rental.renter.id !== rental.item.owner.id}>
+                            <Button
+                                variant="light"
+                                radius="md"
+                                w={150}
+                                onClick={open}
+                                disabled={rental.renter.id === rental.item.owner.id}
+                            >
+                                Leave a review
+                            </Button>
+                        </Tooltip>
                     </Box>
                     <AddReviewModal opened={opened} close={close} rentalId={rental.id} />
                 </>

@@ -12,12 +12,14 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import generics
 from django.db.models.deletion import ProtectedError
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.pagination import PageNumberPagination
 
+from users.permissions import IsStaff
 from reviews.models import Review
 from items.models import Item, Location
 from items.serializers import OwnItemSerializer, OwnLocationSerializer
 from users.models import User
-from users.serializers import AddEditLocationSerializer, LoginSerializer, ProfilePictureUpdateSerializer, RegisterSerializer, ReviewSerializer, SuccessResponseSerializer, UserDataEditSerializer, UserResponseSerializer
+from users.serializers import AddEditLocationSerializer, StaffUsersSerializer, LoginSerializer, ProfilePictureUpdateSerializer, RegisterSerializer, ReviewSerializer, SetIsActiveSerializer, SuccessResponseSerializer, UserDataEditSerializer, UserResponseSerializer
 
 @extend_schema(request=LoginSerializer, responses=UserResponseSerializer)
 @api_view(['POST'])
@@ -33,7 +35,22 @@ def login(request: Request) -> Response:
     user = authenticate(request, email=email, password=password)
 
     if user is None:
-        return Response({'error': 'Invalid email or password'}, status=status.HTTP_401_UNAUTHORIZED)
+        try:
+            db_user = User.objects.get(email=email)
+            
+            if db_user.check_password(password) and not db_user.is_active:
+                return Response(
+                    {'error': 'This account has been suspended!'}, 
+                    status=status.HTTP_403_FORBIDDEN
+                )
+                
+        except User.DoesNotExist:
+            pass
+
+        return Response(
+            {'error': 'Invalid email or password!'}, 
+            status=status.HTTP_401_UNAUTHORIZED
+        )
     
     user.last_login = now()
     user.save(update_fields=['last_login'])
@@ -213,3 +230,17 @@ class EditLocation(generics.UpdateAPIView):
 
     def perform_update(self, serializer):
         return serializer.save(user=self.request.user)
+
+class SetIsActiveStatus(generics.UpdateAPIView):
+    permission_classes = [IsStaff]
+    serializer_class = SetIsActiveSerializer
+    queryset = User.objects.all()
+    lookup_field = 'id'
+
+class UserPagination(PageNumberPagination):
+    page_size = 50
+
+class UsersList(generics.ListAPIView):
+    serializer_class = StaffUsersSerializer
+    queryset = User.objects.filter(is_staff=False).order_by('is_active')
+    pagination_class = UserPagination

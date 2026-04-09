@@ -63,14 +63,20 @@ export function UserRentals() {
                                             }}
                                         >
                                             <Pill
-                                                style={{ backgroundColor: "var(--mantine-color-midnight-6)" }}
+                                                style={{
+                                                    backgroundColor:
+                                                        "light-dark(var(--mantine-color-beige-2), var(--mantine-color-midnight-6))",
+                                                }}
                                                 size="xl"
                                             >
                                                 {res_from.toLocaleDateString()}
                                             </Pill>
                                             <Divider orientation="horizontal" w="7rem" size="md" variant="dashed" />
                                             <Pill
-                                                style={{ backgroundColor: "var(--mantine-color-midnight-6)" }}
+                                                style={{
+                                                    backgroundColor:
+                                                        "light-dark(var(--mantine-color-beige-2), var(--mantine-color-midnight-6))",
+                                                }}
                                                 size="xl"
                                             >
                                                 {res_to.toLocaleDateString()}

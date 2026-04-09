@@ -40,7 +40,7 @@ export const chatApi = baseApi.injectEndpoints({
 
                         updateCachedData((draft) => {
                             if (data.type === "new_message") {
-                                draft.results.push(newMsg);
+                                draft.results.unshift(newMsg);
                             } else if (data.type === "messages_read") {
                                 draft.results.forEach((msg) => {
                                     if (msg.sender.email === data.reader_email) return;

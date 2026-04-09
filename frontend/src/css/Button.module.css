@@ -5,5 +5,5 @@
 }
 
 .viewPicker:hover {
-    background-color: var(--mantine-color-dark-7);
+    background-color: light-dark(var(--mantine-color-beige-1), var(--mantine-color-dark-7));
 }

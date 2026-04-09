@@ -13,7 +13,7 @@ class LoginSerializer(serializers.Serializer):
 class UserDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name', 'profile_pic', 'rating', 'rating_count']
+        fields = ['email', 'first_name', 'last_name', 'profile_pic', 'rating', 'rating_count', 'is_staff']
 
 class UserResponseSerializer(serializers.Serializer):
     user = UserDataSerializer()
@@ -64,3 +64,13 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ['id', 'sender', 'content', 'point', 'created_at']
+
+class SetIsActiveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['is_active']
+
+class StaffUsersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'first_name', 'last_name', 'is_active', 'profile_pic', 'rating']

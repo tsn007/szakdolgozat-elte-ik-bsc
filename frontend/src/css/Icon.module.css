@@ -15,4 +15,9 @@
 
 .edit {
     cursor: pointer;
+    transition: 100ms;
+}
+
+.edit:hover {
+    transform: scale(1.1);
 }

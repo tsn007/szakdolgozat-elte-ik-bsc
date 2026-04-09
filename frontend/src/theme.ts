@@ -1,5 +1,5 @@
 /* eslint-disable no-magic-numbers */
-import { createTheme, type CSSVariablesResolver, type MantineColorsTuple } from "@mantine/core";
+import { Accordion, createTheme, type CSSVariablesResolver, type MantineColorsTuple } from "@mantine/core";
 
 const beige: MantineColorsTuple = [
     "#fcfaf2",
@@ -35,6 +35,23 @@ export const themeOverride = createTheme({
     fontFamily: "Rubik, sans-serif",
     headings: {
         fontFamily: "Rubik, sans-serif",
+    },
+    components: {
+        Accordion: Accordion.extend({
+            styles: {
+                item: {
+                    overflow: "hidden",
+                },
+                control: {
+                    backgroundColor: "light-dark(var(--mantine-color-beige-1), var(--mantine-color-dark-6))",
+                    color: "light-dark(var(--mantine-color-black), var(--mantine-color-white))",
+                },
+                panel: {
+                    backgroundColor: "light-dark(var(--mantine-color-beige-1), var(--mantine-color-dark-6))",
+                    color: "light-dark(var(--mantine-color-gray-7), var(--mantine-color-gray-4))",
+                },
+            },
+        }),
     },
 });
 

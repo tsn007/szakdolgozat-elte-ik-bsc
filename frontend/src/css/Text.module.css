@@ -2,12 +2,12 @@
     padding-right: 5px;
     text-decoration: none;
     transition: color 0.2s;
-    color: rgb(171, 171, 171);
+    color: light-dark(var(--mantine-color-dark-6), rgb(171, 171, 171));
     font-weight: 500;
 }
 
 .navbarLinks:hover {
-    color: #8fc2ff;
+    color: light-dark(var(--mantine-color-gray-6), #8fc2ff);
 }
 
 .searchCancel:hover {

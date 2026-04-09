@@ -28,6 +28,12 @@ type EditLocRequestFull = {
     locData: EditLocationReq;
 };
 type ReviewsResp = paths["/api/users/reviews/"]["get"]["responses"]["200"]["content"]["application/json"];
+type AllUsersResp = paths["/api/users/all/"]["get"]["responses"]["200"]["content"]["application/json"];
+type ChangeIsActiveResp = paths["/api/users/{id}/suspend/"]["patch"]["responses"]["200"]["content"]["application/json"];
+type ChangeIsActiveReq = {
+    userId: string;
+    isActive: boolean;
+};
 
 export const userApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -92,6 +98,24 @@ export const userApi = baseApi.injectEndpoints({
             }),
             providesTags: ["Reviews"],
         }),
+
+        //Staff
+        getAllUsers: builder.query<AllUsersResp, number>({
+            query: (page) => ({
+                url: `api/users/all/`,
+                method: "GET",
+                params: { page },
+            }),
+            providesTags: ["StaffUsers"],
+        }),
+        changeActiveStatus: builder.mutation<ChangeIsActiveResp, ChangeIsActiveReq>({
+            query: ({ userId, isActive }) => ({
+                url: `api/users/${userId}/suspend/`,
+                method: "PATCH",
+                body: { is_active: !isActive },
+            }),
+            invalidatesTags: ["StaffUsers"],
+        }),
     }),
 });
 
@@ -104,4 +128,6 @@ export const {
     useChangeProfilePicMutation,
     useEditLocationMutation,
     useGetUserReviewsQuery,
+    useGetAllUsersQuery,
+    useChangeActiveStatusMutation,
 } = userApi;

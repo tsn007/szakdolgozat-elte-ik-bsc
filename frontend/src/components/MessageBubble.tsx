@@ -30,7 +30,11 @@ export function MessageBubble({ msg, isUserMsg }: { msg: Message; isUserMsg: boo
                     radius="lg"
                     px={10}
                     py={5}
-                    bg={isUserMsg ? "var(--mantine-color-blue-7)" : "var(--mantine-color-dark-8)"}
+                    bg={
+                        isUserMsg
+                            ? "light-dark(var(--mantine-color-blue-4), var(--mantine-color-blue-7))"
+                            : "light-dark(var(--mantine-color-beige-1), var(--mantine-color-dark-8))"
+                    }
                 >
                     <Text>{msg.content}</Text>
                 </Paper>

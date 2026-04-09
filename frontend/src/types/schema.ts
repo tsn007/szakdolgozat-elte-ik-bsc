@@ -229,6 +229,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/users/{id}/suspend/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["users_suspend_update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["users_suspend_partial_update"];
+        trace?: never;
+    };
     "/api/users/add_location/": {
         parameters: {
             query?: never;
@@ -239,6 +255,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["users_add_location_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/users/all/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["users_all_list"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -463,6 +495,15 @@ export interface components {
             /** Format: date-time */
             readonly created_at: string;
             readonly other: components["schemas"]["Participant"];
+            reservation: components["schemas"]["ConversationReservation"];
+        };
+        ConversationItem: {
+            name: string;
+        };
+        ConversationReservation: {
+            /** Format: uuid */
+            readonly id: string;
+            item: components["schemas"]["ConversationItem"];
         };
         CreateItem: {
             /** Format: uuid */
@@ -516,10 +557,15 @@ export interface components {
         InboxItem: {
             /** Format: uuid */
             readonly id: string;
+            owner: components["schemas"]["InboxOwner"];
             name: string;
             /** Format: uri */
             cover: string;
             location: components["schemas"]["ReservationLocation"];
+        };
+        InboxOwner: {
+            /** Format: uuid */
+            readonly id: string;
         };
         ItemAvailabilty: {
             /** Format: date-time */
@@ -551,6 +597,7 @@ export interface components {
             location: components["schemas"]["LimitedLocation"];
             images: components["schemas"]["ItemImages"][];
             readonly reservations: components["schemas"]["ItemAvailabilty"][];
+            readonly reviews: components["schemas"]["Review"][];
         };
         LimitedLocation: {
             /** Format: uuid */
@@ -641,6 +688,21 @@ export interface components {
             previous?: string | null;
             results: components["schemas"]["Message"][];
         };
+        PaginatedStaffUsersList: {
+            /** @example 123 */
+            count: number;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?page=4
+             */
+            next?: string | null;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?page=2
+             */
+            previous?: string | null;
+            results: components["schemas"]["StaffUsers"][];
+        };
         Participant: {
             /** Format: uuid */
             readonly id: string;
@@ -677,6 +739,9 @@ export interface components {
         PatchedProfilePictureUpdate: {
             /** Format: uri */
             profile_pic?: string | null;
+        };
+        PatchedSetIsActive: {
+            is_active?: boolean;
         };
         PatchedStatusChange: {
             /** Format: uuid */
@@ -731,6 +796,8 @@ export interface components {
             total_price: string;
         };
         ReservationUser: {
+            /** Format: uuid */
+            readonly id: string;
             first_name: string;
             last_name: string;
             /** Format: uri */
@@ -751,6 +818,22 @@ export interface components {
             last_name: string;
             /** Format: uri */
             profile_pic?: string | null;
+        };
+        SetIsActive: {
+            is_active?: boolean;
+        };
+        StaffUsers: {
+            /** Format: uuid */
+            readonly id: string;
+            /** Format: email */
+            email: string;
+            first_name: string;
+            last_name: string;
+            is_active?: boolean;
+            /** Format: uri */
+            profile_pic?: string | null;
+            /** Format: decimal */
+            rating?: string;
         };
         StatusChange: {
             /** Format: uuid */
@@ -780,6 +863,7 @@ export interface components {
             /** Format: decimal */
             rating?: string;
             rating_count?: number;
+            is_staff?: boolean;
         };
         UserDataEdit: {
             first_name: string;
@@ -791,6 +875,8 @@ export interface components {
             /** Format: uuid */
             readonly id: string;
             item: components["schemas"]["ReservationItem"];
+            /** Format: uuid */
+            renter: string;
             /** Format: date-time */
             from_date: string;
             /** Format: date-time */
@@ -1222,6 +1308,60 @@ export interface operations {
             };
         };
     };
+    users_suspend_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["SetIsActive"];
+                "application/x-www-form-urlencoded": components["schemas"]["SetIsActive"];
+                "multipart/form-data": components["schemas"]["SetIsActive"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetIsActive"];
+                };
+            };
+        };
+    };
+    users_suspend_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedSetIsActive"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchedSetIsActive"];
+                "multipart/form-data": components["schemas"]["PatchedSetIsActive"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetIsActive"];
+                };
+            };
+        };
+    };
     users_add_location_create: {
         parameters: {
             query?: never;
@@ -1243,6 +1383,28 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AddEditLocation"];
+                };
+            };
+        };
+    };
+    users_all_list: {
+        parameters: {
+            query?: {
+                /** @description A page number within the paginated result set. */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedStaffUsersList"];
                 };
             };
         };

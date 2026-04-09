@@ -2,6 +2,8 @@ import { Box, Button, Modal, Rating, Textarea, Text } from "@mantine/core";
 import { ModalText } from "./ModalText";
 import { useRef, useState } from "react";
 import { useCreateReviewMutation } from "../redux/reviewApi";
+import { showCustomNotification } from "../utils/notifications";
+import { getApiErrorMessage } from "../utils/errors";
 
 type ReviewModalProps = {
     opened: boolean;
@@ -31,7 +33,13 @@ export function AddReviewModal({ opened, close, rentalId }: ReviewModalProps) {
             await createReview({ resId: rentalId, reviewData: { content: content, point: ratingVal } }).unwrap();
             handleClose();
         } catch (e) {
-            console.log(e);
+            handleClose();
+            showCustomNotification({
+                id: "server-error",
+                title: "Error",
+                message: getApiErrorMessage(e),
+                type: "error",
+            });
         }
     };
 

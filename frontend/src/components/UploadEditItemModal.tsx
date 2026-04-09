@@ -21,6 +21,8 @@ import type { UserLocationsResponse } from "../redux/userApi";
 import { useCreateItemMutation, useEditItemMutation, type UserItem } from "../redux/itemsApi";
 import { useForm } from "@mantine/form";
 import type { components } from "../types/schema";
+import { getApiErrorMessage } from "../utils/errors";
+import { showCustomNotification } from "../utils/notifications";
 
 type ModalTypes = {
     opened: boolean;
@@ -98,7 +100,12 @@ export function UploadEditItemModal({ opened, close, dropzoneProps, locations, i
             }
             close();
         } catch (e) {
-            console.error("Hiba a mentésnél:", e);
+            showCustomNotification({
+                id: "server-error",
+                title: "Error",
+                message: getApiErrorMessage(e),
+                type: "error",
+            });
         }
     };
 
@@ -110,6 +117,7 @@ export function UploadEditItemModal({ opened, close, dropzoneProps, locations, i
             title={<ModalText title={itemEdit ? "Edit item" : "Upload item"} />}
             size="lg"
             padding="xl"
+            radius="lg"
         >
             <form onSubmit={form.onSubmit(handleSubmit)}>
                 <Group style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
@@ -165,7 +173,14 @@ export function UploadEditItemModal({ opened, close, dropzoneProps, locations, i
                                     form.setFieldValue("cover", acceptedFiles[0]);
                                 }
                             }}
-                            onReject={(files) => console.log("rejected files", files)}
+                            onReject={() =>
+                                showCustomNotification({
+                                    id: "client-error",
+                                    title: "Warning",
+                                    message: "Some files have been rejected!",
+                                    type: "warning",
+                                })
+                            }
                             // eslint-disable-next-line no-magic-numbers
                             maxSize={5 * 1024 ** 2}
                             accept={IMAGE_MIME_TYPE}

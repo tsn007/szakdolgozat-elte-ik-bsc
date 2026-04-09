@@ -12,7 +12,7 @@ export function LandingPage() {
                         order={1}
                         size="4.5rem"
                         fw={800}
-                        c="white"
+                        c="light-dark(black, white)"
                         lh={1.1}
                         mb="md"
                         style={{ letterSpacing: "-2px" }}
@@ -42,24 +42,51 @@ export function LandingPage() {
                         Check out the catalog
                     </Button>
                 </Box>
-                <Box visibleFrom="md">
-                    <Grid maw="40vw">
-                        <Grid.Col span={6}>
-                            <Image radius="lg" src="../drill.webp" />
-                        </Grid.Col>
-                        <Grid.Col span={6}>
-                            <Image radius="lg" src="../drill.webp" />
-                        </Grid.Col>
-                        <Grid.Col span={4}>
-                            <Image radius="lg" src="../drill.webp" />
-                        </Grid.Col>
-                        <Grid.Col span={4}>
-                            <Image radius="lg" src="../drill.webp" />
-                        </Grid.Col>
-                        <Grid.Col span={4}>
-                            <Image radius="lg" src="../drill.webp" />
-                        </Grid.Col>
-                    </Grid>
+                <Box visibleFrom="md" pos="relative" w={350} h={400} mx="auto">
+                    <Image
+                        src="../drill.webp"
+                        radius="lg"
+                        pos="absolute"
+                        top={20}
+                        left={0}
+                        w={280}
+                        style={{
+                            transform: "rotate(-12deg)",
+                            zIndex: 1,
+                            boxShadow: "var(--mantine-shadow-md)",
+                            transition: "transform 0.3s ease",
+                        }}
+                    />
+
+                    <Image
+                        src="../drill.webp"
+                        radius="lg"
+                        pos="absolute"
+                        top={120}
+                        left={60}
+                        w={280}
+                        style={{
+                            transform: "rotate(10deg)",
+                            zIndex: 2,
+                            boxShadow: "var(--mantine-shadow-md)",
+                            transition: "transform 0.3s ease",
+                        }}
+                    />
+
+                    <Image
+                        src="../drill.webp"
+                        radius="lg"
+                        pos="absolute"
+                        top={220}
+                        left={20}
+                        w={280}
+                        style={{
+                            transform: "rotate(-2deg)",
+                            zIndex: 3,
+                            boxShadow: "var(--mantine-shadow-xl)",
+                            transition: "transform 0.3s ease",
+                        }}
+                    />
                 </Box>
             </Container>
             <Container p={50} bg="#0f172a" fluid id="features" style={{ scrollMarginTop: "70px" }}>
@@ -116,7 +143,7 @@ export function LandingPage() {
             </Container>
             <Container
                 pt={80}
-                bg="linear-gradient(to right, transparent, rgba(30, 41, 59, 0.5), transparent)"
+                bg="linear-gradient(to right, transparent, light-dark(color-mix(in srgb, var(--mantine-color-beige-7) 70%, transparent), rgba(30, 41, 59, 0.5)), transparent)"
                 id="how-it-works"
             >
                 <Grid justify="center">

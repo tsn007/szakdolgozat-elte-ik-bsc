@@ -22,6 +22,8 @@ import type { CoordsType } from "./SearchLayout";
 import { IconCameraPlus } from "@tabler/icons-react";
 import { InboxTab } from "../consts/inboxTabs";
 import { useGetUserRequestsQuery } from "../redux/reservationsApi";
+import { getApiErrorMessage } from "../utils/errors";
+import { showCustomNotification } from "../utils/notifications";
 
 export type ProfileContextType = {
     user: User;
@@ -179,7 +181,12 @@ function ProfilePic({ profilePic }: { profilePic: string | undefined | null }) {
 
     const handleFileChange = async (file: File | null) => {
         if (!file) {
-            console.log("Nem választottál fájlt!");
+            showCustomNotification({
+                id: "client-error",
+                title: "Warning",
+                message: "Please choose a file!",
+                type: "warning",
+            });
             return;
         } else if (file && file.size <= MAX_FILE_SIZE) {
             const formData = new FormData();
@@ -187,10 +194,20 @@ function ProfilePic({ profilePic }: { profilePic: string | undefined | null }) {
             try {
                 await changeProfilePic(formData).unwrap();
             } catch (e) {
-                console.log(e);
+                showCustomNotification({
+                    id: "server-error",
+                    title: "Error",
+                    message: getApiErrorMessage(e),
+                    type: "error",
+                });
             }
         } else if (file) {
-            console.error("A fájl túl nagy!");
+            showCustomNotification({
+                id: "client-error",
+                title: "Error",
+                message: "The file is too big!",
+                type: "error",
+            });
         }
     };
 

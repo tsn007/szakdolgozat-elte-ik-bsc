@@ -9,17 +9,18 @@ from rest_framework.response import Response
 from rest_framework import status, serializers
 from drf_spectacular.utils import extend_schema, inline_serializer
 
+from reservations.models import Reservation
 from chat.serializers import ConversationSerializer, CreateMessageSerializer, MessageSerializer
 from chat.models import Conversation, Message
 
 class MessagePagination(PageNumberPagination):
-    page_size = 50
+    page_size = 10
 
 class GetConversations(generics.ListAPIView):
     serializer_class = ConversationSerializer
 
     def get_queryset(self):
-        qs = Conversation.objects.filter(Q(reservation__renter=self.request.user) | Q(reservation__item__owner=self.request.user))
+        qs = Conversation.objects.filter(Q(reservation__renter=self.request.user) | Q(reservation__item__owner=self.request.user)).exclude(reservation__status__in=[Reservation.Status.REJECTED, Reservation.Status.COMPLETED])
         return qs.order_by('-updated_at')
     
 class ConversationMessagesView(generics.ListCreateAPIView):
@@ -38,7 +39,7 @@ class ConversationMessagesView(generics.ListCreateAPIView):
             Q(conversation__reservation__renter=self.request.user) | 
             Q(conversation__reservation__item__owner=self.request.user)
         )
-        return qs.order_by('created_at')
+        return qs.order_by('-created_at')
 
     def perform_create(self, serializer):
         conv_id = self.kwargs.get('conversation_id')

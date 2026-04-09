@@ -6,6 +6,8 @@ import { useMemo, useRef, useState } from "react";
 import { ModalText } from "./ModalText";
 import { useAddNewLocationMutation, useEditLocationMutation, type OwnLocation } from "../redux/userApi";
 import type { AddressType } from "./MapSearchBar";
+import { getApiErrorMessage } from "../utils/errors";
+import { showCustomNotification } from "../utils/notifications";
 
 type NewAddressProps = {
     opened: boolean;
@@ -123,13 +125,18 @@ export function AddEditNewAddress({ opened, close, userCoords, userAddress, loca
                 }
                 handleClose();
             } catch (e) {
-                console.log(e);
+                showCustomNotification({
+                    id: "server-error",
+                    title: "Error",
+                    message: getApiErrorMessage(e),
+                    type: "error",
+                });
             }
         }
     };
 
     return (
-        <Modal opened={opened} onClose={handleClose} zIndex={1000} size="lg" title={<ModalText title="New address" />}>
+        <Modal radius="lg" opened={opened} onClose={handleClose} zIndex={1000} size="lg" title={<ModalText title="New address" />}>
             <Box style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "20px" }}>
                 <TextInput
                     radius="md"

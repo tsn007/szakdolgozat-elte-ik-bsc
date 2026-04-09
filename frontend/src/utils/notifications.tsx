@@ -7,6 +7,7 @@ export const showCustomNotification = ({ id, title, message, type }: Notificatio
     if (type === NotificationType.SUCCESS) baseColor = "teal";
     if (type === NotificationType.ERROR) baseColor = "red";
     if (type === NotificationType.INFO) baseColor = "blue";
+    if (type === NotificationType.WARNING) baseColor = "yellow";
 
     notifications.show({
         id: id,
@@ -16,7 +17,7 @@ export const showCustomNotification = ({ id, title, message, type }: Notificatio
         radius: "lg",
         withBorder: true,
         autoClose: 4000,
-        position: "top-center",
+        position: "top-right",
         icon: type === NotificationType.SUCCESS ? <IconCheck size={18} /> : null,
         styles: {
             root: {

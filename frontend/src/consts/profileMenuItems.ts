@@ -8,7 +8,7 @@ export const profileMenuData = [
     },
     {
         icon: IconCubeSend,
-        title: "My reservations",
-        to: "/profile/my_reservations",
+        title: "My rentals",
+        to: "/profile/rentals/in-progress",
     },
 ];

@@ -4,6 +4,8 @@ import { MessageBubble } from "./MessageBubble";
 import { useUserData } from "../hooks/userLocation";
 import { IconCirclePlus } from "@tabler/icons-react";
 import { useEffect, useRef } from "react";
+import { getApiErrorMessage } from "../utils/errors";
+import { showCustomNotification } from "../utils/notifications";
 
 export function ConversationWindow({ convId }: { convId: string }) {
     const { data: messages } = useGetConversationMessagesQuery(convId, {
@@ -13,6 +15,16 @@ export function ConversationWindow({ convId }: { convId: string }) {
     const [sendMessage, { isLoading }] = useCreateMessageMutation();
     const { user } = useUserData();
     const inputRef = useRef<HTMLInputElement>(null);
+    const viewportRef = useRef<HTMLDivElement>(null);
+
+    const scrollToBottom = () => {
+        if (viewportRef.current) {
+            viewportRef.current.scrollTo({
+                top: viewportRef.current.scrollHeight,
+                behavior: "instant",
+            });
+        }
+    };
 
     const handleSend = async () => {
         if (!inputRef.current || !inputRef.current.value.trim()) return;
@@ -20,7 +32,12 @@ export function ConversationWindow({ convId }: { convId: string }) {
             await sendMessage({ convId: convId, convInfo: { content: inputRef.current.value } }).unwrap();
             inputRef.current.value = "";
         } catch (e) {
-            console.log(e);
+            showCustomNotification({
+                id: "server-error",
+                title: "Error",
+                message: getApiErrorMessage(e),
+                type: "error",
+            });
         }
     };
 
@@ -30,9 +47,30 @@ export function ConversationWindow({ convId }: { convId: string }) {
         }
     }, [convId, messages, markAsRead]);
 
+    useEffect(() => {
+        const frame = requestAnimationFrame(() => {
+            scrollToBottom();
+        });
+        return () => cancelAnimationFrame(frame);
+    }, [messages]);
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [convId]);
+
+    if (convId.length === 0) {
+        return (
+            <Flex direction="column" h="100%" justify="center" align="center" style={{ flex: 1 }}>
+                <Text ta="center" c="dimmed" size="lg">
+                    Select a conversation to start!
+                </Text>
+            </Flex>
+        );
+    }
+
     return (
         <Flex direction="column" h="100%" style={{ flex: 1, position: "relative" }}>
-            <ScrollArea style={{ flex: 1 }} p="md">
+            <ScrollArea viewportRef={viewportRef} style={{ flex: 1 }} p="md">
                 <Flex direction="column" gap="xs">
                     {(!messages || messages.results.length === 0) && (
                         <Text ta="center" c="dimmed">
@@ -40,9 +78,12 @@ export function ConversationWindow({ convId }: { convId: string }) {
                         </Text>
                     )}
 
-                    {messages?.results.map((msg) => (
-                        <MessageBubble key={msg.id} msg={msg} isUserMsg={user?.email === msg.sender.email} />
-                    ))}
+                    {messages?.results
+                        .slice()
+                        .reverse()
+                        .map((msg) => (
+                            <MessageBubble key={msg.id} msg={msg} isUserMsg={user?.email === msg.sender.email} />
+                        ))}
                 </Flex>
             </ScrollArea>
 

@@ -21,6 +21,12 @@ export const getApiErrorMessage = (error: unknown): string => {
             return errorData.detail;
         }
 
+        if (Array.isArray(errorData) && errorData.length > 0) {
+            if (typeof errorData[0] === "string") {
+                return errorData[0];
+            }
+        }
+
         if (typeof errorData === "object" && !Array.isArray(errorData)) {
             const firstKey = Object.keys(errorData)[0];
             if (firstKey && Array.isArray(errorData[firstKey])) {

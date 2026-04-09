@@ -84,7 +84,8 @@ export function SearchResults({ opened, close, searchTerm, setSearchTerm }: Sear
                             maxHeight: "100vh",
                             overflowY: "auto",
 
-                            backgroundColor: "rgba(15, 23, 42, 0.98)",
+                            backgroundColor:
+                                "light-dark(var(--mantine-color-beige-0), var(--mantine-color-midnight-8))",
                             backdropFilter: "blur(10px)",
                             paddingTop: "1.125rem",
                             paddingBottom: "2rem",
@@ -105,7 +106,14 @@ export function SearchResults({ opened, close, searchTerm, setSearchTerm }: Sear
                                     <ThemeIcon size="lg" variant="filled" color="blue" radius="md">
                                         <IconShare size={25} />
                                     </ThemeIcon>
-                                    <Text fw={700} size="xl" c="white" style={{ letterSpacing: "-0.5px" }}>
+                                    <Text
+                                        fw={700}
+                                        size="xl"
+                                        style={{
+                                            letterSpacing: "-0.5px",
+                                            color: "light-dark(var(--mantine-color-dark-6), white)",
+                                        }}
+                                    >
                                         ShareHood
                                     </Text>
                                 </Group>

@@ -9,8 +9,7 @@
 .item:hover {
     transform: scale(1.2);
     z-index: 10;
-    border: none;
-    box-shadow: 0 0 20px 10px rgba(0,0,0,0.5);   
+    border: 1px solid light-dark(white, black)
 }
 
 .popup {
@@ -41,11 +40,11 @@
     cursor: pointer;
 }
 
-.convo:hover {
-    background-color: var(--mantine-color-dark-8);
+.convo:not(.activeConvo):hover {
+    background-color: light-dark(var(--mantine-color-beige-2), var(--mantine-color-dark-8)) !important;
 }
 
 .activeConvo {
-    background-color: var(--mantine-color-blue-9) !important;
+    background-color: light-dark(var(--mantine-color-blue-4), var(--mantine-color-blue-9)) !important;
     cursor: default;
 }

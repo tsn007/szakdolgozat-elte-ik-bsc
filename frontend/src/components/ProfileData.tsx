@@ -11,6 +11,9 @@ import { useDisclosure } from "@mantine/hooks";
 import { fetchAddressFromCoords } from "../hooks/userLocation";
 import type { AddressType } from "./MapSearchBar";
 import { LocationCard } from "./LocationCard";
+import { getApiErrorMessage } from "../utils/errors";
+import { showCustomNotification } from "../utils/notifications";
+import iconStyles from "../css/Icon.module.css";
 
 function PersonalDetailsForm({ user }: { user: User }) {
     const [updateProfile, { isLoading }] = useUpdateUserDataMutation();
@@ -40,7 +43,12 @@ function PersonalDetailsForm({ user }: { user: User }) {
                 form.resetDirty(values);
             }
         } catch (e) {
-            console.log(e);
+            showCustomNotification({
+                id: "server-error",
+                title: "Error",
+                message: getApiErrorMessage(e),
+                type: "error",
+            });
         }
     };
 
@@ -54,21 +62,27 @@ function PersonalDetailsForm({ user }: { user: User }) {
                     readOnly={isFnameActive}
                     radius="md"
                     label="First name"
-                    rightSection={<IconEdit onClick={() => setIsFnameActive(!isFnameActive)} />}
+                    rightSection={
+                        <IconEdit className={iconStyles.edit} onClick={() => setIsFnameActive(!isFnameActive)} />
+                    }
                     {...form.getInputProps("first_name")}
                 />
                 <TextInput
                     readOnly={isLnameActive}
                     radius="md"
                     label="Last name"
-                    rightSection={<IconEdit onClick={() => setIsLnameActive(!isLnameActive)} />}
+                    rightSection={
+                        <IconEdit className={iconStyles.edit} onClick={() => setIsLnameActive(!isLnameActive)} />
+                    }
                     {...form.getInputProps("last_name")}
                 />
                 <TextInput
                     readOnly={isEmailActive}
                     radius="md"
                     label="Email"
-                    rightSection={<IconEdit onClick={() => setIsEmailActive(!isEmailActive)} />}
+                    rightSection={
+                        <IconEdit className={iconStyles.edit} onClick={() => setIsEmailActive(!isEmailActive)} />
+                    }
                     {...form.getInputProps("email")}
                 />
                 <Box

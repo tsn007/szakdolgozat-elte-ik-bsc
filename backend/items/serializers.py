@@ -5,9 +5,10 @@ from django.core.files.base import ContentFile
 from drf_spectacular.utils import extend_schema_field
 from django.utils import timezone
 
+from reviews.models import Review
 from reservations.serializers import ItemAvailabiltySerializer
 from categories.serializers import ItemCategorySerializer
-from users.serializers import UserDataSerializer
+from users.serializers import ReviewSerializer, UserDataSerializer
 from items.models import Item, ItemImage, Location
 
 class ItemImagesSerializer(serializers.ModelSerializer):
@@ -37,9 +38,10 @@ class ItemResponseSerializer(serializers.ModelSerializer):
     images = ItemImagesSerializer(many=True)
     category = ItemCategorySerializer()
     reservations = serializers.SerializerMethodField()
+    reviews = serializers.SerializerMethodField()
     class Meta:
         model = Item
-        fields = ['id', 'category', 'name', 'price', 'owner', 'cover', 'location', 'images', 'reservations']
+        fields = ['id', 'category', 'name', 'price', 'owner', 'cover', 'location', 'images', 'reservations', 'reviews']
 
     @extend_schema_field(ItemAvailabiltySerializer(many=True))
     def get_reservations(self, obj):
@@ -49,6 +51,12 @@ class ItemResponseSerializer(serializers.ModelSerializer):
                 active_reservations.append(res)
 
         return ItemAvailabiltySerializer(active_reservations, many=True).data
+    
+    @extend_schema_field(ReviewSerializer(many=True))
+    def get_reviews(self, obj):
+        reviews = Review.objects.filter(reservation__item=obj, receiver=obj.owner)
+
+        return ReviewSerializer(reviews, many=True).data
 
 class PaginatedResponse(serializers.Serializer):
     count = serializers.IntegerField()

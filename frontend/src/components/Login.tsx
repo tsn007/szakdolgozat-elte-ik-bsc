@@ -26,7 +26,6 @@ interface LoginFormValues {
 
 export function Login(props: PaperProps) {
     const [login, { isLoading }] = useLoginMutation();
-    const inputColor = "light-dark(var(--mantine-color-beige-0), var(--mantine-color-gray-9))";
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const form = useForm<LoginFormValues>({
@@ -68,11 +67,6 @@ export function Login(props: PaperProps) {
                             placeholder="test@example.com"
                             {...form.getInputProps("email")}
                             radius="md"
-                            styles={{
-                                input: {
-                                    backgroundColor: inputColor,
-                                },
-                            }}
                         />
 
                         <PasswordInput

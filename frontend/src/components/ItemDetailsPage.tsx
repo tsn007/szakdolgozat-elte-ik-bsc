@@ -6,7 +6,6 @@ import {
     Button,
     Card,
     Container,
-    Divider,
     Group,
     Image,
     Rating,
@@ -14,6 +13,8 @@ import {
     Badge,
     Overlay,
     Paper,
+    Flex,
+    Divider,
 } from "@mantine/core";
 import { useParams } from "react-router-dom";
 import { useGetItemByIdQuery } from "../redux/itemsApi";
@@ -29,15 +30,17 @@ import { useCreateReservationMutation } from "../redux/reservationsApi";
 import { showCustomNotification } from "../utils/notifications";
 import { getApiErrorMessage } from "../utils/errors";
 import { useUserData } from "../hooks/userLocation";
+import { formatTime } from "../utils/functions";
 
 export function ItemDetailsPage() {
+    const [now] = useState(() => Date.now());
     const { user } = useUserData();
     const [createRes, { isLoading }] = useCreateReservationMutation();
     const [dates, setDates] = useState<[string | null, string | null]>([null, null]);
     const { itemId } = useParams();
     const { data: item } = useGetItemByIdQuery(itemId ?? "", { skip: !itemId });
     const [embla, setEmbla] = useState<EmblaCarouselType | null>(null);
-    const slideBgColor = "var(--mantine-color-dark-5)";
+    const slideBgColor = "light-dark(var(--mantine-color-beige-1), var(--mantine-color-dark-5))";
     const [selectedIndex, setSelectedIndex] = useState(0);
     const allImgs = useMemo(() => {
         if (!item) return [];
@@ -165,11 +168,13 @@ export function ItemDetailsPage() {
                                 size={40}
                                 onClick={() => handlePrev(selectedIndex)}
                                 className={iconStyles.stepper}
+                                color="light-dark(var(--mantine-color-white), black)"
                             />
                             <IconArrowRight
                                 size={40}
                                 onClick={() => handleNext(selectedIndex)}
                                 className={iconStyles.stepper}
+                                color="light-dark(var(--mantine-color-white), black)"
                             />
                         </Group>
                         <Box style={{ display: "flex", gap: "10px", width: "100%", justifyContent: "center" }}>
@@ -187,7 +192,9 @@ export function ItemDetailsPage() {
                                                     className={carouselStyles.preview}
                                                     onClick={() => handleSelect(index)}
                                                     style={{
-                                                        outline: isActive ? "2px solid white" : "",
+                                                        outline: isActive
+                                                            ? "2px solid light-dark(var(--mantine-color-midnight-6), white)"
+                                                            : "",
                                                         outlineOffset: isActive ? "2px" : "",
                                                     }}
                                                 />
@@ -222,7 +229,7 @@ export function ItemDetailsPage() {
                             <Card.Section
                                 px={20}
                                 my={20}
-                                bg="black"
+                                bg="light-dark(var(--mantine-color-beige-1), black)"
                                 style={{ display: "flex", justifyContent: "center", flexDirection: "column" }}
                             >
                                 <Box pos="relative">
@@ -304,34 +311,73 @@ export function ItemDetailsPage() {
                                 >
                                     Rent this item
                                 </Button>
-                                <Button size="lg" radius="xl" variant="outline">
+                                {/**<Button size="lg" radius="xl" variant="outline">
                                     Add to favourites
-                                </Button>
+                                </Button>**/}
                             </Card.Section>
-                        </Card>
-                        <Card radius="lg">
-                            <Box style={{ display: "flex", gap: "10px" }}>
-                                <Avatar src={item?.owner.profile_pic} />
-                                <Box>
-                                    <Text>{item?.owner.first_name + " " + item?.owner.last_name}</Text>
-                                    <Box style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                                        <Rating fractions={10} readOnly value={Number(item?.owner?.rating || 0)} />
-                                        <Text c="dimmed" fs="italic" size="sm">
-                                            {`(${item?.owner.rating_count} reviews)`}
-                                        </Text>
-                                    </Box>
-                                </Box>
-                            </Box>
-                            <Divider my={20} />
-                            <Text fw={500} size="lg">
-                                More from this user
-                            </Text>
                         </Card>
                         <Box mb={40}>
                             <Map key={item?.id} item={item} />
                         </Box>
                     </Box>
                 </Container>
+                <Text fw={500} size="xl" mb={15} ml={10}>About the owner</Text>
+                <Card radius="lg" mb={40}>
+                    <Box style={{ display: "flex", gap: "10px" }}>
+                        <Avatar src={item?.owner.profile_pic} />
+                        <Box>
+                            <Text>{item?.owner.first_name + " " + item?.owner.last_name}</Text>
+                            <Box style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                                <Rating fractions={10} readOnly value={Number(item?.owner?.rating || 0)} />
+                                <Text c="dimmed" fs="italic" size="sm">
+                                    {`(${item?.owner.rating_count} reviews)`}
+                                </Text>
+                            </Box>
+                        </Box>
+                    </Box>
+                    <Divider my={20} />
+                    <Box>
+                        {item?.reviews.length === 0 && (
+                            <Text w="100%" ta="center" fs="italic" c="dimmed">
+                                No reviews to show!
+                            </Text>
+                        )}
+                        {item?.reviews?.map((review) => {
+                            const createdAt = new Date(review.created_at);
+                            const ms = now - createdAt.getTime();
+                            return (
+                                <Container
+                                    key={review.id}
+                                    fluid
+                                    mb={40}
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        gap: "20px",
+                                    }}
+                                >
+                                    <Flex align="flex-start" gap={10}>
+                                        <Avatar src={review.sender.profile_pic} />
+                                        <Box>
+                                            <Box style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                                <Text
+                                                    size="md"
+                                                    fw={500}
+                                                >{`${review.sender.first_name} ${review.sender.last_name}`}</Text>
+                                                <Text c="dimmed" size="sm">
+                                                    {formatTime(ms)}
+                                                </Text>
+                                            </Box>
+                                            <Text size="md">{review.content}</Text>
+                                        </Box>
+                                    </Flex>
+                                    <Rating fractions={10} readOnly value={Number(review.point || 0)}></Rating>
+                                </Container>
+                            );
+                        })}
+                    </Box>
+                </Card>
             </Container>
         </>
     );
