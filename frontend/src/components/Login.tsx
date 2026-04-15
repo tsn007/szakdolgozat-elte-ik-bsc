@@ -37,6 +37,7 @@ export function Login(props: PaperProps) {
 
         validate: {
             email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
+            password: (val) => (val.length === 0 ? "Please provide your password" : null)
         },
     });
 

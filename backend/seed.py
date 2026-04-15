@@ -20,7 +20,7 @@ def run_seed():
     print("Generating 5 new Categories...")
     categories_to_create = []
     
-    for _ in range(5):
+    for _ in range(20):
         cat_name = fake.word()
 
         category = Category(

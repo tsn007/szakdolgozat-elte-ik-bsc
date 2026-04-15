@@ -65,11 +65,7 @@ export const Navbar = ({ isGuest, searchOpened, searchClose, searchOpen, searchT
               { title: "Features", to: "#features" },
               { title: "How it works", to: "#how-it-works" },
           ]
-        : [
-              { title: "Home", to: "/browse/list" },
-              { title: "Map", to: "/browse/map" },
-              { title: "Categories", to: "/browse/list" },
-          ];
+        : [];
 
     const handleLogout = () => {
         apiLogout();
@@ -91,7 +87,7 @@ export const Navbar = ({ isGuest, searchOpened, searchClose, searchOpen, searchT
             }}
         >
             <Container fluid>
-                <Group justify="space-between" align="center" pl={10} pr={10}>
+                <Group justify="space-between" align="center" pl={10} pr={10} style={{ position: "relative" }}>
                     <Group gap={50}>
                         <Group gap="xs" style={{ cursor: "pointer" }} onClick={() => navigate("/browse/list")}>
                             <ThemeIcon size="lg" variant="filled" color="blue" radius="md">
@@ -144,80 +140,89 @@ export const Navbar = ({ isGuest, searchOpened, searchClose, searchOpen, searchT
                     )}
 
                     {!isGuest && (
-                        <Group>
-                            <TextInput
-                                placeholder="Search"
-                                radius="lg"
-                                readOnly
-                                onClick={searchOpen}
-                                leftSection={<IconSearch size={20} />}
-                                rightSection={
-                                    <IconX
-                                        size={20}
-                                        onClick={() => setSearchTerm("")}
-                                        className={iconStyles.searchReset}
-                                    />
-                                }
-                                value={searchTerm}
-                            />
-                            {isAuthenticated ? (
-                                <Box style={{ display: "flex", gap: "15px" }}>
-                                    <Tooltip label="Messages">
-                                        <Avatar radius="xl" onClick={() => navigate("/message-hub")}>
-                                            <IconMessageCircle />
-                                        </Avatar>
-                                    </Tooltip>
-                                    <Menu radius="md" trigger="hover" position="bottom-end" zIndex={1000}>
-                                        <Menu.Target>
-                                            <Avatar radius="xl" src={user?.profile_pic} />
-                                        </Menu.Target>
-                                        <Menu.Dropdown>
-                                            {user?.is_staff && (
-                                                <>
-                                                    <Menu.Label>Staff</Menu.Label>
-                                                    <Menu.Item
-                                                        leftSection={<IconBan />}
-                                                        onClick={() => navigate("/users")}
-                                                    >
-                                                        Ban users
-                                                    </Menu.Item>
-                                                    <Menu.Divider />
-                                                </>
-                                            )}
-                                            {profileMenuData.map((item) => {
-                                                const Icon = item.icon;
-                                                return (
-                                                    <Menu.Item
-                                                        key={item.title}
-                                                        leftSection={<Icon />}
-                                                        onClick={() => navigate(item.to)}
-                                                    >
-                                                        {item.title}
-                                                    </Menu.Item>
-                                                );
-                                            })}
-                                            <Menu.Divider />
-                                            <Menu.Item
-                                                leftSection={colorScheme === "dark" ? <IconSun /> : <IconMoon />}
-                                                onClick={() => setColorScheme(toggleVal)}
-                                            >{`${toggleVal.charAt(0).toUpperCase() + toggleVal.slice(1)} mode`}</Menu.Item>
-                                            <Menu.Item leftSection={<IconLogout />} color="red" onClick={handleLogout}>
-                                                Logout
-                                            </Menu.Item>
-                                        </Menu.Dropdown>
-                                    </Menu>
-                                </Box>
-                            ) : (
-                                <Box style={{ display: "flex", gap: "10px" }}>
-                                    <Button variant="outline" radius="md" onClick={() => navigate("/register")}>
-                                        Sign up
-                                    </Button>
-                                    <Button radius="md" onClick={() => navigate("/login")}>
-                                        Login
-                                    </Button>
-                                </Box>
-                            )}
-                        </Group>
+                        <>
+                            <Box style={{ position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
+                                <TextInput
+                                    w={500}
+                                    placeholder="Search"
+                                    radius="lg"
+                                    readOnly
+                                    onClick={searchOpen}
+                                    leftSection={<IconSearch size={20} />}
+                                    rightSection={
+                                        <IconX
+                                            size={20}
+                                            onClick={() => setSearchTerm("")}
+                                            className={iconStyles.searchReset}
+                                        />
+                                    }
+                                    value={searchTerm}
+                                />
+                            </Box>
+                            <Group>
+                                {isAuthenticated ? (
+                                    <Box style={{ display: "flex", gap: "15px" }}>
+                                        <Tooltip label="Messages">
+                                            <Avatar radius="xl" onClick={() => navigate("/message-hub")}>
+                                                <IconMessageCircle />
+                                            </Avatar>
+                                        </Tooltip>
+                                        <Menu radius="md" trigger="hover" position="bottom-end" zIndex={1000}>
+                                            <Menu.Target>
+                                                <Avatar radius="xl" src={user?.profile_pic} />
+                                            </Menu.Target>
+                                            <Menu.Dropdown>
+                                                {user?.is_staff && (
+                                                    <>
+                                                        <Menu.Label>Staff</Menu.Label>
+                                                        <Menu.Item
+                                                            leftSection={<IconBan />}
+                                                            onClick={() => navigate("/users")}
+                                                        >
+                                                            Ban users
+                                                        </Menu.Item>
+                                                        <Menu.Divider />
+                                                    </>
+                                                )}
+                                                {profileMenuData.map((item) => {
+                                                    const Icon = item.icon;
+                                                    return (
+                                                        <Menu.Item
+                                                            key={item.title}
+                                                            leftSection={<Icon />}
+                                                            onClick={() => navigate(item.to)}
+                                                        >
+                                                            {item.title}
+                                                        </Menu.Item>
+                                                    );
+                                                })}
+                                                <Menu.Divider />
+                                                <Menu.Item
+                                                    leftSection={colorScheme === "dark" ? <IconSun /> : <IconMoon />}
+                                                    onClick={() => setColorScheme(toggleVal)}
+                                                >{`${toggleVal.charAt(0).toUpperCase() + toggleVal.slice(1)} mode`}</Menu.Item>
+                                                <Menu.Item
+                                                    leftSection={<IconLogout />}
+                                                    color="red"
+                                                    onClick={handleLogout}
+                                                >
+                                                    Logout
+                                                </Menu.Item>
+                                            </Menu.Dropdown>
+                                        </Menu>
+                                    </Box>
+                                ) : (
+                                    <Box style={{ display: "flex", gap: "10px" }}>
+                                        <Button variant="outline" radius="md" onClick={() => navigate("/register")}>
+                                            Sign up
+                                        </Button>
+                                        <Button radius="md" onClick={() => navigate("/login")}>
+                                            Login
+                                        </Button>
+                                    </Box>
+                                )}
+                            </Group>
+                        </>
                     )}
 
                     <Burger opened={mobileNavOpen} onClick={mobileNavToggle} hiddenFrom="md" color="white" />

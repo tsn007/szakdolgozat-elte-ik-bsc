@@ -1,4 +1,4 @@
-import time
+import json
 
 from rest_framework import serializers
 from django.core.files.base import ContentFile
@@ -84,13 +84,12 @@ class CreateItemSerializer(serializers.ModelSerializer):
     
 class EditItemSerializer(serializers.ModelSerializer):
     images = ItemImagesSerializer(many=True, read_only=True)
-    kept_existing_images = serializers.ListField(
-        child=serializers.CharField(), write_only=True, required=False
-    )
+    kept_existing_images = serializers.CharField(write_only=True, required=False)
     existing_cover_url = serializers.URLField(write_only=True, required=False)
+    keep_old_cover = serializers.BooleanField(write_only=True, required=False, default=True)
     class Meta:
         model = Item
-        fields = ['category', 'name', 'price', 'cover', 'location', 'images', 'kept_existing_images', 'existing_cover_url']
+        fields = ['category', 'name', 'price', 'cover', 'location', 'images', 'kept_existing_images', 'existing_cover_url', 'keep_old_cover']
 
     def update(self, instance, validated_data):
         request = self.context.get('request')
@@ -99,6 +98,8 @@ class EditItemSerializer(serializers.ModelSerializer):
         validated_data.pop('kept_existing_images', None)
         validated_data.pop('existing_cover_url', None)
         validated_data.pop('cover', None)
+
+        keep_old_cover = validated_data.pop('keep_old_cover', True)
 
         old_cover_content = None
         old_cover_name = ""
@@ -112,8 +113,14 @@ class EditItemSerializer(serializers.ModelSerializer):
         instance = super().update(instance, validated_data)
 
         if request and 'kept_existing_images' in request.data:
-            kept_ids = request.data.getlist('kept_existing_images')
-            instance.images.exclude(id__in=kept_ids).delete()
+            kept_raw = request.data.get('kept_existing_images')
+            if kept_raw is not None:
+                try:
+                    kept_ids = json.loads(kept_raw)
+                    if isinstance(kept_ids, list):
+                        instance.images.exclude(id__in=kept_ids).delete()
+                except (ValueError, TypeError):
+                    pass
 
         new_cover_file = request.FILES.get('cover') #type: ignore
         existing_cover_url = request.data.get('existing_cover_url') #type: ignore
@@ -139,7 +146,7 @@ class EditItemSerializer(serializers.ModelSerializer):
                 instance.cover.save(file_name, ContentFile(file_content), save=False)
                 matching_img.delete()
 
-        if cover_changed and old_cover_content:
+        if cover_changed and old_cover_content and keep_old_cover:
             new_gallery_img = ItemImage(item=instance)
             new_gallery_img.image.save(old_cover_name, ContentFile(old_cover_content), save=False)
             new_gallery_img.save()

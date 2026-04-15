@@ -1,4 +1,17 @@
-import { Container, Box, Text, Title, Button, Image, Grid, ThemeIcon, Card, SimpleGrid, Timeline } from "@mantine/core";
+import {
+    Container,
+    Box,
+    Text,
+    Title,
+    Button,
+    Image,
+    Grid,
+    ThemeIcon,
+    Card,
+    SimpleGrid,
+    Timeline,
+    Flex,
+} from "@mantine/core";
 import { features, steps } from "../consts";
 import { useNavigate } from "react-router-dom";
 
@@ -6,88 +19,92 @@ export function LandingPage() {
     const navigate = useNavigate();
     return (
         <>
-            <Container fluid style={{ display: "flex", justifyContent: "space-around" }} pb={80}>
-                <Box>
-                    <Title
-                        order={1}
-                        size="4.5rem"
-                        fw={800}
-                        c="light-dark(black, white)"
-                        lh={1.1}
-                        mb="md"
-                        style={{ letterSpacing: "-2px" }}
-                    >
-                        Share More.{" "}
-                        <Text span inherit variant="gradient" gradient={{ from: "blue", to: "teal", deg: 45 }}>
-                            <br />
-                            Waste Less.
+            <Container size="lg" pb={80}>
+                <Flex
+                    justify="space-between"
+                    align="center"
+                    wrap="wrap"
+                    gap="xl"
+                >
+                    <Box>
+                        <Title
+                            order={1}
+                            size="4.5rem"
+                            fw={800}
+                            c="light-dark(black, white)"
+                            lh={1.1}
+                            mb="md"
+                            style={{ letterSpacing: "-2px" }}
+                        >
+                            Share More.{" "}
+                            <Text span inherit variant="gradient" gradient={{ from: "blue", to: "teal", deg: 45 }}>
+                                <br />
+                                Waste Less.
+                            </Text>
+                        </Title>
+                        <Text size="xl" c="dimmed" lh={1.6} mb="xl" maw={500}>
+                            Why buy what you only use once? Borrow tools, gear, and appliances from trusted neighbors.
+                            Save money and help the planet.
                         </Text>
-                    </Title>
-                    <Text size="xl" c="dimmed" lh={1.6} mb="xl" maw={500}>
-                        Why buy what you only use once? Borrow tools, gear, and appliances from trusted neighbors. Save
-                        money and help the planet.
-                    </Text>
-                    <Button
-                        radius="xl"
-                        size="md"
-                        color="blue"
-                        variant="filled"
-                        styles={{
-                            root: {
-                                boxShadow: "0 10px 15px -3px rgba(30, 64, 175, 0.3)",
-                            },
-                        }}
-                        onClick={() => navigate("/browse/list")}
-                    >
-                        Check out the catalog
-                    </Button>
-                </Box>
-                <Box visibleFrom="md" pos="relative" w={350} h={400} mx="auto">
-                    <Image
-                        src="../drill.webp"
-                        radius="lg"
-                        pos="absolute"
-                        top={20}
-                        left={0}
-                        w={280}
-                        style={{
-                            transform: "rotate(-12deg)",
-                            zIndex: 1,
-                            boxShadow: "var(--mantine-shadow-md)",
-                            transition: "transform 0.3s ease",
-                        }}
-                    />
+                        <Button
+                            radius="xl"
+                            size="md"
+                            color="blue"
+                            variant="filled"
+                            styles={{ root: { boxShadow: "0 10px 15px -3px rgba(30, 64, 175, 0.3)" } }}
+                            onClick={() => navigate("/browse/list")}
+                        >
+                            Check out the catalog
+                        </Button>
+                    </Box>
 
-                    <Image
-                        src="../drill.webp"
-                        radius="lg"
-                        pos="absolute"
-                        top={120}
-                        left={60}
-                        w={280}
-                        style={{
-                            transform: "rotate(10deg)",
-                            zIndex: 2,
-                            boxShadow: "var(--mantine-shadow-md)",
-                            transition: "transform 0.3s ease",
-                        }}
-                    />
+                    <Box visibleFrom="md" pos="relative" w={350} h={400}>
+                        <Image
+                            src="../drill.webp"
+                            radius="lg"
+                            pos="absolute"
+                            top={20}
+                            left={0}
+                            w={280}
+                            style={{
+                                transform: "rotate(-12deg)",
+                                zIndex: 1,
+                                boxShadow: "var(--mantine-shadow-md)",
+                                transition: "transform 0.3s ease",
+                            }}
+                        />
 
-                    <Image
-                        src="../drill.webp"
-                        radius="lg"
-                        pos="absolute"
-                        top={220}
-                        left={20}
-                        w={280}
-                        style={{
-                            transform: "rotate(-2deg)",
-                            zIndex: 3,
-                            boxShadow: "var(--mantine-shadow-xl)",
-                            transition: "transform 0.3s ease",
-                        }}
-                    />
-                </Box>
+                        <Image
+                            src="../dekopir.jpg"
+                            radius="lg"
+                            pos="absolute"
+                            top={120}
+                            left={130}
+                            w={280}
+                            style={{
+                                transform: "rotate(10deg)",
+                                zIndex: 3,
+                                boxShadow: "var(--mantine-shadow-md)",
+                                transition: "transform 0.3s ease",
+                            }}
+                        />
+
+                        <Image
+                            src="../lapat.jpg"
+                            radius="lg"
+                            pos="absolute"
+                            top={250}
+                            left={20}
+                            w={280}
+                            style={{
+                                transform: "rotate(10deg)",
+                                zIndex: 2,
+                                boxShadow: "var(--mantine-shadow-xl)",
+                                transition: "transform 0.3s ease",
+                            }}
+                        />
+                    </Box>
+                </Flex>
             </Container>
             <Container p={50} bg="#0f172a" fluid id="features" style={{ scrollMarginTop: "70px" }}>
                 <Box

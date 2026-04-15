@@ -1,7 +1,6 @@
-import { IconCategoryFilled, IconCurrencyEuro, IconCloudCheck } from "@tabler/icons-react";
+import { IconCategoryFilled, IconCurrencyEuro } from "@tabler/icons-react";
 import { CategoryFilter } from "../components/CategoryFilter";
 import { PriceFilter } from "../components/PriceFilter";
-import { AvailabilityFilter } from "../components/AvailabilityFilter";
 
 export const filterItems = [
     {
@@ -13,10 +12,5 @@ export const filterItems = [
         icon: IconCurrencyEuro,
         value: "Price",
         description: PriceFilter,
-    },
-    {
-        icon: IconCloudCheck,
-        value: "Availability",
-        description: AvailabilityFilter,
     },
 ];

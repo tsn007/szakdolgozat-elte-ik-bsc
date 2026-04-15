@@ -88,9 +88,11 @@ export function UploadEditItemModal({ opened, close, dropzoneProps, locations, i
             if (file !== values.cover) formData.append("images", file);
         });
 
-        existingImages.forEach((img) => {
-            if (img.id !== "cover") formData.append("kept_existing_images", String(img.id));
-        });
+        const keepOldCover = existingImages.some((img) => img.id === "cover");
+        formData.append("keep_old_cover", String(keepOldCover));
+
+        const keptIds = existingImages.filter((img) => img.id !== "cover").map((img) => img.id);
+        formData.append("kept_existing_images", JSON.stringify(keptIds));
 
         try {
             if (itemEdit) {
@@ -216,7 +218,7 @@ export function UploadEditItemModal({ opened, close, dropzoneProps, locations, i
                             </Text>
                         )}
                         <SimpleGrid cols={{ base: 1, sm: 3 }} mt={40} w="100%">
-                            {existingImages.map((img, index) => {
+                            {existingImages.map((img) => {
                                 const isChosen = form.values.cover === img.image;
                                 return (
                                     <Box key={img.id} pos="relative">
@@ -228,7 +230,7 @@ export function UploadEditItemModal({ opened, close, dropzoneProps, locations, i
                                             right={5}
                                             onClick={() => {
                                                 setExistingFiles((currentFiles) =>
-                                                    currentFiles.filter((_, i) => i !== index),
+                                                    currentFiles.filter((f) => f.id !== img.id),
                                                 );
                                                 if (form.values.cover === img.image) {
                                                     form.setFieldValue("cover", null);
