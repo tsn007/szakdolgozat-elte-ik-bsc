@@ -62,11 +62,8 @@ export function Register(props: PaperProps) {
             },
             email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
             password: (val) =>
-                val.length <= MIN_PASSWORD_LENGTH
-                    ? "Password should include at least 6 characters"
-                    : null,
-            password_confirmation: (val, values) =>
-                val !== values.password ? "The passwords must match" : null,
+                val.length <= MIN_PASSWORD_LENGTH ? "Password should include at least 6 characters" : null,
+            password_confirmation: (val, values) => (val !== values.password ? "The passwords must match" : null),
         },
     });
 
@@ -75,9 +72,7 @@ export function Register(props: PaperProps) {
             await register(values).unwrap();
             navigate("/login");
         } catch (error) {
-            const message =
-                (error as { data?: { error?: string } })?.data?.error ||
-                "Something went wrong!";
+            const message = (error as { data?: { error?: string } })?.data?.error || "Something went wrong!";
             form.setErrors({ email: true, password: message });
         }
     };
@@ -86,7 +81,7 @@ export function Register(props: PaperProps) {
         <Box className={boxStyles.loginScreen}>
             <Paper w="100%" radius="md" p="lg" withBorder {...props}>
                 <Text size="lg" fw={500} c="bright" pb={20}>
-                    Welcome back!
+                    Welcome!
                 </Text>
 
                 <form noValidate onSubmit={form.onSubmit(handleRegister)}>
@@ -96,12 +91,7 @@ export function Register(props: PaperProps) {
                             label="First Name"
                             placeholder="First name"
                             value={form.values.first_name}
-                            onChange={(event) =>
-                                form.setFieldValue(
-                                    "first_name",
-                                    event.currentTarget.value,
-                                )
-                            }
+                            onChange={(event) => form.setFieldValue("first_name", event.currentTarget.value)}
                             error={form.errors.first_name}
                             radius="md"
                         />
@@ -110,12 +100,7 @@ export function Register(props: PaperProps) {
                             label="Last Name"
                             placeholder="Last name"
                             value={form.values.last_name}
-                            onChange={(event) =>
-                                form.setFieldValue(
-                                    "last_name",
-                                    event.currentTarget.value,
-                                )
-                            }
+                            onChange={(event) => form.setFieldValue("last_name", event.currentTarget.value)}
                             error={form.errors.last_name}
                             radius="md"
                         />
@@ -124,12 +109,7 @@ export function Register(props: PaperProps) {
                             label="Email"
                             placeholder="test@example.com"
                             value={form.values.email}
-                            onChange={(event) =>
-                                form.setFieldValue(
-                                    "email",
-                                    event.currentTarget.value,
-                                )
-                            }
+                            onChange={(event) => form.setFieldValue("email", event.currentTarget.value)}
                             error={form.errors.email && "Invalid email"}
                             radius="md"
                         />
@@ -139,16 +119,8 @@ export function Register(props: PaperProps) {
                             label="Password"
                             placeholder="Your password"
                             value={form.values.password}
-                            onChange={(event) =>
-                                form.setFieldValue(
-                                    "password",
-                                    event.currentTarget.value,
-                                )
-                            }
-                            error={
-                                form.errors.password &&
-                                "Password should include at least 6 characters"
-                            }
+                            onChange={(event) => form.setFieldValue("password", event.currentTarget.value)}
+                            error={form.errors.password && "Password should include at least 6 characters"}
                             radius="md"
                         />
                         <PasswordInput
@@ -156,16 +128,8 @@ export function Register(props: PaperProps) {
                             label="Password again"
                             placeholder="Confirm your password"
                             value={form.values.password_confirmation}
-                            onChange={(event) =>
-                                form.setFieldValue(
-                                    "password_confirmation",
-                                    event.currentTarget.value,
-                                )
-                            }
-                            error={
-                                form.errors.password_confirmation &&
-                                "Passwords must match"
-                            }
+                            onChange={(event) => form.setFieldValue("password_confirmation", event.currentTarget.value)}
+                            error={form.errors.password_confirmation && "Passwords must match"}
                             radius="md"
                         />
                     </Stack>

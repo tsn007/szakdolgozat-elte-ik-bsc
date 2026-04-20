@@ -17,7 +17,7 @@ class CreateReservationSerializer(serializers.ModelSerializer):
 
         if from_date > to_date:
             raise serializers.ValidationError({
-                "form_date": "The start date can not be later than the end date."
+                "from_date": "The start date can not be later than the end date."
             })
         
         overlapping_reservations = Reservation.objects.filter(

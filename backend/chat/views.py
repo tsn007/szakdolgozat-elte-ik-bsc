@@ -82,7 +82,7 @@ class ConversationMessagesView(generics.ListCreateAPIView):
                 }
             )
         },
-        description="A beszélgetésben lévő, a másik fél által küldött olvasatlan üzenetek olvasottá tétele."
+        description="is_read state of other person"
     )
 class MarkMessagesReadView(APIView):
     def post(self, request, conversation_id):
