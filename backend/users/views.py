@@ -206,8 +206,8 @@ class DeleteLocation(generics.DestroyAPIView):
         instance = self.get_object()
         try:
             self.perform_destroy(instance)
-        except ProtectedError as e:
-            return Response({"detail": str(e)}, status=status.HTTP_423_LOCKED)
+        except ProtectedError:
+            return Response({"detail": "This location cannot be deleted because it is currently assigned to an item."}, status=status.HTTP_423_LOCKED)
         return Response(status=204)
     
 class UpdateProfilePicture(generics.UpdateAPIView):

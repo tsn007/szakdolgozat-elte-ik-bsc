@@ -90,7 +90,7 @@ export function AddEditNewAddress({ opened, close, userCoords, userAddress, loca
             finalLat = String(selectedLocation.lat.toFixed(MAX_NUMBER_OF_DIGITS));
             finalLng = String(selectedLocation.lng.toFixed(MAX_NUMBER_OF_DIGITS));
             const addr = selectedLocation.address;
-            finalAddressString = `${addr.postcode || ""}, ${addr.city || addr.town || addr.village || ""}, ${addr.road || ""} ${userExtra}`;
+            finalAddressString = `${addr.postcode || ""}, ${addr.city || addr.town || addr.village || ""}, ${addr.road || ""}${userExtra}`;
         } else if (location) {
             finalLat = String(location.lat);
             finalLng = String(location.lng);
@@ -100,11 +100,11 @@ export function AddEditNewAddress({ opened, close, userCoords, userAddress, loca
             const roadParts = splitAddr[2]?.trim().split(" ") || [];
             const roadName = roadParts.slice(0, -1).join(" ");
 
-            finalAddressString = `${zip.trim()}, ${city.trim()}, ${roadName} ${userExtra}`;
+            finalAddressString = `${zip.trim()}, ${city.trim()}, ${roadName}${userExtra}`;
         } else if (userCoords && userAddress) {
             finalLat = String(userCoords.lat.toFixed(MAX_NUMBER_OF_DIGITS));
             finalLng = String(userCoords.lng.toFixed(MAX_NUMBER_OF_DIGITS));
-            finalAddressString = `${userAddress.postcode || ""}, ${userAddress.city || userAddress.town || userAddress.village || ""}, ${userAddress.road || ""} ${userExtra}`;
+            finalAddressString = `${userAddress.postcode || ""}, ${userAddress.city || userAddress.town || userAddress.village || ""}, ${userAddress.road || ""}${userExtra}`;
         } else {
             return;
         }
@@ -125,6 +125,7 @@ export function AddEditNewAddress({ opened, close, userCoords, userAddress, loca
                 }
                 handleClose();
             } catch (e) {
+                console.log(e);
                 showCustomNotification({
                     id: "server-error",
                     title: "Error",
@@ -136,7 +137,14 @@ export function AddEditNewAddress({ opened, close, userCoords, userAddress, loca
     };
 
     return (
-        <Modal radius="lg" opened={opened} onClose={handleClose} zIndex={1000} size="lg" title={<ModalText title="New address" />}>
+        <Modal
+            radius="lg"
+            opened={opened}
+            onClose={handleClose}
+            zIndex={1000}
+            size="lg"
+            title={<ModalText title={location ? "Edit address" : "New address"} />}
+        >
             <Box style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "20px" }}>
                 <TextInput
                     radius="md"
