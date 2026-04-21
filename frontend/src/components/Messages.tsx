@@ -20,13 +20,21 @@ export function Messages() {
 
     return (
         <Flex gap="xl" h="calc(100vh - 100px)" p="md">
-            <Paper bg="light-dark(var(--mantine-color-beige-1), var(--mantine-color-dark-6))" radius="md" p={10}>
-                <ScrollArea w={350}>
+            <Paper
+                bg="light-dark(var(--mantine-color-beige-1), var(--mantine-color-dark-6))"
+                radius="md"
+                p={10}
+                miw={200}
+                maw={350}
+                style={{ flex: "0 1 350px" }}
+            >
+                <ScrollArea w="100%" h="100%">
                     <Text fw={500} size="30px" mb={50} ml={10} mt={10}>
                         Conversations
                     </Text>
                     {conversations?.map((conversation) => (
                         <Card
+                            w="100%"
                             key={conversation.id}
                             radius="md"
                             p={10}
@@ -54,13 +62,15 @@ export function Messages() {
                             </Flex>
                         </Card>
                     ))}
-                    {(!conversations || conversations.length === 0) &&
-                        <Text w="100%" ta="center" c="dimmed" fs="italic">No conversations yet!</Text>
-                    }
+                    {(!conversations || conversations.length === 0) && (
+                        <Text w="100%" ta="center" c="dimmed" fs="italic">
+                            No conversations yet!
+                        </Text>
+                    )}
                 </ScrollArea>
             </Paper>
-            <Box style={{ flex: 1 }} h="100%">
-                <ConversationWindow convId={activeConvo} />
+            <Box style={{ flex: 1 }} h="100%" w="100%">
+                <ConversationWindow key={activeConvo} convId={activeConvo} />
             </Box>
         </Flex>
     );

@@ -3,19 +3,24 @@ import { useCreateMessageMutation, useGetConversationMessagesQuery, useMarkAsRea
 import { MessageBubble } from "./MessageBubble";
 import { useUserData } from "../hooks/userLocation";
 import { IconCirclePlus } from "@tabler/icons-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import { getApiErrorMessage } from "../utils/errors";
 import { showCustomNotification } from "../utils/notifications";
 
 export function ConversationWindow({ convId }: { convId: string }) {
-    const { data: messages } = useGetConversationMessagesQuery(convId, {
-        skip: !convId,
-    });
+    const [page, setPage] = useState(1);
+    const { data: messages, isFetching } = useGetConversationMessagesQuery({ convId, page }, { skip: !convId });
     const [markAsRead] = useMarkAsReadMutation();
     const [sendMessage, { isLoading }] = useCreateMessageMutation();
     const { user } = useUserData();
+
     const inputRef = useRef<HTMLInputElement>(null);
     const viewportRef = useRef<HTMLDivElement>(null);
+    const distanceFromBottomRef = useRef(0);
+    const isLoadingOlderRef = useRef(false);
+    const messagesLengthRef = useRef(0);
+
+    const SPACE_FROM_TOP = 50;
 
     const scrollToBottom = () => {
         if (viewportRef.current) {
@@ -45,18 +50,27 @@ export function ConversationWindow({ convId }: { convId: string }) {
         if (convId) {
             markAsRead(convId);
         }
-    }, [convId, messages, markAsRead]);
+    }, [convId, markAsRead]);
 
-    useEffect(() => {
-        const frame = requestAnimationFrame(() => {
+    useLayoutEffect(() => {
+        if (!viewportRef.current || !messages?.results) return;
+
+        const currentLength = messages.results.length;
+        const prevLength = messagesLengthRef.current;
+        messagesLengthRef.current = currentLength;
+
+        if (prevLength === 0 && currentLength > 0) {
             scrollToBottom();
-        });
-        return () => cancelAnimationFrame(frame);
-    }, [messages]);
+            return;
+        }
 
-    useEffect(() => {
-        scrollToBottom();
-    }, [convId]);
+        if (isLoadingOlderRef.current) {
+            viewportRef.current.scrollTop = viewportRef.current.scrollHeight - distanceFromBottomRef.current;
+            isLoadingOlderRef.current = false;
+        } else if (currentLength > prevLength) {
+            scrollToBottom();
+        }
+    }, [messages?.results]);
 
     if (convId.length === 0) {
         return (
@@ -70,7 +84,21 @@ export function ConversationWindow({ convId }: { convId: string }) {
 
     return (
         <Flex direction="column" h="100%" style={{ flex: 1, position: "relative" }}>
-            <ScrollArea viewportRef={viewportRef} style={{ flex: 1 }} p="md">
+            <ScrollArea
+                viewportRef={viewportRef}
+                style={{ flex: 1 }}
+                p="md"
+                onScrollPositionChange={({ y }) => {
+                    if (viewportRef.current) {
+                        distanceFromBottomRef.current = viewportRef.current.scrollHeight - y;
+                    }
+
+                    if (y < SPACE_FROM_TOP && !isFetching && messages?.next) {
+                        isLoadingOlderRef.current = true;
+                        setPage((prev) => prev + 1);
+                    }
+                }}
+            >
                 <Flex direction="column" gap="xs">
                     {(!messages || messages.results.length === 0) && (
                         <Text ta="center" c="dimmed">

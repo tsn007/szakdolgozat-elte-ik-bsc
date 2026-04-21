@@ -14,6 +14,10 @@ type CreateMsgResp =
     paths["/api/chat/conversations/{conversation_id}/messages/"]["post"]["responses"]["201"]["content"]["application/json"];
 type ReadResp =
     paths["/api/chat/conversations/{conversation_id}/read/"]["post"]["responses"]["200"]["content"]["application/json"];
+type ConversationMsgsReq = {
+    convId: string;
+    page: number;
+};
 
 export const chatApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -23,12 +27,34 @@ export const chatApi = baseApi.injectEndpoints({
                 method: "GET",
             }),
         }),
-        getConversationMessages: builder.query<MessageResponse, string>({
-            query: (convId) => ({
+        getConversationMessages: builder.query<MessageResponse, ConversationMsgsReq>({
+            query: ({ convId, page }) => ({
                 url: `api/chat/conversations/${convId}/messages/`,
                 method: "GET",
+                params: { page },
             }),
-            async onCacheEntryAdded(convId, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
+
+            serializeQueryArgs: ({ queryArgs }) => {
+                return queryArgs.convId;
+            },
+
+            merge: (currentCache, newItems, { arg }) => {
+                if (arg.page === 1) {
+                    currentCache.results = newItems.results;
+                } else {
+                    currentCache.results.push(...newItems.results);
+                }
+
+                currentCache.next = newItems.next;
+                currentCache.previous = newItems.previous;
+                currentCache.count = newItems.count;
+            },
+
+            forceRefetch({ currentArg, previousArg }) {
+                return currentArg?.page !== previousArg?.page;
+            },
+
+            async onCacheEntryAdded({ convId }, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
                 const ws = new WebSocket(`ws://localhost:8080/ws/chat/${convId}/`);
 
                 try {
