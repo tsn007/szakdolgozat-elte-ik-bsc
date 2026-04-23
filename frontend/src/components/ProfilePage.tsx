@@ -10,6 +10,7 @@ import {
     FileButton,
     Menu,
     Indicator,
+    Flex,
 } from "@mantine/core";
 import { useUserData } from "../hooks/userLocation";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
@@ -110,11 +111,21 @@ export function ProfilePage() {
     return (
         <>
             <Container size="lg">
-                <Box w="100%" style={{ display: "flex", alignItems: "flex-end", gap: "20px" }}>
+                <Flex w="100%" align={{ base: "flex-start", sm: "flex-end" }} gap="20px">
                     <ProfilePic profilePic={user?.profile_pic} />
-                    <Box w="100%" mb={20} style={{ display: "flex", justifyContent: "space-between" }}>
+                    <Flex
+                        w="100%"
+                        mb={20}
+                        mt={{ base: 20, sm: 0 }}
+                        direction={{ base: "column", sm: "row" }}
+                        justify="space-between"
+                        align={{ base: "flex-start", sm: "flex-end" }}
+                        gap="md"
+                    >
                         <Box style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                            <Text size="3vw">{user?.first_name + " " + user?.last_name}</Text>
+                            <Text miw={{ base: "100%", sm: 500 }} fz="clamp(24px, 3vw, 40px)">
+                                {user?.first_name + " " + user?.last_name}
+                            </Text>
                             <Box style={{ display: "flex", gap: "10px" }}>
                                 <Button radius="md" onClick={handleOpen}>
                                     Upload item
@@ -127,11 +138,23 @@ export function ProfilePage() {
                             <Rating fractions={10} readOnly value={Number(user?.rating || 0)} />
                             <Text>{`(${user?.rating})`}</Text>
                         </Box>
-                    </Box>
-                </Box>
+                    </Flex>
+                </Flex>
                 <Box style={{ display: "flex", gap: "30px" }} mt={50}>
                     <Tabs value={activeTab} onChange={(value) => navigate(value as string)} w="100%">
-                        <Tabs.List>
+                        <Tabs.List
+                            style={{
+                                flexWrap: "nowrap",
+                                overflowX: "auto",
+                                scrollbarWidth: "none",
+                                paddingTop: "10px",
+                            }}
+                            styles={{
+                                list: {
+                                    "&::-webkit-scrollbar": { display: "none" },
+                                },
+                            }}
+                        >
                             {profileItems.map((item) => (
                                 <Menu trigger="click-hover" key={item.to}>
                                     <Indicator
@@ -216,8 +239,8 @@ function ProfilePic({ profilePic }: { profilePic: string | undefined | null }) {
             {(fileButtonProps) => (
                 <Box {...fileButtonProps} ref={ref} pos="relative" style={{ flexShrink: 0, cursor: "pointer" }}>
                     <Avatar
-                        size="clamp(80px, 15vw, 250px)"
-                        radius="clamp(10px, 5vw, 80px)"
+                        size="clamp(150px, 15vw, 250px)"
+                        radius="clamp(40px, 5vw, 80px)"
                         src={profilePic}
                         style={{ aspectRatio: "1 / 1" }}
                     />

@@ -1,13 +1,13 @@
-import { Text, Box, TextInput, ScrollArea, Flex, Button } from "@mantine/core";
+import { Text, Box, TextInput, ScrollArea, Flex, Button, ActionIcon } from "@mantine/core";
 import { useCreateMessageMutation, useGetConversationMessagesQuery, useMarkAsReadMutation } from "../redux/chatApi";
 import { MessageBubble } from "./MessageBubble";
 import { useUserData } from "../hooks/userLocation";
-import { IconCirclePlus } from "@tabler/icons-react";
+import { IconArrowLeft, IconCirclePlus } from "@tabler/icons-react";
 import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import { getApiErrorMessage } from "../utils/errors";
 import { showCustomNotification } from "../utils/notifications";
 
-export function ConversationWindow({ convId }: { convId: string }) {
+export function ConversationWindow({ convId, onBack }: { convId: string; onBack?: () => void }) {
     const [page, setPage] = useState(1);
     const { data: messages, isFetching } = useGetConversationMessagesQuery({ convId, page }, { skip: !convId });
     const [markAsRead] = useMarkAsReadMutation();
@@ -52,6 +52,14 @@ export function ConversationWindow({ convId }: { convId: string }) {
         }
     }, [convId, markAsRead]);
 
+    useEffect(() => {
+        if (!convId || !messages?.results || messages.results.length === 0) return;
+        const latestMsg = messages.results[0];
+        if (user?.email && latestMsg.sender.email !== user.email) {
+            markAsRead(convId);
+        }
+    }, [messages?.results, convId, markAsRead, user?.email]);
+
     useLayoutEffect(() => {
         if (!viewportRef.current || !messages?.results) return;
 
@@ -84,6 +92,15 @@ export function ConversationWindow({ convId }: { convId: string }) {
 
     return (
         <Flex direction="column" h="100%" style={{ flex: 1, position: "relative" }}>
+            {onBack && (
+                <Flex p="sm" align="center" style={{ borderBottom: "1px solid var(--mantine-color-default-border)" }}>
+                    <ActionIcon variant="subtle" onClick={onBack} size="lg" mr="sm">
+                        <IconArrowLeft />
+                    </ActionIcon>
+                    <Text fw={500}>Back to conversations</Text>
+                </Flex>
+            )}
+
             <ScrollArea
                 viewportRef={viewportRef}
                 style={{ flex: 1 }}

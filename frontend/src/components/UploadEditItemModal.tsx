@@ -23,6 +23,7 @@ import { useForm } from "@mantine/form";
 import type { components } from "../types/schema";
 import { getApiErrorMessage } from "../utils/errors";
 import { showCustomNotification } from "../utils/notifications";
+import { useMediaQuery } from "@mantine/hooks";
 
 type ModalTypes = {
     opened: boolean;
@@ -46,6 +47,7 @@ export function UploadEditItemModal({ opened, close, dropzoneProps, locations, i
     const [files, setFiles] = useState<FileWithPath[]>([]);
     const [createItem, { isLoading: isCreateLoading }] = useCreateItemMutation();
     const [editItem, { isLoading: isEditLoading }] = useEditItemMutation();
+    const isMobile = useMediaQuery("(max-width: 48em)");
     const form = useForm({
         mode: "uncontrolled",
         initialValues: {
@@ -118,6 +120,7 @@ export function UploadEditItemModal({ opened, close, dropzoneProps, locations, i
             onClose={handleClose}
             title={<ModalText title={itemEdit ? "Edit item" : "Upload item"} />}
             size="lg"
+            fullScreen={isMobile}
             padding="xl"
             radius="lg"
         >

@@ -1,4 +1,4 @@
-import { Accordion, Box, Container, UnstyledButton, Text } from "@mantine/core";
+import { Accordion, Box, Container, UnstyledButton, Text, Flex } from "@mantine/core";
 import buttonStyles from "../css/Button.module.css";
 import { Outlet, useNavigate, useSearchParams } from "react-router-dom";
 import { useGetAllItemsQuery, type ItemsResponse } from "../redux/itemsApi";
@@ -128,30 +128,34 @@ export function SearchLayout() {
                     </Text>
                 </UnstyledButton>
             </Box>
-            <Container
-                fluid
-                style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: "20px",
-                }}
-            >
-                <Box
-                    w="15vw"
-                    miw={220}
-                    style={{
-                        position: "sticky",
-                        top: "130px",
-                        maxHeight: "calc(100vh - 40px)",
-                        overflowY: "auto",
-                        scrollbarWidth: "none",
-                    }}
+            <Container fluid>
+                <Flex
+                    direction={{ base: "column", md: "row" }}
+                    align={{ base: "stretch", md: "flex-start" }}
+                    gap="20px"
                 >
-                    <Accordion variant="filled" radius="lg" multiple>
-                        {itemFilters}
-                    </Accordion>
-                </Box>
-                {!items || <Outlet context={{ items, userCoords, setPage, page } satisfies SearchContextType} />}
+                    <Box
+                        w={{ base: "100%", md: "15vw" }}
+                        miw={220}
+                        pos={{ base: "static", md: "sticky" }}
+                        top={{ md: 130 }}
+                        style={{
+                            maxHeight: "calc(100vh - 40px)",
+                            overflowY: "auto",
+                            scrollbarWidth: "none",
+                        }}
+                    >
+                        <Accordion variant="filled" radius="lg" multiple>
+                            {itemFilters}
+                        </Accordion>
+                    </Box>
+
+                    <Box flex={1} w="100%">
+                        {!items || (
+                            <Outlet context={{ items, userCoords, setPage, page } satisfies SearchContextType} />
+                        )}
+                    </Box>
+                </Flex>
             </Container>
         </>
     );

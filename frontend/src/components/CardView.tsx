@@ -10,7 +10,7 @@ export function CardView() {
     return (
         <>
             <Container fluid maw={1600}>
-                <Grid pr={50} style={{ flex: 1 }}>
+                <Grid pr={{ base: 0, md: 50 }} style={{ flex: 1 }}>
                     {items.results?.map((item) => (
                         <Grid.Col
                             span={{
@@ -26,7 +26,7 @@ export function CardView() {
                         </Grid.Col>
                     ))}
                 </Grid>
-                <Group justify="center" pr={50} pt={80} pb={40}>
+                <Group justify="center" pr={{ base: 0, md: 50 }} pt={80} pb={40}>
                     <Pagination total={totalPages} radius="md" onChange={setPage} value={page} />
                 </Group>
             </Container>

@@ -24,7 +24,7 @@ export function StaffUserView() {
                     <UserDataCard user={user} />
                 ))}
             </Box>
-            <Group justify="center" pr={50} pt={80} pb={40}>
+            <Group justify="center" pt={80}>
                 <Pagination total={totalPages} radius="md" onChange={setPage} value={page} />
             </Group>
         </Container>

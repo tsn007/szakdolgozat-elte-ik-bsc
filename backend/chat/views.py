@@ -14,7 +14,7 @@ from chat.serializers import ConversationSerializer, CreateMessageSerializer, Me
 from chat.models import Conversation, Message
 
 class MessagePagination(PageNumberPagination):
-    page_size = 10
+    page_size = 20
 
 class GetConversations(generics.ListAPIView):
     serializer_class = ConversationSerializer

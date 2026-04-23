@@ -1,7 +1,7 @@
 import {
     Anchor,
-    Box,
     Button,
+    Container,
     Group,
     Paper,
     type PaperProps,
@@ -11,7 +11,6 @@ import {
     TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import boxStyles from "../css/Login.module.css";
 import { useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../redux/authApi";
 import { useDispatch } from "react-redux";
@@ -37,7 +36,7 @@ export function Login(props: PaperProps) {
 
         validate: {
             email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
-            password: (val) => (val.length === 0 ? "Please provide your password" : null)
+            password: (val) => (val.length === 0 ? "Please provide your password" : null),
         },
     });
 
@@ -54,7 +53,7 @@ export function Login(props: PaperProps) {
     };
 
     return (
-        <Box className={boxStyles.loginScreen}>
+        <Container size="sm" mt={{ base: 0, md: 20 }}>
             <Paper w="100%" radius="md" p="lg" withBorder {...props}>
                 <Text size="lg" fw={500} c="bright" pb={20}>
                     Welcome back!
@@ -96,6 +95,6 @@ export function Login(props: PaperProps) {
                     </Group>
                 </form>
             </Paper>
-        </Box>
+        </Container>
     );
 }

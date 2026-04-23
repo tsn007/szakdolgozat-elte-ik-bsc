@@ -98,6 +98,7 @@ export const Navbar = ({ isGuest, searchOpened, searchClose, searchOpen, searchT
                                 size="xl"
                                 c={colorScheme === "dark" ? "white" : "var(--mantine-color-dark-6)"}
                                 style={{ letterSpacing: "-0.5px" }}
+                                visibleFrom="md"
                             >
                                 ShareHood
                             </Text>
@@ -141,7 +142,10 @@ export const Navbar = ({ isGuest, searchOpened, searchClose, searchOpen, searchT
 
                     {!isGuest && (
                         <>
-                            <Box style={{ position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
+                            <Box
+                                visibleFrom="md"
+                                style={{ position: "absolute", left: "50%", transform: "translateX(-50%)" }}
+                            >
                                 <TextInput
                                     w={500}
                                     placeholder="Search"
@@ -169,9 +173,9 @@ export const Navbar = ({ isGuest, searchOpened, searchClose, searchOpen, searchT
                                         </Tooltip>
                                         <Menu radius="md" trigger="hover" position="bottom-end" zIndex={1000}>
                                             <Menu.Target>
-                                                <Avatar radius="xl" src={user?.profile_pic} />
+                                                <Avatar visibleFrom="md" radius="xl" src={user?.profile_pic} />
                                             </Menu.Target>
-                                            <Menu.Dropdown>
+                                            <Menu.Dropdown visibleFrom="md">
                                                 {user?.is_staff && (
                                                     <>
                                                         <Menu.Label>Staff</Menu.Label>
@@ -212,7 +216,7 @@ export const Navbar = ({ isGuest, searchOpened, searchClose, searchOpen, searchT
                                         </Menu>
                                     </Box>
                                 ) : (
-                                    <Box style={{ display: "flex", gap: "10px" }}>
+                                    <Box visibleFrom="md" style={{ display: "flex", gap: "10px" }}>
                                         <Button variant="outline" radius="md" onClick={() => navigate("/register")}>
                                             Sign up
                                         </Button>
@@ -225,40 +229,143 @@ export const Navbar = ({ isGuest, searchOpened, searchClose, searchOpen, searchT
                         </>
                     )}
 
-                    <Burger opened={mobileNavOpen} onClick={mobileNavToggle} hiddenFrom="md" color="white" />
+                    <Burger opened={mobileNavOpen} onClick={mobileNavToggle} hiddenFrom="md" />
                 </Group>
             </Container>
 
-            <Drawer //mobile navbar!!!
+            <Drawer
                 opened={mobileNavOpen}
                 onClose={mobileNavClose}
                 size="100%"
                 padding="md"
                 title="Menu"
                 hiddenFrom="md"
-                styles={{
-                    header: { backgroundColor: "#0f172a", color: "white" },
-                    content: { backgroundColor: "#0f172a", color: "white" },
-                    close: { color: "white" },
-                }}
+                zIndex={1000}
             >
                 <Stack gap="md" mt="xl">
+                    {!isGuest && (
+                        <TextInput
+                            placeholder="Search"
+                            radius="lg"
+                            readOnly
+                            onClick={() => {
+                                searchOpen();
+                                mobileNavClose();
+                            }}
+                            leftSection={<IconSearch size={20} />}
+                            value={searchTerm}
+                        />
+                    )}
+
                     {links.map((link) => (
                         <Text
                             className={textStyles.navbarLinks}
                             key={link.title}
-                            component="a"
-                            href="#"
+                            component={Link}
+                            to={link.to}
                             size="lg"
                             fw={500}
                             onClick={mobileNavClose}
+                            c="white"
                         >
                             {link.title}
                         </Text>
                     ))}
-                    <Button fullWidth size="lg" radius="md" color="blue" onClick={mobileNavClose}>
-                        Get Started
-                    </Button>
+
+                    {!isGuest && isAuthenticated ? (
+                        <>
+                            <Text size="sm" fw={700} c="dimmed" mt="md">
+                                Account
+                            </Text>
+
+                            {user?.is_staff && (
+                                <Button
+                                    variant="subtle"
+                                    color="gray"
+                                    justify="flex-start"
+                                    leftSection={<IconBan size={20} />}
+                                    onClick={() => {
+                                        navigate("/users");
+                                        mobileNavClose();
+                                    }}
+                                >
+                                    Ban Users
+                                </Button>
+                            )}
+
+                            {profileMenuData.map((item) => {
+                                const Icon = item.icon;
+                                return (
+                                    <Button
+                                        key={item.title}
+                                        variant="subtle"
+                                        color="gray"
+                                        justify="flex-start"
+                                        leftSection={<Icon size={20} />}
+                                        onClick={() => {
+                                            navigate(item.to);
+                                            mobileNavClose();
+                                        }}
+                                    >
+                                        {item.title}
+                                    </Button>
+                                );
+                            })}
+
+                            <Button
+                                variant="subtle"
+                                color="gray"
+                                justify="flex-start"
+                                leftSection={colorScheme === "dark" ? <IconSun size={20} /> : <IconMoon size={20} />}
+                                onClick={() => setColorScheme(toggleVal)}
+                            >
+                                {`${toggleVal.charAt(0).toUpperCase() + toggleVal.slice(1)} mode`}
+                            </Button>
+
+                            <Button
+                                variant="filled"
+                                color="red"
+                                mt="xl"
+                                leftSection={<IconLogout size={20} />}
+                                onClick={() => {
+                                    handleLogout();
+                                    mobileNavClose();
+                                }}
+                                radius="md"
+                            >
+                                Logout
+                            </Button>
+                        </>
+                    ) : (
+                        <Stack gap="sm" mt="md">
+                            <Button
+                                fullWidth
+                                size="lg"
+                                radius="md"
+                                color="blue"
+                                onClick={() => {
+                                    navigate("/register");
+                                    mobileNavClose();
+                                }}
+                            >
+                                Get Started
+                            </Button>
+                            {!isAuthenticated && (
+                                <Button
+                                    fullWidth
+                                    variant="outline"
+                                    size="lg"
+                                    radius="md"
+                                    onClick={() => {
+                                        navigate("/login");
+                                        mobileNavClose();
+                                    }}
+                                >
+                                    Login
+                                </Button>
+                            )}
+                        </Stack>
+                    )}
                 </Stack>
             </Drawer>
             <SearchResults

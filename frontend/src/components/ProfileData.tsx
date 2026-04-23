@@ -136,7 +136,11 @@ export function ProfileData() {
     return (
         <Container fluid mt={30} style={{ display: "flex" }}>
             <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="60px" w="100%">
-                <Box style={{ position: "sticky", top: "95px", alignSelf: "flex-start" }}>
+                <Box
+                    pos={{ base: "static", md: "sticky" }}
+                    top={{ base: "auto", md: 95 }}
+                    style={{ alignSelf: "flex-start" }}
+                >
                     <PersonalDetailsForm user={user} />
                 </Box>
                 <Box>

@@ -18,11 +18,14 @@ export function Reviews() {
                 const createdAt = new Date(review.created_at);
                 const ms = now - createdAt.getTime();
                 return (
-                    <Container
+                    <Flex
                         key={review.id}
-                        fluid
                         mb={40}
-                        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "20px" }}
+                        w="100%"
+                        direction={{ base: "column-reverse", sm: "row" }}
+                        justify="space-between"
+                        align={{ base: "flex-start", sm: "center" }}
+                        gap={{ base: "sm", sm: "xl" }}
                     >
                         <Flex align="flex-start" gap={10}>
                             <Avatar src={review.sender.profile_pic} />
@@ -40,7 +43,7 @@ export function Reviews() {
                             </Box>
                         </Flex>
                         <Rating fractions={10} readOnly value={Number(review.point || 0)}></Rating>
-                    </Container>
+                    </Flex>
                 );
             })}
         </Container>

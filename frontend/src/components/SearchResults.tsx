@@ -9,6 +9,7 @@ import {
     Transition,
     RemoveScroll,
     Loader,
+    Button,
 } from "@mantine/core";
 import { SearchResultItemCard } from "./SearchResultItemCard";
 import { IconSearch, IconShare } from "@tabler/icons-react";
@@ -51,14 +52,18 @@ export function SearchResults({ opened, close, searchTerm, setSearchTerm }: Sear
         setLocalSearch("");
     };
 
+    const handleSearch = () => {
+        setSearchTerm(localSearch);
+        handleClose();
+        navigate("/browse/list");
+    };
+
     useWindowEvent("keydown", (event) => {
         if (event.key === "Escape" && opened) {
             handleClose();
         }
         if (event.key === "Enter" && opened) {
-            setSearchTerm(localSearch);
-            handleClose();
-            navigate("/browse/list");
+            handleSearch();
         }
     });
 
@@ -113,6 +118,7 @@ export function SearchResults({ opened, close, searchTerm, setSearchTerm }: Sear
                                             letterSpacing: "-0.5px",
                                             color: "light-dark(var(--mantine-color-dark-6), white)",
                                         }}
+                                        visibleFrom="md"
                                     >
                                         ShareHood
                                     </Text>
@@ -139,15 +145,36 @@ export function SearchResults({ opened, close, searchTerm, setSearchTerm }: Sear
                             <Box style={{ position: "relative", minHeight: "150px" }}>
                                 {isFetching && <Loader />}
                                 {localSearch.length > 0 && (
-                                    <Box style={{ display: "flex", flexDirection: "row", gap: "10px" }} p={30}>
-                                        {data?.results.map((item) => (
-                                            <SearchResultItemCard
-                                                key={item.id}
-                                                item={item}
-                                                onClick={() => handleClick(item.id)}
-                                            />
-                                        ))}
-                                    </Box>
+                                    <>
+                                        <Box
+                                            style={{
+                                                display: "flex",
+                                                flexDirection: "row",
+                                                gap: "10px",
+                                                overflowX: "auto",
+                                                scrollSnapType: "x mandatory",
+                                                paddingBottom: "15px",
+                                            }}
+                                            p={30}
+                                        >
+                                            {data?.results.map((item) => (
+                                                <Box
+                                                    key={item.id}
+                                                    w="100%"
+                                                    miw={{ base: "60vw", md: 0 }}
+                                                    style={{ scrollSnapAlign: "start" }}
+                                                >
+                                                    <SearchResultItemCard
+                                                        item={item}
+                                                        onClick={() => handleClick(item.id)}
+                                                    />
+                                                </Box>
+                                            ))}
+                                        </Box>
+                                        <Button hiddenFrom="md" radius="md" mt={20} w="100%" onClick={handleSearch}>
+                                            Search
+                                        </Button>
+                                    </>
                                 )}
                             </Box>
                         </Container>

@@ -146,196 +146,223 @@ export function ItemDetailsPage() {
     return (
         <>
             <Container size="lg">
-                <Container pb={50} size="lg" style={{ display: "flex", gap: "70px", alignItems: "flex-start" }}>
-                    <Box w={500} style={{ position: "sticky", top: "95px" }}>
-                        <Carousel
-                            w={500}
-                            getEmblaApi={setEmbla}
-                            emblaOptions={{ watchDrag: false }}
-                            withControls={false}
-                            className="prevent-select"
-                        >
-                            {allImgs.map((img) => (
-                                <Carousel.Slide key={img.id}>
-                                    <AspectRatio ratio={4 / 3}>
-                                        <Image radius="lg" src={img.image} fit="contain" bg={slideBgColor} />
-                                    </AspectRatio>
-                                </Carousel.Slide>
-                            ))}
-                        </Carousel>
-                        <Group justify="center" mt={-30} pos="relative" bottom={35} left={175}>
-                            <IconArrowLeft
-                                size={40}
-                                onClick={() => handlePrev(selectedIndex)}
-                                className={iconStyles.stepper}
-                                color="light-dark(var(--mantine-color-white), black)"
-                            />
-                            <IconArrowRight
-                                size={40}
-                                onClick={() => handleNext(selectedIndex)}
-                                className={iconStyles.stepper}
-                                color="light-dark(var(--mantine-color-white), black)"
-                            />
-                        </Group>
-                        <Box style={{ display: "flex", gap: "10px", width: "100%", justifyContent: "center" }}>
-                            <Carousel withControls={false} w="100%" slideSize="1%">
+                <Flex direction={{ base: "column", md: "row" }} gap={{ base: "xl", md: 70 }} pb={50} align="flex-start">
+                    <Box w={{ base: "100%", md: 500 }} pos={{ base: "static", md: "sticky" }} top={95}>
+                        <Box pos="relative" w="100%">
+                            <Carousel
+                                w="100%"
+                                getEmblaApi={setEmbla}
+                                emblaOptions={{ watchDrag: false }}
+                                withControls={false}
+                                className="prevent-select"
+                            >
+                                {allImgs.map((img) => (
+                                    <Carousel.Slide key={img.id}>
+                                        <AspectRatio ratio={4 / 3}>
+                                            <Image radius="lg" src={img.image} fit="contain" bg={slideBgColor} />
+                                        </AspectRatio>
+                                    </Carousel.Slide>
+                                ))}
+                            </Carousel>
+
+                            <Group gap="xs" pos="absolute" bottom={15} right={15} style={{ zIndex: 10 }}>
+                                <IconArrowLeft
+                                    size={40}
+                                    onClick={() => handlePrev(selectedIndex)}
+                                    className={iconStyles.stepper}
+                                    color="light-dark(var(--mantine-color-white), black)"
+                                    style={{ cursor: "pointer" }}
+                                />
+                                <IconArrowRight
+                                    size={40}
+                                    onClick={() => handleNext(selectedIndex)}
+                                    className={iconStyles.stepper}
+                                    color="light-dark(var(--mantine-color-white), black)"
+                                    style={{ cursor: "pointer" }}
+                                />
+                            </Group>
+                        </Box>
+
+                        <Box style={{ width: "100%" }}>
+                            <Carousel withControls={false} w="100%" slideSize="auto" slideGap="sm">
                                 {allImgs.map((img, index) => {
                                     const isActive = index === selectedIndex;
-
                                     return (
-                                        <Carousel.Slide key={img.id} py="sm" px="5px">
-                                            <AspectRatio ratio={1 / 1} className="prevent-select">
-                                                <Image
-                                                    src={img.image}
-                                                    radius="lg"
-                                                    w={80}
-                                                    className={carouselStyles.preview}
-                                                    onClick={() => handleSelect(index)}
-                                                    style={{
-                                                        outline: isActive
-                                                            ? "2px solid light-dark(var(--mantine-color-midnight-6), white)"
-                                                            : "",
-                                                        outlineOffset: isActive ? "2px" : "",
-                                                    }}
-                                                />
-                                            </AspectRatio>
+                                        <Carousel.Slide key={img.id} py="sm" px={5}>
+                                            <Image
+                                                src={img.image}
+                                                radius="lg"
+                                                w={80}
+                                                h={80}
+                                                fit="cover"
+                                                className={carouselStyles.preview}
+                                                onClick={() => handleSelect(index)}
+                                                style={{
+                                                    cursor: "pointer",
+                                                    outline: isActive
+                                                        ? "2px solid light-dark(var(--mantine-color-midnight-6), white)"
+                                                        : "none",
+                                                    outlineOffset: isActive ? "2px" : "0",
+                                                }}
+                                            />
                                         </Carousel.Slide>
                                     );
                                 })}
                             </Carousel>
                         </Box>
                     </Box>
-                    <Box style={{ display: "flex", flexDirection: "column", gap: "10px" }} w="100%">
-                        <Card radius="lg" withBorder>
-                            <Card.Section
-                                px={50}
-                                pt={40}
-                                pb={20}
-                                style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-                            >
-                                <Text size="35px" fw={500}>
-                                    {item?.name}
-                                </Text>
-                                <Text size="lg" c="dimmed">
-                                    {item?.category.name}
-                                </Text>
-                                <Box style={{ display: "flex", alignItems: "flex-end" }}>
-                                    <Text fw={400} size="30px">
-                                        {item?.price + "€"}
+
+                    <Box style={{ flex: 1, minWidth: 0 }} w="100%">
+                        <Flex direction="column" gap="md" w="100%">
+                            <Card radius="lg" withBorder>
+                                <Card.Section
+                                    px={{ base: 20, md: 50 }}
+                                    pt={{ base: 20, md: 40 }}
+                                    pb={20}
+                                    style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+                                >
+                                    <Text size="35px" fw={500} lh={1.2}>
+                                        {item?.name}
                                     </Text>
-                                    <Text c="dimmed">/day</Text>
-                                </Box>
-                            </Card.Section>
-                            <Card.Section
-                                px={20}
-                                my={20}
-                                bg="light-dark(var(--mantine-color-beige-1), black)"
-                                style={{ display: "flex", justifyContent: "center", flexDirection: "column" }}
-                            >
-                                <Box pos="relative">
-                                    <Badge size="xl" mt={20} fullWidth color="var(--mantine-color-midnight-6)">
-                                        Choose a date
-                                    </Badge>
-                                    <DatePicker
-                                        type="range"
-                                        value={dates}
-                                        onChange={setDates}
-                                        minDate={new Date()}
-                                        size="md"
-                                        my={30}
-                                        w="100%"
-                                        maxDate={getDynamicMaxDate()}
-                                        styles={{
-                                            calendarHeader: { width: "100%", maxWidth: "100%" },
+                                    <Text size="lg" c="dimmed">
+                                        {item?.category.name}
+                                    </Text>
+                                    <Box style={{ display: "flex", alignItems: "flex-end" }}>
+                                        <Text fw={400} size="30px">
+                                            {item?.price + "€"}
+                                        </Text>
+                                        <Text c="dimmed" mb={4}>
+                                            /day
+                                        </Text>
+                                    </Box>
+                                </Card.Section>
 
-                                            day: {
-                                                width: "100%",
-                                                height: "40px",
-                                                borderRadius: "var(--mantine-radius-md)",
-                                                fontSize: "var(--mantine-font-size-md)",
-                                            },
-
-                                            month: { width: "100%", tableLayout: "fixed" },
-                                            monthsList: { width: "100%", tableLayout: "fixed" },
-                                            yearsList: { width: "100%", tableLayout: "fixed" },
-                                            monthsListControl: {
-                                                width: "100%",
-                                                height: "45px",
-                                                borderRadius: "var(--mantine-radius-md)",
-                                            },
-                                            yearsListControl: {
-                                                width: "100%",
-                                                height: "45px",
-                                                borderRadius: "var(--mantine-radius-md)",
-                                            },
-                                        }}
-                                        excludeDate={isExcluded}
-                                    />
-                                    {!user && (
-                                        <Overlay
-                                            color="#000"
-                                            backgroundOpacity={0.35}
-                                            blur={5}
-                                            style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+                                <Card.Section
+                                    px={{ base: 10, md: 20 }}
+                                    my={20}
+                                    bg="light-dark(var(--mantine-color-beige-1), black)"
+                                    style={{ display: "flex", justifyContent: "center", flexDirection: "column" }}
+                                >
+                                    <Box pos="relative" p={{ base: 10, md: 20 }}>
+                                        <Badge
+                                            size="xl"
+                                            mt={{ base: 0, md: 20 }}
+                                            fullWidth
+                                            color="var(--mantine-color-midnight-6)"
                                         >
-                                            <Paper
-                                                w="50%"
-                                                p={20}
-                                                radius="lg"
-                                                shadow="md"
+                                            Choose a date
+                                        </Badge>
+                                        <DatePicker
+                                            type="range"
+                                            value={dates}
+                                            onChange={setDates}
+                                            minDate={new Date()}
+                                            size="md"
+                                            my={{ base: 15, md: 30 }}
+                                            w="100%"
+                                            maxDate={getDynamicMaxDate()}
+                                            excludeDate={isExcluded}
+                                            styles={{
+                                                calendarHeader: { width: "100%", maxWidth: "100%" },
+
+                                                day: {
+                                                    width: "100%",
+                                                    height: "40px",
+                                                    borderRadius: "var(--mantine-radius-md)",
+                                                    fontSize: "var(--mantine-font-size-md)",
+                                                },
+
+                                                month: { width: "100%", tableLayout: "fixed" },
+                                                monthsList: { width: "100%", tableLayout: "fixed" },
+                                                yearsList: { width: "100%", tableLayout: "fixed" },
+                                                monthsListControl: {
+                                                    width: "100%",
+                                                    height: "45px",
+                                                    borderRadius: "var(--mantine-radius-md)",
+                                                },
+                                                yearsListControl: {
+                                                    width: "100%",
+                                                    height: "45px",
+                                                    borderRadius: "var(--mantine-radius-md)",
+                                                },
+                                            }}
+                                        />
+                                        {!user && (
+                                            <Overlay
+                                                color="#000"
+                                                backgroundOpacity={0.35}
+                                                blur={5}
                                                 style={{
-                                                    backgroundColor: `light-dark(
-                                                        var(--mantine-color-red-0), 
-                                                        color-mix(in srgb, var(--mantine-color-dark-8) 85%, var(--mantine-color-red-9))
-                                                    )`,
+                                                    display: "flex",
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
                                                 }}
                                             >
-                                                <Text ta="center">You have to be logged in to rent this item!</Text>
-                                            </Paper>
-                                        </Overlay>
-                                    )}
-                                </Box>
-                            </Card.Section>
-                            <Card.Section
-                                px={40}
-                                pb={40}
-                                pt={20}
-                                style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-                            >
-                                <Button
-                                    size="lg"
-                                    radius="xl"
-                                    onClick={handleReserve}
-                                    loading={isLoading}
-                                    disabled={!user}
+                                                <Paper
+                                                    w={{ base: "90%", sm: "50%" }}
+                                                    p={20}
+                                                    radius="lg"
+                                                    shadow="md"
+                                                    style={{
+                                                        backgroundColor: `light-dark(
+                                                    var(--mantine-color-red-0), 
+                                                    color-mix(in srgb, var(--mantine-color-dark-8) 85%, var(--mantine-color-red-9))
+                                                )`,
+                                                    }}
+                                                >
+                                                    <Text ta="center">You have to be logged in to rent this item!</Text>
+                                                </Paper>
+                                            </Overlay>
+                                        )}
+                                    </Box>
+                                </Card.Section>
+
+                                <Card.Section
+                                    px={{ base: 20, md: 40 }}
+                                    pb={{ base: 20, md: 40 }}
+                                    pt={{ base: 10, md: 20 }}
                                 >
-                                    Rent this item
-                                </Button>
-                                {/**<Button size="lg" radius="xl" variant="outline">
-                                    Add to favourites
-                                </Button>**/}
-                            </Card.Section>
-                        </Card>
-                        <Box mb={40}>
-                            <Map key={item?.id} item={item} />
-                        </Box>
+                                    <Button
+                                        size="lg"
+                                        radius="xl"
+                                        fullWidth
+                                        onClick={handleReserve}
+                                        loading={isLoading}
+                                        disabled={!user}
+                                    >
+                                        Rent this item
+                                    </Button>
+                                </Card.Section>
+                            </Card>
+
+                            <Box mb={40} mt={10}>
+                                <Map key={item?.id} item={item} />
+                            </Box>
+                        </Flex>
                     </Box>
-                </Container>
-                <Text fw={500} size="xl" mb={15} ml={10}>About the owner</Text>
-                <Card radius="lg" mb={40}>
-                    <Box style={{ display: "flex", gap: "10px" }}>
-                        <Avatar src={item?.owner.profile_pic} />
+                </Flex>
+
+                <Text fw={500} size="xl" mb={15} ml={10}>
+                    About the owner
+                </Text>
+                <Card radius="lg" mb={40} p={{ base: "md", md: "lg" }}>
+                    <Flex align="center" gap="md" wrap="wrap">
+                        <Avatar src={item?.owner.profile_pic} size="lg" />
                         <Box>
-                            <Text>{item?.owner.first_name + " " + item?.owner.last_name}</Text>
-                            <Box style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                            <Text size="lg" fw={500}>
+                                {item?.owner.first_name + " " + item?.owner.last_name}
+                            </Text>
+                            <Flex gap="sm" align="center" wrap="wrap">
                                 <Rating fractions={10} readOnly value={Number(item?.owner?.rating || 0)} />
                                 <Text c="dimmed" fs="italic" size="sm">
                                     {`(${item?.owner.rating_count} reviews)`}
                                 </Text>
-                            </Box>
+                            </Flex>
                         </Box>
-                    </Box>
+                    </Flex>
+
                     <Divider my={20} />
+
                     <Box>
                         {item?.reviews.length === 0 && (
                             <Text w="100%" ta="center" fs="italic" c="dimmed">
@@ -346,34 +373,33 @@ export function ItemDetailsPage() {
                             const createdAt = new Date(review.created_at);
                             const ms = now - createdAt.getTime();
                             return (
-                                <Container
+                                <Flex
                                     key={review.id}
-                                    fluid
                                     mb={40}
-                                    style={{
-                                        display: "flex",
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                        gap: "20px",
-                                    }}
+                                    w="100%"
+                                    direction={{ base: "column-reverse", sm: "row" }}
+                                    justify="space-between"
+                                    align={{ base: "flex-start", sm: "center" }}
+                                    gap={{ base: "xs", sm: "xl" }}
                                 >
                                     <Flex align="flex-start" gap={10}>
                                         <Avatar src={review.sender.profile_pic} />
                                         <Box>
-                                            <Box style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                                <Text
-                                                    size="md"
-                                                    fw={500}
-                                                >{`${review.sender.first_name} ${review.sender.last_name}`}</Text>
+                                            <Flex align="center" gap={10} wrap="wrap">
+                                                <Text size="md" fw={500}>
+                                                    {`${review.sender.first_name} ${review.sender.last_name}`}
+                                                </Text>
                                                 <Text c="dimmed" size="sm">
                                                     {formatTime(ms)}
                                                 </Text>
-                                            </Box>
-                                            <Text size="md">{review.content}</Text>
+                                            </Flex>
+                                            <Text size="md" mt={4}>
+                                                {review.content}
+                                            </Text>
                                         </Box>
                                     </Flex>
-                                    <Rating fractions={10} readOnly value={Number(review.point || 0)}></Rating>
-                                </Container>
+                                    <Rating fractions={10} readOnly value={Number(review.point || 0)} />
+                                </Flex>
                             );
                         })}
                     </Box>

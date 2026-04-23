@@ -8,6 +8,7 @@ import { useAddNewLocationMutation, useEditLocationMutation, type OwnLocation } 
 import type { AddressType } from "./MapSearchBar";
 import { getApiErrorMessage } from "../utils/errors";
 import { showCustomNotification } from "../utils/notifications";
+import { useMediaQuery } from "@mantine/hooks";
 
 type NewAddressProps = {
     opened: boolean;
@@ -41,6 +42,8 @@ export function AddEditNewAddress({ opened, close, userCoords, userAddress, loca
     const [houseNumError, setHouseNumError] = useState(false);
     const floorRef = useRef<HTMLInputElement>(null);
     const doorRef = useRef<HTMLInputElement>(null);
+
+    const isMobile = useMediaQuery("(max-width: 48em)");
 
     const [selectedLocation, setSelectedLocation] = useState<{
         lat: number;
@@ -125,7 +128,6 @@ export function AddEditNewAddress({ opened, close, userCoords, userAddress, loca
                 }
                 handleClose();
             } catch (e) {
-                console.log(e);
                 showCustomNotification({
                     id: "server-error",
                     title: "Error",
@@ -143,6 +145,7 @@ export function AddEditNewAddress({ opened, close, userCoords, userAddress, loca
             onClose={handleClose}
             zIndex={1000}
             size="lg"
+            fullScreen={isMobile}
             title={<ModalText title={location ? "Edit address" : "New address"} />}
         >
             <Box style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "20px" }}>

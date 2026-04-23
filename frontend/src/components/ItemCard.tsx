@@ -3,13 +3,15 @@ import { Card, Group, Text, Button, Image, Box, AspectRatio } from "@mantine/cor
 import type { Item } from "../redux/itemsApi";
 import cardStyles from "../css/Card.module.css";
 import { IconMapPinFilled, IconUserFilled } from "@tabler/icons-react";
-import { useHover } from "@mantine/hooks";
+import { useHover, useMediaQuery } from "@mantine/hooks";
 import { Carousel } from "@mantine/carousel";
 import { useNavigate } from "react-router-dom";
 
 export function ItemCard({ item, isMapPopup }: { item: Item; isMapPopup: boolean }) {
     const { hovered, ref } = useHover();
     const navigate = useNavigate();
+    const isTouch = useMediaQuery("(hover: none)");
+    const showCarousel = (hovered || isTouch) && item.images.length !== 0;
     return (
         <>
             <Card
@@ -24,10 +26,8 @@ export function ItemCard({ item, isMapPopup }: { item: Item; isMapPopup: boolean
             >
                 <Card.Section style={{ overflow: "hidden" }}>
                     <AspectRatio ratio={4 / 3}>
-                        {(!hovered || item.images.length === 0) && (
-                            <Image src={item.cover} w="100%" h="100%" fit="cover" />
-                        )}
-                        {hovered && item.images.length !== 0 && (
+                        {!showCarousel && <Image src={item.cover} w="100%" h="100%" fit="cover" />}
+                        {showCarousel && (
                             <Carousel withIndicators style={{ width: "100%", height: "100%" }}>
                                 <Carousel.Slide>
                                     <Image src={item.cover} w="100%" h="100%" fit="cover" />

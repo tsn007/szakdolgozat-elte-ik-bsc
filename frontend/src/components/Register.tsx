@@ -1,7 +1,7 @@
 import {
     Anchor,
-    Box,
     Button,
+    Container,
     Group,
     Paper,
     type PaperProps,
@@ -11,7 +11,6 @@ import {
     TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import boxStyles from "../css/Login.module.css";
 import { useNavigate } from "react-router-dom";
 import { useRegisterMutation } from "../redux/authApi";
 
@@ -78,7 +77,7 @@ export function Register(props: PaperProps) {
     };
 
     return (
-        <Box className={boxStyles.loginScreen}>
+        <Container size="sm" mt={{ base: 0, md: 20 }}>
             <Paper w="100%" radius="md" p="lg" withBorder {...props}>
                 <Text size="lg" fw={500} c="bright" pb={20}>
                     Welcome!
@@ -151,6 +150,6 @@ export function Register(props: PaperProps) {
                     </Group>
                 </form>
             </Paper>
-        </Box>
+        </Container>
     );
 }

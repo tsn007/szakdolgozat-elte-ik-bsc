@@ -88,9 +88,14 @@ export function InboxCard({ rental, tab }: { rental: Inbox; tab: string | undefi
                         bg="light-dark(var(--mantine-color-beige-2), var(--mantine-color-dark-9))"
                         withBorder
                     >
-                        <Flex justify="space-between" align="center">
+                        <Flex
+                            justify="space-between"
+                            align={{ base: "flex-start", sm: "center" }}
+                            direction={{ base: "column", sm: "row" }}
+                            gap="md"
+                        >
                             <Box>
-                                <Box style={{ display: "flex", gap: "10px" }}>
+                                <Box style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
                                     <IconCalendarFilled size={20} />
                                     <Text size="sm">
                                         {resFrom.toLocaleDateString()} - {resTo.toLocaleDateString()}
@@ -101,7 +106,7 @@ export function InboxCard({ rental, tab }: { rental: Inbox; tab: string | undefi
                                     <Text size="sm">Pick up: {rental.item.location.address}</Text>
                                 </Box>
                             </Box>
-                            <Box style={{ textAlign: "right" }}>
+                            <Box style={{ textAlign: "right", alignSelf: "flex-end" }}>
                                 <Text fw={500} size="sm">
                                     Total:
                                 </Text>

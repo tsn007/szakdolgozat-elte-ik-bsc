@@ -1,4 +1,4 @@
-import { AspectRatio, Box, Card, Text, Divider, Group, ActionIcon, Image } from "@mantine/core";
+import { AspectRatio, Box, Card, Text, Divider, Group, ActionIcon, Image, Flex } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import type { UserItem } from "../redux/itemsApi";
 import { DeletePopup } from "./DeletePopup";
@@ -18,18 +18,28 @@ export function ProfileItemCard({ item }: { item: UserItem }) {
         <>
             <Card
                 radius="lg"
-                h={150}
                 my={20}
                 onClick={() => navigate(`/items/${item.id}`)}
                 className={cardStyles.userItem}
             >
-                <Box mx={10} style={{ display: "flex", gap: "30px", alignItems: "center" }} h="100%">
+                <Flex
+                    direction={{ base: "column", sm: "row" }}
+                    gap={{ base: "md", sm: "30px" }}
+                    align={{ base: "flex-start", sm: "center" }}
+                    h="100%"
+                >
                     <Box h="100%" w={100} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                         <AspectRatio ratio={1 / 1}>
                             <Image radius="lg" src={item.cover} fit="cover" />
                         </AspectRatio>
                     </Box>
-                    <Box w="100%" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <Flex
+                        w="100%"
+                        direction={{ base: "column", sm: "row" }}
+                        justify="space-between"
+                        align={{ base: "flex-start", sm: "center" }}
+                        gap="md"
+                    >
                         <Box>
                             <Text fw={500} size="xl">
                                 {item.name}
@@ -38,7 +48,7 @@ export function ProfileItemCard({ item }: { item: UserItem }) {
                         </Box>
                         <Box style={{ display: "flex", gap: "20px", alignItems: "center" }}>
                             <Text>{new Date(item.created_at).toLocaleDateString()}</Text>
-                            <Divider h={100} orientation="vertical" />
+                            <Divider h={100} orientation="vertical" visibleFrom="sm" />
                             <Group gap="xs">
                                 <ActionIcon
                                     variant="subtle"
@@ -62,8 +72,8 @@ export function ProfileItemCard({ item }: { item: UserItem }) {
                                 </ActionIcon>
                             </Group>
                         </Box>
-                    </Box>
-                </Box>
+                    </Flex>
+                </Flex>
             </Card>
             <DeletePopup type="item" opened={deleteOpened} close={deleteClose} id={item.id} />
             <UploadEditItemModal opened={editOpened} close={editClose} locations={locations} itemEdit={item} />

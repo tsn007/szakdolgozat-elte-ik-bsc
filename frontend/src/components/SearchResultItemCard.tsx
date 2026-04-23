@@ -7,7 +7,6 @@ export function SearchResultItemCard({ item, onClick }: { item: Item; onClick: (
         <>
             <Card
                 withBorder
-                w="20vw"
                 shadow="sm"
                 padding="lg"
                 radius="lg"
