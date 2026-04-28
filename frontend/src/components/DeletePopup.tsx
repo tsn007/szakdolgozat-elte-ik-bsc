@@ -25,6 +25,7 @@ export function DeletePopup({
                 await deleteLocation(id).unwrap();
                 close();
             } catch (e) {
+                close();
                 showCustomNotification({
                     id: "server-error",
                     title: "Error",

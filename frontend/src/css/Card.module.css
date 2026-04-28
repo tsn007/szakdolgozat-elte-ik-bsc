@@ -6,10 +6,12 @@
     height: 100%;
 }
 
-.item:hover {
-    transform: scale(1.2);
-    z-index: 10;
-    border: 1px solid light-dark(white, black)
+@media (hover: hover) and (pointer: fine) {
+    .item:hover {
+        transform: scale(1.2);
+        z-index: 10;
+        border: 1px solid light-dark(white, black);
+    }
 }
 
 .popup {

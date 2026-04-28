@@ -69,7 +69,7 @@ def login(request: Request) -> Response:
         key='accessToken',
         value=str(access),
         httponly=True,
-        secure=True,
+        secure=False,
         samesite="Lax",
         max_age=60*60,
     )
@@ -78,7 +78,7 @@ def login(request: Request) -> Response:
         key='refreshToken',
         value=str(refresh),
         httponly=True,
-        secure=True,
+        secure=False,
         samesite="Lax",
         max_age=24*60*60,
     )
@@ -122,7 +122,7 @@ def refresh(request: Request) -> Response:
             key='accessToken',
             value=str(new_access),
             httponly=True,
-            secure=True,
+            secure=False,
             samesite="Lax",
             max_age=60*60,
         )
@@ -131,7 +131,7 @@ def refresh(request: Request) -> Response:
             key='refreshToken',
             value=str(new_refresh),
             httponly=True,
-            secure=True,
+            secure=False,
             samesite="Lax",
             max_age=24*60*60,
         )

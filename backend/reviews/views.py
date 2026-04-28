@@ -13,6 +13,10 @@ class CreateReview(generics.CreateAPIView):
         reservation_id = self.kwargs.get('reservation_id')
         reservation = get_object_or_404(Reservation, id=reservation_id)
         user = self.request.user
+        point_value = serializer.validated_data.get('point')
+
+        if point_value == 0:
+            raise ValidationError('Please select a valid rating!')
 
         if reservation.status != Reservation.Status.COMPLETED:
             raise ValidationError('Reviews can only be written on completed reservations!')

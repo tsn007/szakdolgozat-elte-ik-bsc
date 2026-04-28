@@ -102,7 +102,7 @@ export function UploadEditItemModal({ opened, close, dropzoneProps, locations, i
             } else {
                 await createItem(formData).unwrap();
             }
-            close();
+            handleClose();
         } catch (e) {
             showCustomNotification({
                 id: "server-error",

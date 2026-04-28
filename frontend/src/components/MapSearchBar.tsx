@@ -39,17 +39,20 @@ export function MapSearchBar({ onLocationSelect }: SearchBarProps) {
 
         map.addControl(searchControl);
 
-        map.on("geosearch/showlocation", (result: any) => {
+        const handleLocationFound = (result: any) => {
             const rawAddress = result.location.raw.address || {};
             onLocationSelect(
                 result.location.y,
                 result.location.x,
                 rawAddress,
             );
-        });
+        };
+
+        map.on("geosearch/showlocation", handleLocationFound);
 
         return () => {
             map.removeControl(searchControl);
+            map.off("geosearch/showlocation", handleLocationFound);
         };
     }, [map, onLocationSelect]);
 

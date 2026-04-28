@@ -2,13 +2,14 @@
 import { Box, Modal, Button, TextInput, NumberInput } from "@mantine/core";
 import { Map } from "./Map";
 import type { CoordsType } from "./SearchLayout";
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { ModalText } from "./ModalText";
 import { useAddNewLocationMutation, useEditLocationMutation, type OwnLocation } from "../redux/userApi";
 import type { AddressType } from "./MapSearchBar";
 import { getApiErrorMessage } from "../utils/errors";
 import { showCustomNotification } from "../utils/notifications";
 import { useMediaQuery } from "@mantine/hooks";
+import { MapErrorBoundary } from "./MapErrorBoundary";
 
 type NewAddressProps = {
     opened: boolean;
@@ -138,78 +139,82 @@ export function AddEditNewAddress({ opened, close, userCoords, userAddress, loca
         }
     };
 
+    const handleLocationSelect = useCallback((lat: number, lng: number, address: AddressType | null) => {
+        setSelectedLocation({ lat, lng, address });
+        if (address?.house_number) {
+            setHouseNumValue(address.house_number);
+        } else {
+            setHouseNumValue("");
+        }
+    }, []);
+
     return (
-        <Modal
-            radius="lg"
-            opened={opened}
-            onClose={handleClose}
-            zIndex={1000}
-            size="lg"
-            fullScreen={isMobile}
-            title={<ModalText title={location ? "Edit address" : "New address"} />}
-        >
-            <Box style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "20px" }}>
-                <TextInput
-                    radius="md"
-                    placeholder="Name this location"
-                    label="Label"
-                    w="100%"
-                    ref={labelRef}
-                    defaultValue={location?.label ?? ""}
-                />
-                <Map
-                    key={opened ? "map-opened" : "map-closed"}
-                    userCoords={userCoords}
-                    withSearch={true}
-                    onLocationSelect={(lat, lng, address) => {
-                        setSelectedLocation({ lat, lng, address });
-                        if (address?.house_number) {
-                            setHouseNumValue(address.house_number);
-                        } else {
-                            setHouseNumValue("");
-                        }
-                    }}
-                    selectedLocation={activeLocation}
-                />
-                <Box w="100%" style={{ display: "flex", gap: "10px" }}>
-                    <Box w="100%">
-                        <TextInput
+        <MapErrorBoundary key={opened ? "boundary-open" : "boundary-closed"}>
+            <Modal
+                radius="lg"
+                opened={opened}
+                onClose={handleClose}
+                zIndex={1000}
+                size="lg"
+                fullScreen={isMobile}
+                title={<ModalText title={location ? "Edit address" : "New address"} />}
+            >
+                <Box style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "20px" }}>
+                    <TextInput
+                        radius="md"
+                        placeholder="Name this location"
+                        label="Label"
+                        w="100%"
+                        ref={labelRef}
+                        defaultValue={location?.label ?? ""}
+                    />
+                    <Map
+                        key={location?.id || "new-address-map"}
+                        userCoords={userCoords}
+                        withSearch={true}
+                        onLocationSelect={handleLocationSelect}
+                        selectedLocation={activeLocation}
+                    />
+                    <Box w="100%" style={{ display: "flex", gap: "10px" }}>
+                        <Box w="100%">
+                            <TextInput
+                                radius="md"
+                                w="100%"
+                                label="House number"
+                                placeholder="Enter the exact house number"
+                                value={houseNumValue}
+                                onChange={(e) => {
+                                    setHouseNumValue(e.currentTarget.value);
+                                    if (houseNumError) setHouseNumError(false);
+                                }}
+                                withAsterisk
+                                error={houseNumError ? "Please provide your house number" : null}
+                            />
+                        </Box>
+                        <NumberInput
                             radius="md"
+                            ref={floorRef}
                             w="100%"
-                            label="House number"
-                            placeholder="Enter the exact house number"
-                            value={houseNumValue}
-                            onChange={(e) => {
-                                setHouseNumValue(e.currentTarget.value);
-                                if (houseNumError) setHouseNumError(false);
-                            }}
-                            withAsterisk
-                            error={houseNumError ? "Please provide your house number" : null}
+                            label="Floor"
+                            placeholder="Enter the floor number"
+                            defaultValue={floor}
+                            hideControls
+                        />
+                        <NumberInput
+                            radius="md"
+                            ref={doorRef}
+                            w="100%"
+                            label="Door"
+                            placeholder="Enter your door number"
+                            defaultValue={door}
+                            hideControls
                         />
                     </Box>
-                    <NumberInput
-                        radius="md"
-                        ref={floorRef}
-                        w="100%"
-                        label="Floor"
-                        placeholder="Enter the floor number"
-                        defaultValue={floor}
-                        hideControls
-                    />
-                    <NumberInput
-                        radius="md"
-                        ref={doorRef}
-                        w="100%"
-                        label="Door"
-                        placeholder="Enter your door number"
-                        defaultValue={door}
-                        hideControls
-                    />
                 </Box>
-            </Box>
-            <Button w={100} radius="md" mt={30} loading={isAddLoading || isEditLoading} onClick={handleSubmit}>
-                Add
-            </Button>
-        </Modal>
+                <Button w={100} radius="md" mt={30} loading={isAddLoading || isEditLoading} onClick={handleSubmit}>
+                    Add
+                </Button>
+            </Modal>
+        </MapErrorBoundary>
     );
 }
