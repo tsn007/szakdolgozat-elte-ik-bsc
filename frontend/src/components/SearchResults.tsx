@@ -107,7 +107,14 @@ export function SearchResults({ opened, close, searchTerm, setSearchTerm }: Sear
                                     paddingBottom: "20px",
                                 }}
                             >
-                                <Group gap="xs" style={{ cursor: "pointer" }} onClick={() => navigate("/home")}>
+                                <Group
+                                    gap="xs"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => {
+                                        navigate("/browse/list");
+                                        close();
+                                    }}
+                                >
                                     <ThemeIcon size="lg" variant="filled" color="blue" radius="md">
                                         <IconShare size={25} />
                                     </ThemeIcon>
@@ -161,6 +168,7 @@ export function SearchResults({ opened, close, searchTerm, setSearchTerm }: Sear
                                                 <Box
                                                     key={item.id}
                                                     w="100%"
+                                                    maw={300}
                                                     miw={{ base: "60vw", md: 0 }}
                                                     style={{ scrollSnapAlign: "start" }}
                                                 >

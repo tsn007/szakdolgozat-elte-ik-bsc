@@ -41,30 +41,26 @@ html {
     margin: 0 !important;
 }
 
-/* Target the main search form background */
 .leaflet-control-geosearch form {
     background-color: #ffffff !important;
     color: #000000 !important;
 }
 
-/* Target the actual text input area */
 .leaflet-control-geosearch form input {
     color: #000000 !important;
     background-color: transparent !important;
 }
 
-/* Fix the dropdown results list background */
 .leaflet-control-geosearch .results {
     background-color: #ffffff !important;
     color: #000000 !important;
 }
 
-/* Fix the hover state for the dropdown results */
 .leaflet-control-geosearch .results > * {
     color: #000000 !important;
 }
 
 .leaflet-control-geosearch .results > *:hover {
-    background-color: #f1f3f5 !important; /* A nice Mantine-style light gray */
+    background-color: #f1f3f5 !important;
 }
 

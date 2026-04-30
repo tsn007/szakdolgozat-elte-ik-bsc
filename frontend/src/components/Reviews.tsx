@@ -11,7 +11,7 @@ export function Reviews() {
         <Container p={20}>
             {(!reviews || reviews.length === 0) && (
                 <Container style={{ display: "flex", justifyContent: "center" }}>
-                    <Text>No reviews yet</Text>
+                    <Text>No reviews yet!</Text>
                 </Container>
             )}
             {reviews?.map((review) => {

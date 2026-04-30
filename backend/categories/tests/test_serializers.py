@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import MagicMock
 
 from categories.serializers import AllCategoriesResponseSerializer, ItemCategorySerializer

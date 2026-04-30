@@ -20,7 +20,7 @@ export function UserRentals() {
 
     if (!rentals || rentals.length === 0) {
         return (
-            <Text ta="center" mt="xl">
+            <Text ta="center" mt="lg">
                 You have no rentals yet!
             </Text>
         );

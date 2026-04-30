@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { showCustomNotification } from "./notifications"; //
+import { showCustomNotification } from "./notifications";
 import { notifications } from "@mantine/notifications";
 import { NotificationType } from "./notificationTypes";
 

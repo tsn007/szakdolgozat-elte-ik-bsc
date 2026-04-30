@@ -1,4 +1,3 @@
-# chat/middleware.py
 from channels.middleware import BaseMiddleware
 from channels.db import database_sync_to_async
 from django.contrib.auth.models import AnonymousUser

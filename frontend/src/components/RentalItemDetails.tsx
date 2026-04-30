@@ -33,7 +33,6 @@ export function RentalItemDetails({ rental }: { rental: Rental }) {
     const res_from = new Date(rental.from_date);
     const res_to = new Date(rental.to_date);
     const differenceInMs = res_to.getTime() - res_from.getTime();
-    // eslint-disable-next-line no-magic-numbers
     const msInADay = 1000 * 60 * 60 * 24;
     const differenceInDays = differenceInMs / msInADay;
     const nextStatus =
@@ -141,7 +140,7 @@ export function RentalItemDetails({ rental }: { rental: Rental }) {
                                         disabled={rental.renter !== rental.item.owner.id}
                                     >
                                         <Button
-                                            fullWidth={isMobile} // Mobilon kitölti a teret
+                                            fullWidth={isMobile}
                                             onClick={() => navigate(`/message-hub?rental=${rental.id}`)}
                                             radius="md"
                                             color="blue"
