@@ -12,7 +12,7 @@ import {
     Timeline,
     Flex,
 } from "@mantine/core";
-import { features, steps } from "../consts";
+import { features, steps } from "../consts/landingItems";
 import { useNavigate } from "react-router-dom";
 
 export function LandingPage() {

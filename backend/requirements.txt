@@ -28,8 +28,6 @@ cffi==2.0.0
     #   cryptography
 channels==4.3.2
     # via -r requirements.in
-colorama==0.4.6
-    # via pytest
 constantly==23.10.4
     # via twisted
 cryptography==46.0.6
@@ -66,8 +64,6 @@ drf-spectacular==0.29.0
     # via -r requirements.in
 drf-spectacular-sidecar==2026.1.1
     # via -r requirements.in
-faker==40.4.0
-    # via -r requirements.in
 hyperlink==21.0.0
     # via
     #   autobahn
@@ -80,8 +76,6 @@ incremental==24.11.0
     # via twisted
 inflection==0.5.1
     # via drf-spectacular
-iniconfig==2.3.0
-    # via pytest
 jsonschema==4.26.0
     # via drf-spectacular
 jsonschema-specifications==2025.9.1
@@ -89,13 +83,9 @@ jsonschema-specifications==2025.9.1
 msgpack==1.1.2
     # via autobahn
 packaging==26.0
-    # via
-    #   incremental
-    #   pytest
+    # via incremental
 pillow==12.1.1
     # via -r requirements.in
-pluggy==1.6.0
-    # via pytest
 psycopg2-binary==2.9.11
     # via -r requirements.in
 py-ubjson==0.16.1
@@ -108,18 +98,10 @@ pyasn1-modules==0.4.2
     # via service-identity
 pycparser==3.0
     # via cffi
-pygments==2.20.0
-    # via pytest
 pyjwt==2.11.0
     # via djangorestframework-simplejwt
 pyopenssl==26.0.0
     # via twisted
-pytest==9.0.3
-    # via
-    #   -r requirements.in
-    #   pytest-django
-pytest-django==4.12.0
-    # via -r requirements.in
 python-dotenv==1.2.1
     # via -r requirements.in
 pyyaml==6.0.3
@@ -146,9 +128,7 @@ typing-extensions==4.15.0
     #   referencing
     #   twisted
 tzdata==2025.3
-    # via
-    #   django
-    #   faker
+    # via django
 ujson==5.12.0
     # via autobahn
 uritemplate==4.2.0
